@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Focus Bro — Learning Room</title>
+<meta name="theme-color" content="#ffd32a">
+<link rel="icon" type="image/png" href="Focus%20bro.png">
+<link rel="manifest" href="lock-in-manifest.json">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fffdf8;--panel:rgba(255,255,255,.94);--panel2:#fff4c7;--line:#eadfb8;--text:#111114;--mute:#706b63;--gold:#ffd32a;--gold2:#dc8250;--ok:#39885c;--shadow:0 18px 60px rgba(17,17,20,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+:root[data-theme="dark"]{--bg:#111114;--panel:rgba(27,27,33,.96);--panel2:#25252d;--line:#3a3942;--text:#f8f5ec;--mute:#aaa6a0;--gold:#ffd32a;--gold2:#e89562;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif;min-height:100vh;background-image:linear-gradient(rgba(17,17,20,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(17,17,20,.025) 1px,transparent 1px),radial-gradient(900px 400px at 70% -10%,rgba(255,211,42,.18),transparent);background-size:32px 32px,32px 32px,auto}
+header{display:flex;align-items:center;gap:16px;padding:12px 22px;border-bottom:1px solid var(--line);background:rgba(255,253,248,.82);backdrop-filter:blur(18px);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:800 20px/1 Fraunces,Georgia,serif;letter-spacing:.04em;color:var(--text)}
+.brand img{width:42px;height:42px;object-fit:cover;border-radius:50%;border:2px solid var(--text)}
+.motto{font-size:11px;letter-spacing:.28em;color:var(--mute);text-transform:uppercase}
+.sp{flex:1}
+.stat{font-size:12px;color:var(--mute)} .stat b{color:var(--text);font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:8px 13px;transition:transform .2s,border-color .2s,background .2s}
+button:active{transform:translateY(1px)}
+button:hover{border-color:var(--gold)}
+.gold{background:var(--gold);color:#1a1405;border-color:var(--gold);font-weight:600}
+.gold:hover{background:var(--gold2)}
+input,textarea{font:inherit;color:var(--text);background:rgba(10,10,12,.5);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+.app{display:grid;grid-template-columns:290px minmax(0,1fr) 340px;gap:16px;padding:16px 22px;max-width:1700px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.add{display:flex;gap:8px;margin-bottom:8px}
+.add input:first-child{flex:1.3}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:4px 0 8px}
+.v{padding:10px;border:1px solid transparent;border-radius:12px;cursor:pointer;margin-bottom:6px}
+.v:hover{background:var(--panel2)} .v.on{background:var(--panel2);border-color:var(--gold)}
+.v .t{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v .m{font-size:12px;color:var(--mute);display:flex;justify-content:space-between;margin-top:2px}
+.bar{height:5px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:9px;transition:width .4s}
+.stage{aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.stage iframe{width:100%;height:100%;border:0;display:block}
+.title{font:600 22px/1.2 Fraunces,Georgia,serif;background:transparent;border:1px solid transparent;padding:8px 4px;margin:10px 0 4px}
+.title:hover,.title:focus{border-color:var(--line);background:var(--panel)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font:800 34px/1 Fraunces,Georgia,serif;color:var(--gold);font-variant-numeric:tabular-nums}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.grid3 .card{padding:12px}
+.lbl{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.14em}
+.val{font:600 20px Fraunces,Georgia,serif;font-variant-numeric:tabular-nums}
+.notes{display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 100px);position:sticky;top:12px}
+.list{overflow:auto;flex:1;min-height:120px;display:flex;flex-direction:column;gap:8px}
+.n{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:9px 11px;position:relative;white-space:pre-wrap;word-break:break-word}
+.n .ts{color:var(--gold);font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums;font-size:12px;display:inline-block;margin-bottom:2px}
+.n .x{position:absolute;right:6px;top:4px;border:0;background:none;color:var(--mute);padding:2px 6px}
+.hint{font-size:12px;color:var(--mute)}
+.empty{text-align:center;padding:clamp(60px,12vh,150px) 20px}
+.empty h1{font:800 clamp(28px,5vw,54px)/1.05 Fraunces,Georgia,serif;margin:0 0 14px;color:var(--gold)}
+.empty:before{content:'✦';display:block;color:var(--gold);font-size:28px;margin-bottom:18px}
+.checkpoint{font-size:12px;color:var(--gold);border:1px solid rgba(232,185,74,.25);background:rgba(232,185,74,.08);border-radius:999px;padding:5px 10px}
+.menuBtn{font-size:12px}
+.drawer{position:fixed;inset:0 auto 0 0;width:min(360px,92vw);background:var(--panel);border-right:1px solid var(--line);box-shadow:24px 0 70px rgba(0,0,0,.2);z-index:20;padding:22px;transform:translateX(-105%);transition:transform .25s ease;overflow:auto}
+.drawer.open{transform:translateX(0)}
+.drawerBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:19;opacity:0;pointer-events:none;transition:opacity .25s}
+.drawerBackdrop.open{opacity:1;pointer-events:auto}
+.drawerHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.navlink{display:block;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
+.navlink:hover{color:var(--gold)}
+.history{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.historyItem{padding:10px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--panel2)}
+.historyItem:hover{border-color:var(--gold)}
+.historyItem small{display:block;color:var(--mute);margin-top:2px}
+.tip{border-left:2px solid var(--gold);padding:10px 12px;background:rgba(232,185,74,.07);color:var(--mute);font-size:13px}
+.focus .app{grid-template-columns:minmax(0,1fr) 340px;max-width:1500px}
+.focus .side,.focus .grid3,.focus header .stat{display:none}
+@media (max-width:1100px){.app{grid-template-columns:1fr}.notes{position:static;max-height:none}.focus .app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand"><img src="Focus%20bro.png" alt="">FOCUS BRO</div><div class="motto">In the pursuit of greatness</div></div>
+  <div class="sp"></div>
+  <div class="stat">Today <b id="today">0m</b></div>
+  <div class="stat">Streak <b id="streak">0d</b></div>
+  <button id="focusBtn">Focus mode</button>
+  <button class="menuBtn" id="menuBtn">Learning menu</button>
+  <button id="themeBtn" title="Toggle theme">◐</button>
+</header>
+
+<div class="app">
+  <aside class="side card">
+    <h3>Library</h3>
+    <div class="add"><input id="url" placeholder="Paste YouTube link…" aria-label="YouTube link"><button class="gold" id="addBtn">Add</button></div>
+    <input id="name" placeholder="Lesson name (optional)" aria-label="Lesson name">
+    <div class="hint" id="err" style="margin-bottom:8px"></div>
+    <div id="lib"></div>
+  </aside>
+
+  <main id="main"></main>
+
+  <aside class="notes card">
+    <h3>Notes</h3>
+    <textarea id="note" rows="3" placeholder="Write a note… it’s stamped with the video time. Ctrl/⌘+Enter to save."></textarea>
+    <div class="row"><button class="gold" id="noteBtn">Add note</button><button id="exp">Copy all</button><span class="hint" id="cp"></span></div>
+    <div class="list" id="notes"></div>
+  </aside>
+</div>
+
+<div class="drawerBackdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Room menu">
+  <div class="drawerHead"><strong>Focus Bro learning system</strong><button id="closeMenu" aria-label="Close menu">✕</button></div>
+  <a class="navlink" href="The%20Lock-In%20Room.html">◉ Focus room <span class="hint">watch + notes</span></a>
+  <a class="navlink" href="Study-Techniques.html">◇ Study techniques <span class="hint">active recall + memory</span></a>
+  <a class="navlink" href="Feyman-techniques.html">✦ Feynman method <span class="hint">explain to learn</span></a>
+  <a class="navlink" href="Self-Tought-room.html">＋ Self-taught room <span class="hint">goals + atomic habits</span></a>
+  <h3 style="margin-top:24px">History · all lessons</h3>
+  <div class="history" id="history"></div>
+  <div class="tip" style="margin-top:20px">One lesson. One clear next action. Protect your attention and let consistency compound.</div>
+</aside>
+
+<script>
+(function(){
+var KEY='lockin.v1', S={vids:[],cur:null,log:{}}, cur=null, pos=0, dur=0, state=-1, lastSave=0, iframe=null, ping=null;
+try{var raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function $(i){return document.getElementById(i)}
+function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')}
+function short(s){s=Math.floor(s);var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m+'m'}
+function dk(d){d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function parse(u){
+  u=u.trim(); var m;
+  if(/^[\w-]{11}$/.test(u)) return u;
+  m=u.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/live\/|youtube\.com\/v\/|[?&]v=)([\w-]{11})/i);
+  return m?m[1]:null;
+}
+function find(id){return S.vids.filter(function(v){return v.id===id})[0]}
+
+function addVideo(){
+  var id=parse($('url').value);
+  if(!id){$('err').textContent='That doesn’t look like a YouTube link.';return}
+  $('err').textContent='';
+  if(!find(id)) S.vids.push({id:id,title:$('name').value.trim()||'Lesson '+(S.vids.length+1),pos:0,dur:0,max:0,notes:[],added:Date.now()});
+  $('url').value=''; $('name').value=''; save(); open(id);
+}
+
+function open(id){
+  commit(); cur=find(id); S.cur=id; pos=cur.pos||0; dur=cur.dur||0; state=-1; save(); renderAll(); mount();
+}
+function commit(){ if(cur){cur.pos=pos; if(dur)cur.dur=dur; save();} }
+
+function mount(){
+  if(!cur) return;
+  var st=$('stage'); if(!st) return;
+  var src='https://www.youtube-nocookie.com/embed/'+cur.id+'?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&start='+Math.floor(pos);
+  if(location.protocol!=='file:') src+='&origin='+encodeURIComponent(location.origin);
+  st.innerHTML='<iframe title="Video" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  iframe=st.firstChild; iframe.src=src;
+  iframe.addEventListener('load',listen);
+  clearInterval(ping); var n=0; ping=setInterval(function(){listen(); if(++n>20)clearInterval(ping)},800);
+}
+function listen(){try{iframe.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');}catch(e){}}
+function cmd(f,a){try{iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:f,args:a||[]}),'*');}catch(e){}}
+
+window.addEventListener('message',function(e){
+  if(!iframe||e.source!==iframe.contentWindow) return;
+  var d=e.data; if(typeof d==='string'){try{d=JSON.parse(d)}catch(x){return}}
+  if(!d||!d.info) return;
+  var i=d.info;
+  if(typeof i.playerState==='number') state=i.playerState;
+  if(i.duration) dur=i.duration;
+  if(typeof i.currentTime==='number'&&cur){
+    pos=i.currentTime; if(pos>(cur.max||0)) cur.max=pos;
+    updateBits();
+    var now=Date.now(); if(now-lastSave>2000){lastSave=now; cur.pos=pos; if(dur)cur.dur=dur; save(); updateLib();}
+  }
+});
+
+setInterval(function(){ // real watch time
+  if(state===1){var k=dk(); S.log[k]=(S.log[k]||0)+1; if(S.log[k]%10===0)save(); top();}
+},1000);
+window.addEventListener('beforeunload',commit);
+document.addEventListener('visibilitychange',commit);
+
+function streak(){var n=0,d=new Date(); if(!S.log[dk(d)]) d.setDate(d.getDate()-1); while(S.log[dk(d)]>=60){n++;d.setDate(d.getDate()-1)} return n}
+function top(){$('today').textContent=short(S.log[dk()]||0);$('streak').textContent=streak()+'d'}
+
+function pct(v){var d=v.dur||0; return d?Math.min(100,Math.round((v.max||v.pos||0)/d*100)):0}
+function updateLib(){
+  $('lib').innerHTML=S.vids.map(function(v){
+    var p=pct(v);
+    return '<div class="v'+(cur&&v.id===cur.id?' on':'')+'" data-id="'+v.id+'"><div class="t">'+esc(v.title)+'</div><div class="m"><span>'+fmt(v.pos)+(v.dur?' / '+fmt(v.dur):'')+'</span><span>'+p+'%</span></div><div class="bar"><i style="width:'+p+'%"></i></div></div>';
+  }).join('')||'<div class="hint">No videos yet. Paste a link above.</div>';
+}
+function updateBits(){
+  if(!cur) return;
+  var p=pct(cur), a=$('clock'); if(!a) return;
+  a.textContent=fmt(pos); $('pct').textContent=p+'%'; $('rem').textContent=dur?short(Math.max(0,dur-pos)):'—'; $('pb').style.width=p+'%'; $('dur').textContent=dur?'of '+fmt(dur):'';
+}
+function renderMain(){
+  var m=$('main');
+  if(!cur){m.innerHTML='<div class="empty"><h1>In the pursuit<br>of greatness.</h1><p class="hint" style="font-size:15px">Paste a YouTube link on the left. Your spot, notes and progress are saved automatically on this device.</p></div>';return}
+  m.innerHTML='<div class="eyebrow">Your current lesson</div><div class="stage" id="stage"></div>'+
+  '<input class="title" id="ttl" value="'+esc(cur.title)+'" aria-label="Video title">'+
+  '<div class="row"><span class="big" id="clock">0:00</span><span class="hint" id="dur"></span><span class="checkpoint">Auto-saved checkpoint</span><div class="sp"></div>'+
+  '<button id="back">−10s</button><button id="fwd">+10s</button><button id="del">Remove</button></div>'+
+  '<div class="bar" style="height:8px;margin-top:12px"><i id="pb" style="width:0"></i></div>'+
+  '<div class="grid3"><div class="card"><div class="lbl">Progress</div><div class="val" id="pct">0%</div></div>'+
+  '<div class="card"><div class="lbl">Time left</div><div class="val" id="rem">—</div></div>'+
+  '<div class="card"><div class="lbl">Notes</div><div class="val" id="nc">0</div></div></div>';
+  $('ttl').oninput=function(){cur.title=this.value||'Untitled';save();updateLib()};
+  $('back').onclick=function(){cmd('seekTo',[Math.max(0,pos-10),true])};
+  $('fwd').onclick=function(){cmd('seekTo',[pos+10,true])};
+  var armed=false; $('del').onclick=function(){
+    if(!armed){armed=true;this.textContent='Sure? Click again';return}
+    S.vids=S.vids.filter(function(v){return v!==cur}); cur=null; S.cur=null; save();
+    var n=S.vids[0]; if(n) open(n.id); else renderAll();
+  };
+}
+function renderNotes(){
+  var l=$('notes'); if(!cur){l.innerHTML='<div class="hint">Select a video to take notes.</div>';return}
+  l.innerHTML=cur.notes.slice().reverse().map(function(n){
+    return '<div class="n"><span class="ts" data-t="'+n.t+'">▶ '+fmt(n.t)+'</span><button class="x" data-d="'+n.id+'" aria-label="Delete">✕</button><div>'+esc(n.text)+'</div></div>';
+  }).join('')||'<div class="hint">Nothing yet. Capture what matters.</div>';
+  if($('nc')) $('nc').textContent=cur.notes.length;
+}
+function renderAll(){top();updateLib();renderMain();renderNotes();updateBits()}
+
+function addNote(){
+  var t=$('note').value.trim(); if(!t||!cur) return;
+  cur.notes.push({id:Date.now(),t:Math.floor(pos),text:t}); $('note').value=''; save(); renderNotes();
+}
+$('addBtn').onclick=addVideo;
+$('url').onkeydown=function(e){if(e.key==='Enter')addVideo()};
+$('noteBtn').onclick=addNote;
+$('note').onkeydown=function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();addNote()}};
+$('lib').onclick=function(e){var v=e.target.closest('.v'); if(v) open(v.dataset.id)};
+$('notes').onclick=function(e){
+  var t=e.target.closest('.ts'); if(t){cmd('seekTo',[+t.dataset.t,true]);cmd('playVideo');return}
+  var d=e.target.closest('.x'); if(d){cur.notes=cur.notes.filter(function(n){return n.id!==+d.dataset.d});save();renderNotes()}
+};
+$('exp').onclick=function(){
+  if(!cur) return;
+  var txt='# '+cur.title+'\n\n'+cur.notes.map(function(n){return '['+fmt(n.t)+'] '+n.text}).join('\n');
+  function ok(){$('cp').textContent='Copied'; setTimeout(function(){$('cp').textContent=''},1500)}
+  try{navigator.clipboard.writeText(txt).then(ok,function(){$('cp').textContent='Copy blocked'})}catch(e){$('cp').textContent='Copy blocked'}
+};
+$('focusBtn').onclick=function(){var f=document.body.classList.toggle('focus');this.textContent=f?'Exit focus':'Focus mode'};
+$('themeBtn').onclick=function(){
+  var r=document.documentElement, dark=getComputedStyle(r).colorScheme==='dark';
+  r.setAttribute('data-theme',dark?'light':'dark');
+};
+$('menuBtn').onclick=function(){$('drawer').classList.add('open');$('drawerBackdrop').classList.add('open');renderHistory()};
+$('closeMenu').onclick=$('drawerBackdrop').onclick=function(){$('drawer').classList.remove('open');$('drawerBackdrop').classList.remove('open')};
+function renderHistory(){
+  var h=$('history');
+  h.innerHTML=S.vids.slice().sort(function(a,b){return (b.added||0)-(a.added||0)}).map(function(v){
+    return '<div class="historyItem" data-id="'+v.id+'"><strong>'+esc(v.title)+'</strong><small>'+pct(v)+'% complete · last position '+fmt(v.pos)+'</small></div>';
+  }).join('')||'<div class="hint">Your pasted lessons will appear here.</div>';
+}
+$('history').onclick=function(e){var item=e.target.closest('.historyItem');if(item){open(item.dataset.id);$('closeMenu').click()}};
+
+renderAll();
+if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
+else if(S.vids[0]) open(S.vids[0].id);
+if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js').then(function(){},function(){})}
+})();
+</script>
+</body>
+</html>

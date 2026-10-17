@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Focus Bro — Feynman Method</title>
+<meta name="theme-color" content="#ffd32a">
+<link rel="icon" type="image/png" href="Focus%20bro.png">
+<link rel="manifest" href="lock-in-manifest.json">
+<link rel="stylesheet" href="focus-bro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+.feynman{max-width:1100px;margin:auto;padding:24px}
+.feynman header{display:flex;align-items:center;gap:18px;border-bottom:1px solid #eadfb8;padding:12px 0 20px;background:transparent;position:static}
+.feynman .brand{font:800 20px Fraunces;color:#111114;letter-spacing:.04em}
+.feynman .sp{flex:1}.feynman .back{color:#706b63;text-decoration:none}
+.hero{padding:70px 0 34px;max-width:760px}.eyebrow{color:#dc8250;text-transform:uppercase;letter-spacing:.2em;font-size:11px}
+.hero h1{font:800 clamp(42px,7vw,78px)/.98 Fraunces;margin:12px 0;color:#111114}.hero p{color:#706b63;font-size:18px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{background:#fff;border:1px solid #eadfb8;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(17,17,20,.07)}.step strong{display:block;color:#dc8250;font:800 40px Fraunces}.step h2{font:600 25px Fraunces;margin:10px 0 6px}.step p{color:#706b63}.prompt{margin-top:14px;padding:14px;border-left:3px solid #ffd32a;background:#fff4c7;font-size:13px}
+.practice{margin-top:18px;background:#111114;color:#fff;border-radius:18px;padding:24px}.practice h2{font:600 28px Fraunces;color:#ffd32a;margin-top:0}.practice textarea{width:100%;min-height:130px;resize:vertical;border:1px solid #3a3942;border-radius:12px;padding:12px;background:#25252d;color:#fff;font:inherit}.practice button{margin-top:12px;border:0;border-radius:10px;padding:10px 14px;background:#ffd32a;color:#111114;font-weight:700;cursor:pointer}.saved{color:#ffd32a;font-size:12px;margin-left:8px}
+@media(max-width:850px){.steps{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.feynman{padding:18px}.steps{grid-template-columns:1fr}.hero{padding-top:48px}}
+</style>
+</head>
+<body>
+<div class="feynman">
+<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo" style="width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:8px">FOCUS BRO</div><div class="sp"></div><a class="back" href="The%20Lock-In%20Room.html">← Focus room</a></header>
+<main>
+<section class="hero"><div class="eyebrow">The explain-to-learn loop</div><h1>Make it simple.<br>Make it yours.</h1><p>The Feynman technique turns passive watching into proof that you understand. Use it after a lesson, then return to the room and capture the gaps as timestamped notes.</p></section>
+<section class="steps">
+<article class="step"><strong>01</strong><h2>Choose</h2><p>Pick one idea from your lesson. Keep it narrow enough to explain in two minutes.</p><div class="prompt">“What exactly am I trying to understand?”</div></article>
+<article class="step"><strong>02</strong><h2>Explain</h2><p>Write or speak as if you are teaching a curious beginner. Use plain words, not impressive words.</p><div class="prompt">“How would I explain this without jargon?”</div></article>
+<article class="step"><strong>03</strong><h2>Find gaps</h2><p>Circle every place where you hesitate, hand-wave, or reach for the source. Those are your next study targets.</p><div class="prompt">“Where did my explanation become vague?”</div></article>
+<article class="step"><strong>04</strong><h2>Simplify</h2><p>Return to the video, close the gap, and rewrite the explanation with a useful example or analogy.</p><div class="prompt">“Can I make this clearer in one sentence?”</div></article>
+</section>
+<section class="practice"><h2>Try it now</h2><p>Choose a concept from your current lesson and explain it below. This is saved on this device.</p><textarea id="explain" placeholder="I am explaining..."></textarea><div><button id="save">Save explanation</button><span class="saved" id="saved"></span></div></section>
+</main></div>
+<script>(function(){var k='focusbro.feynman.v1',el=document.getElementById('explain'),saved=document.getElementById('saved');el.value=localStorage.getItem(k)||'';document.getElementById('save').onclick=function(){localStorage.setItem(k,el.value);saved.textContent='Saved';setTimeout(function(){saved.textContent=''},1400)}})()</script>
+<script src="focus-bro-nav.js"></script>
+</body>
+</html>
