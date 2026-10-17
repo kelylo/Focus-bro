@@ -1,5 +1,6 @@
 const CACHE = "gratness-shell-v1";
 const ASSETS = [
+  "index.html",
   "The%20Lock-In%20Room.html",
   "Study-Techniques.html",
   "Self-Tought-room.html",
