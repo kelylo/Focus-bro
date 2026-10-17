@@ -124,6 +124,7 @@ function parse(u){
 function find(id){return S.vids.filter(function(v){return v.id===id})[0]}
 
 function addVideo(){
+  if(!window.FocusBroAuth.getState().user){$('err').textContent='Sign in to save lessons to your account.';document.dispatchEvent(new CustomEvent('focusbro:open-auth'));return}
   var id=parse($('url').value);
   if(!id){$('err').textContent='That doesn’t look like a YouTube link.';return}
   $('err').textContent='';
@@ -191,7 +192,7 @@ function renderMain(){
   '<input class="title" id="ttl" value="'+esc(cur.title)+'" aria-label="Video title">'+
   '<div class="row"><span class="big" id="clock">0:00</span><span class="hint" id="dur"></span><span class="checkpoint">Auto-saved checkpoint</span><div class="sp"></div>'+
   '<button id="back" class="icon-button" title="Back 10 seconds" aria-label="Back 10 seconds">⏪</button><button id="fwd" class="icon-button" title="Forward 10 seconds" aria-label="Forward 10 seconds">⏩</button><button id="del" class="icon-button" title="Remove lesson" aria-label="Remove lesson">🗑</button></div>'+
-  '  <div class="player-help"><span>Progress and notes sync to your account when signed in; offline work is cached until reconnect.</span><a href="Timetable.html">Plan your next session →</a></div>'+
+  '<div class="player-help"><span>Progress and notes are saved to your account when signed in.</span><a href="Timetable.html">Plan your next session →</a></div>'+
   '<div class="bar" style="height:8px;margin-top:12px"><i id="pb" style="width:0"></i></div>'+
   '<div class="grid3"><div class="card"><div class="lbl">Progress</div><div class="val" id="pct">0%</div></div>'+
   '<div class="card"><div class="lbl">Time left</div><div class="val" id="rem">—</div></div>'+
@@ -240,6 +241,7 @@ $('themeBtn').onclick=function(){
   localStorage.setItem('focusbro.theme',dark?'light':'dark');
 };
 renderAll();
+window.addEventListener('focusbro:state-ready',renderAll);
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js?v=9').then(function(){},function(){})}
