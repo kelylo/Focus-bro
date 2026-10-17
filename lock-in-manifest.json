@@ -1,0 +1,9 @@
+{
+  "name": "Gratness — The Lock-In Room",
+  "short_name": "Gratness",
+  "start_url": "The%20Lock-In%20Room.html",
+  "display": "standalone",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "description": "A focused learning room for video lessons, notes, goals, and progress."
+}
