@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v10";
+const CACHE = "focus-bro-shell-v11";
 const ASSETS = [
   "index.html",
   "Focus-Bro.html",

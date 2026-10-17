@@ -31,10 +31,9 @@
   function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
   function apply(data){if(!data)return;syncing=true;Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
   function syncAfterLogin(){if(hydrating)return;hydrating=true;cloudState().then(function(cloud){if(cloud)apply(cloud);else return saveState(collect());}).then(function(){window.dispatchEvent(new CustomEvent('focusbro:state-ready'))}).catch(function(){}).then(function(){hydrating=false})}
-  var nativeGet=localStorage.getItem.bind(localStorage),nativeSet=localStorage.setItem.bind(localStorage),nativeRemove=localStorage.removeItem.bind(localStorage);
-  localStorage.getItem=function(k){if(Object.prototype.hasOwnProperty.call(memory,k))return memory[k];return null};
-  localStorage.setItem=function(k,v){if(syncKeys.indexOf(k)===-1){nativeSet(k,v);return}memory[k]=String(v);if(!syncing&&state.user){clearTimeout(syncTimer);syncTimer=setTimeout(function(){saveState(collect()).catch(function(){})},500)}};
-  localStorage.removeItem=function(k){if(syncKeys.indexOf(k)===-1){nativeRemove(k);return}delete memory[k];if(state.user)saveState(collect()).catch(function(){})};
+  localStorage.getItem=function(k){return Object.prototype.hasOwnProperty.call(memory,k)?memory[k]:null};
+  localStorage.setItem=function(k,v){memory[k]=String(v);if(syncKeys.indexOf(k)!==-1&&!syncing&&state.user){clearTimeout(syncTimer);syncTimer=setTimeout(function(){saveState(collect()).catch(function(){})},500)}};
+  localStorage.removeItem=function(k){delete memory[k];if(syncKeys.indexOf(k)!==-1&&state.user)saveState(collect()).catch(function(){});};
   function onChange(fn){listeners.push(fn);fn(state)}
   window.FocusBroAuth={onChange:onChange,signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},signOut:signOut,updateProfile:updateProfile,getState:function(){return state},loadState:cloudState,saveState:saveState};
   restore();

@@ -20,7 +20,8 @@
   --focus-muted:#c4d1df;
   color-scheme:dark;
 }
-body{background:var(--focus-paper);color:var(--focus-ink);font-family:var(--focus-font)}
+html,body{width:100%;min-height:100%;margin:0}
+body{background:var(--focus-paper);color:var(--focus-ink);font-family:var(--focus-font);padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
 body::before{content:none}
 .site-sidebar-toggle{position:fixed;left:18px;top:18px;z-index:30;width:46px;height:46px;padding:0;border-radius:14px;background:var(--focus-ink);color:var(--focus-yellow);border:2px solid var(--focus-yellow);font-size:22px;box-shadow:0 10px 24px rgba(17,17,20,.18);transition:left .25s ease,transform .25s ease,background .25s ease,color .25s ease,box-shadow .25s ease}
 .site-sidebar-toggle:hover{background:var(--focus-yellow);color:var(--focus-ink)}

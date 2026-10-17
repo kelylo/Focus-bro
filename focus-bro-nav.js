@@ -1,5 +1,5 @@
 (function(){
-  var savedTheme=localStorage.getItem('focusbro.theme');
+  var savedTheme=sessionStorage.getItem('focusbro.theme');
   if(savedTheme==='dark'||savedTheme==='light')document.documentElement.setAttribute('data-theme',savedTheme);
   document.body.classList.add('has-site-nav');
   var page=location.pathname.split(/[\\/]/).pop()||'index.html';
@@ -58,5 +58,5 @@
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=10').catch(function(){});
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=11').catch(function(){});
 })();

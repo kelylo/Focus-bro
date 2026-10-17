@@ -2,7 +2,7 @@
   "name": "Focus Bro - Learning Room",
   "short_name": "Focus Bro",
   "start_url": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#fffdf8",
   "theme_color": "#ffd32a",
   "description": "A focused learning room for video lessons, notes, goals, and progress.",
