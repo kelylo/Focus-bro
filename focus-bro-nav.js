@@ -1,4 +1,6 @@
 (function(){
+  var savedTheme=localStorage.getItem('focusbro.theme');
+  if(savedTheme==='dark'||savedTheme==='light')document.documentElement.setAttribute('data-theme',savedTheme);
   document.body.classList.add('has-site-nav');
   var page=location.pathname.split(/[\\/]/).pop()||'index.html';
   var links=[

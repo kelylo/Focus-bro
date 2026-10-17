@@ -10,6 +10,16 @@
   --focus-heading:'Arial Black',Impact,sans-serif;
   --focus-sidebar-width:min(320px,88vw);
 }
+:root[data-theme="dark"]{
+  --focus-yellow:#e0b83f;
+  --focus-orange:#d7835d;
+  --focus-orange-dark:#f0a277;
+  --focus-ink:#f1eadb;
+  --focus-paper:#202a3d;
+  --focus-card:#2d3a52;
+  --focus-muted:#c4d1df;
+  color-scheme:dark;
+}
 body{background:var(--focus-paper);color:var(--focus-ink);font-family:var(--focus-font)}
 body::before{content:none}
 .site-sidebar-toggle{position:fixed;left:18px;top:18px;z-index:30;width:46px;height:46px;padding:0;border-radius:14px;background:var(--focus-ink);color:var(--focus-yellow);border:2px solid var(--focus-yellow);font-size:22px;box-shadow:0 10px 24px rgba(17,17,20,.18);transition:left .25s ease,transform .25s ease,background .25s ease,color .25s ease,box-shadow .25s ease}
@@ -54,3 +64,19 @@ h1,h2,h3,h4,.brand,.big,.title,.val{font-family:var(--focus-heading)!important}
 .card{background:var(--focus-card)!important;border:3px solid var(--focus-ink)!important;box-shadow:4px 4px 0 var(--focus-ink)!important}
 button,.gold{font-family:var(--focus-heading)!important}
 @media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 12px)}.site-profile-link-floating{top:12px;right:12px}.has-site-nav>header{padding-left:70px}.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:18px}.focus-page{padding:18px 18px 50px}.focus-page .hero{padding-top:48px}}
+[data-theme="dark"] body{background:var(--focus-paper)!important;color:var(--focus-ink)!important}
+[data-theme="dark"] .site-sidebar{background:#2d3a52;border-color:#a9c2d8;box-shadow:8px 8px 0 rgba(8,14,25,.55)}
+[data-theme="dark"] .site-sidebar-backdrop{background:rgba(8,14,25,.72)}
+[data-theme="dark"] .site-link{color:var(--focus-ink)}
+[data-theme="dark"] .site-link:hover,[data-theme="dark"] .site-link.active{background:#40536e;border-color:#f5c84b}
+[data-theme="dark"] .site-section,[data-theme="dark"] .site-link small{color:#c4d1df!important}
+[data-theme="dark"] .site-profile-link,[data-theme="dark"] .site-sidebar-toggle{background:#d7835d;color:#fff8ea;border-color:#f5c84b}
+[data-theme="dark"] .site-profile-link:hover,[data-theme="dark"] .site-sidebar-toggle:hover{background:#f5c84b;color:#202a3d}
+[data-theme="dark"] .site-quote{background:#435774;color:#fff8ea;border-color:#f5c84b}
+[data-theme="dark"] .focus-page,.focus-page[data-theme="dark"],[data-theme="dark"] .profile-page,[data-theme="dark"] .techniques,[data-theme="dark"] .self,[data-theme="dark"] .feynman{color:var(--focus-ink)}
+[data-theme="dark"] .focus-page header,[data-theme="dark"] .profile-page header,[data-theme="dark"] .techniques header,[data-theme="dark"] .self header,[data-theme="dark"] .feynman header{border-color:rgba(196,209,223,.35)!important}
+[data-theme="dark"] .focus-page .card,[data-theme="dark"] .profile-card,[data-theme="dark"] .tech-card,[data-theme="dark"] .steps .step,[data-theme="dark"] .self-grid .card,[data-theme="dark"] .mindmap-container,[data-theme="dark"] .task-card{background:#2d3a52!important;border-color:#a9c2d8!important;box-shadow:5px 5px 0 rgba(8,14,25,.5)!important}
+[data-theme="dark"] .focus-page p,[data-theme="dark"] .focus-page li,[data-theme="dark"] .profile-hero p,[data-theme="dark"] .profile-card span,[data-theme="dark"] .tech-card p,[data-theme="dark"] .self p,[data-theme="dark"] .feynman p{color:#c4d1df!important}
+[data-theme="dark"] .focus-page input,[data-theme="dark"] .focus-page textarea,[data-theme="dark"] .focus-page select,[data-theme="dark"] .profile-card input,[data-theme="dark"] textarea,[data-theme="dark"] input{background:#202a3d!important;color:#f7efd8!important;border-color:#a9c2d8!important}
+[data-theme="dark"] .focus-page button,[data-theme="dark"] .profile-card button,[data-theme="dark"] .tech-card button,[data-theme="dark"] .self button,[data-theme="dark"] .feynman button{background:#d7835d!important;color:#fff8ea!important;border-color:#f5c84b!important}
+[data-theme="dark"] .profile-note,[data-theme="dark"] .tip,[data-theme="dark"] .note{background:#394963!important;color:#f7efd8!important;border-color:#f5c84b!important}
