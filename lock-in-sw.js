@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v6";
+const CACHE = "focus-bro-shell-v7";
 const ASSETS = [
   "index.html",
   "The-Lock-In-Room.html",
@@ -30,11 +30,17 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   if (event.request.mode === "navigate") {
-    event.respondWith(fetch(event.request).then(response => {
+    const update = fetch(event.request).then(response => {
       const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put(event.request, copy));
-      return response;
-    }).catch(() => caches.match(event.request)));
+      return caches.open(CACHE).then(cache => cache.put(event.request, copy)).then(() => response);
+    });
+    event.respondWith(caches.match(event.request).then(cached => {
+      if (cached) {
+        event.waitUntil(update.catch(() => {}));
+        return cached;
+      }
+      return update.catch(() => caches.match(event.request));
+    }));
     return;
   }
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {

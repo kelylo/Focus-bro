@@ -10,7 +10,7 @@
     return fetch(cfg.url+path,options).then(function(r){return r.text().then(function(text){var data=text?JSON.parse(text):{};if(!r.ok){var e=new Error(data.msg||data.error_description||data.message||'Supabase request failed');e.status=r.status;throw e}return data})});
   }
   function setSession(session){state.session=session||null;state.user=session&&session.user||null;if(session)localStorage.setItem('focusbro.auth.session',JSON.stringify(session));else localStorage.removeItem('focusbro.auth.session');emit()}
-  function restore(){try{var s=JSON.parse(localStorage.getItem('focusbro.auth.session')||'null');if(s&&s.access_token&&s.refresh_token){request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}}catch(e){}}
+  function restore(){try{var s=JSON.parse(localStorage.getItem('focusbro.auth.session')||'null');if(!s||!s.access_token||!s.refresh_token)return;state.session=s;state.user=s.user||null;emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000)return;request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){}}
   function auth(mode,email,password){
     var path=mode==='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
     return request(path,{method:'POST',body:JSON.stringify({email:email,password:password})}).then(function(data){if(data.access_token)setSession(data);return data});

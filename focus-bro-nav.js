@@ -40,6 +40,21 @@
   var theme=document.getElementById('themeBtn');
   if(theme) theme.insertAdjacentElement('afterend',profile);
   else {profile.classList.add('site-profile-link-floating');document.body.appendChild(profile)}
-  var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
-  var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
+  nav.querySelectorAll('a[href]').forEach(function(link){
+    link.addEventListener('pointerenter',function(){
+      if(link.dataset.prefetched)return;
+      link.dataset.prefetched='true';
+      var prefetch=document.createElement('link');
+      prefetch.rel='prefetch';
+      prefetch.href=link.href;
+      document.head.appendChild(prefetch);
+    },{once:true});
+  });
+  function loadAuthUi(){
+    var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
+    var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
+  }
+  if(window.requestIdleCallback)requestIdleCallback(loadAuthUi,{timeout:1200});
+  else setTimeout(loadAuthUi,400);
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('lock-in-sw.js?v=7').catch(function(){});
 })();
