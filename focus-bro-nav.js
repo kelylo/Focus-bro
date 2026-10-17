@@ -11,7 +11,7 @@
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
   nav.setAttribute('aria-label','Focus Bro learning menu');
-  nav.innerHTML='<a class="site-brand" href="index.html"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div class="site-section">Your learning system</div>'+
+  nav.innerHTML='<a class="site-brand" href="index.html"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="site-section">Your learning system</div>'+
     links.map(function(item){
       var active=decodeURIComponent(page).toLowerCase()===decodeURIComponent(item[0]).toLowerCase();
       return '<a class="site-link'+(active?' active':'')+'" href="'+item[0]+'"><span>'+item[3]+'</span><div>'+item[1]+'<small style="display:block;color:var(--focus-muted);font-size:11px;font-weight:400">'+item[2]+'</small></div></a>';
@@ -31,4 +31,6 @@
   toggle.onclick=function(){var open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop.classList.toggle('open',open);toggle.setAttribute('aria-expanded',String(open))}
   backdrop.onclick=close;
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+  var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
+  var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
 })();

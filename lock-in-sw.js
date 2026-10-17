@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v3";
+const CACHE = "focus-bro-shell-v4";
 const ASSETS = [
   "index.html",
   "The%20Lock-In%20Room.html",
@@ -9,6 +9,10 @@ const ASSETS = [
   "lock-in-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
+  "supabase-config.js",
+  "focus-bro-auth.js",
+  "supabase-auth-ui.js",
+  "auth-ui.css",
   "Focus%20bro.png"
 ];
 self.addEventListener("install", event => {

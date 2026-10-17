@@ -8,6 +8,8 @@
 <link rel="icon" type="image/png" href="Focus%20bro.png">
 <link rel="manifest" href="lock-in-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
+<script src="supabase-config.js"></script>
+<script src="focus-bro-auth.js"></script>
 <style>
 :root{--bg:#f9d326;--panel:#fff;--panel2:#fff;--line:#1a1a1a;--text:#1a1a1a;--mute:#555;--gold:#f9d326;--gold2:#c8754b;--ok:#39885c;--shadow:6px 6px 0 #1a1a1a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 :root[data-theme="dark"]{--bg:#111114;--panel:rgba(27,27,33,.96);--panel2:#25252d;--line:#3a3942;--text:#f8f5ec;--mute:#aaa6a0;--gold:#ffd32a;--gold2:#e89562;color-scheme:dark}
@@ -181,7 +183,7 @@ function renderMain(){
   '<input class="title" id="ttl" value="'+esc(cur.title)+'" aria-label="Video title">'+
   '<div class="row"><span class="big" id="clock">0:00</span><span class="hint" id="dur"></span><span class="checkpoint">Auto-saved checkpoint</span><div class="sp"></div>'+
   '<button id="back" class="icon-button" title="Back 10 seconds" aria-label="Back 10 seconds">⏪</button><button id="fwd" class="icon-button" title="Forward 10 seconds" aria-label="Forward 10 seconds">⏩</button><button id="del" class="icon-button" title="Remove lesson" aria-label="Remove lesson">🗑</button></div>'+
-  '<div class="player-help"><span>Playback stays inside Focus Bro. YouTube may still show its own ads.</span><a href="Timetable.html">Plan your next session →</a></div>'+
+  '  <div class="player-help"><span>Progress and notes sync to your account when signed in; offline work is cached until reconnect.</span><a href="Timetable.html">Plan your next session →</a></div>'+
   '<div class="bar" style="height:8px;margin-top:12px"><i id="pb" style="width:0"></i></div>'+
   '<div class="grid3"><div class="card"><div class="lbl">Progress</div><div class="val" id="pct">0%</div></div>'+
   '<div class="card"><div class="lbl">Time left</div><div class="val" id="rem">—</div></div>'+
