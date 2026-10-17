@@ -110,8 +110,8 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
 <script>
 (function(){
 var KEY='lockin.v1', S={vids:[],cur:null,log:{}}, cur=null, pos=0, dur=0, state=-1, lastSave=0, iframe=null, ping=null;
-try{var raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+try{var raw=FocusBroStore.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{FocusBroStore.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function $(i){return document.getElementById(i)}
 function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')}
 function short(s){s=Math.floor(s);var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m+'m'}
