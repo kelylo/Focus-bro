@@ -11,8 +11,8 @@
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
 <style>
-:root{--bg:#f9d326;--panel:#fff;--panel2:#fff;--line:#1a1a1a;--text:#1a1a1a;--mute:#555;--gold:#f9d326;--gold2:#c8754b;--ok:#39885c;--shadow:6px 6px 0 #1a1a1a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-:root[data-theme="dark"]{--bg:#111114;--panel:rgba(27,27,33,.96);--panel2:#25252d;--line:#3a3942;--text:#f8f5ec;--mute:#aaa6a0;--gold:#ffd32a;--gold2:#e89562;color-scheme:dark}
+:root{--bg:#f4cf45;--panel:#fffaf0;--panel2:#f3ead3;--line:#34415a;--text:#243044;--mute:#536174;--gold:#d89b12;--gold2:#b85f3d;--ok:#2f7d62;--shadow:6px 6px 0 rgba(36,48,68,.28);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+:root[data-theme="dark"]{--bg:#202a3d;--panel:#2d3a52;--panel2:#394963;--line:#a9c2d8;--text:#f7efd8;--mute:#c4d1df;--gold:#f5c84b;--gold2:#f19a72;color-scheme:dark}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--focus-font);min-height:100vh}
@@ -27,7 +27,7 @@ button:active{transform:translateY(1px)}
 button:hover{border-color:var(--gold)}
 .gold{background:var(--gold);color:#1a1405;border-color:var(--gold);font-weight:600}
 .gold:hover{background:var(--gold2)}
-input,textarea{font:inherit;color:var(--text);background:rgba(10,10,12,.5);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input,textarea{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
 input:focus,textarea:focus{outline:none;border-color:var(--gold)}
 .app{display:grid;grid-template-columns:290px minmax(0,1fr) 340px;gap:16px;padding:16px 22px;max-width:1700px;margin:0 auto}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
@@ -233,7 +233,7 @@ $('themeBtn').onclick=function(){
 renderAll();
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
-if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js?v=8').then(function(){},function(){})}
+if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js?v=9').then(function(){},function(){})}
 })();
 </script>
 <script src="focus-bro-nav.js"></script>

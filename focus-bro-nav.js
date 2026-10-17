@@ -35,8 +35,19 @@
   var profile=document.createElement('a');
   profile.className='site-profile-link';
   profile.href='Profile.html';
-  profile.textContent='Profile';
-  profile.setAttribute('aria-label','Open profile');
+  profile.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
+  profile.setAttribute('aria-label','Open account profile');
+  profile.title='Account profile';
+  profile.addEventListener('click',function(event){
+    if(!window.FocusBroAuth||!window.FocusBroAuth.getState().user){
+      event.preventDefault();
+      document.dispatchEvent(new CustomEvent('focusbro:open-auth'));
+    }
+  });
+  document.addEventListener('focusbro:user-change',function(event){
+    var image=event.detail&&event.detail.avatar_url;
+    profile.innerHTML=image?'<img src="'+image+'" alt="">':'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
+  });
   var theme=document.getElementById('themeBtn');
   if(theme) theme.insertAdjacentElement('afterend',profile);
   else {profile.classList.add('site-profile-link-floating');document.body.appendChild(profile)}
@@ -44,7 +55,6 @@
     var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
-  if(window.requestIdleCallback)requestIdleCallback(loadAuthUi,{timeout:1200});
-  else setTimeout(loadAuthUi,400);
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('lock-in-sw.js?v=8').catch(function(){});
+  loadAuthUi();
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('lock-in-sw.js?v=9').catch(function(){});
 })();

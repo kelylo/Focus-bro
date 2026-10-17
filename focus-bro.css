@@ -2,10 +2,10 @@
   --focus-yellow:#f9d326;
   --focus-orange:#c8754b;
   --focus-orange-dark:#a85e36;
-  --focus-ink:#1a1a1a;
-  --focus-paper:#f9d326;
-  --focus-card:#fff;
-  --focus-muted:#555;
+  --focus-ink:#243044;
+  --focus-paper:#f4cf45;
+  --focus-card:#fffaf0;
+  --focus-muted:#536174;
   --focus-font:'Comic Sans MS','Chalkboard SE','Comic Neue',sans-serif;
   --focus-heading:'Arial Black',Impact,sans-serif;
   --focus-sidebar-width:min(320px,88vw);
@@ -30,7 +30,9 @@ body::before{content:none}
 .has-site-nav>header{padding-left:82px}
 .has-site-nav>.shell,.has-site-nav>.feynman{padding-left:82px}
 .nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 18px);transform:translateY(0)}
-.site-profile-link{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border:2px solid var(--focus-ink);border-radius:10px;background:var(--focus-orange);color:#fff;text-decoration:none;font:700 12px/1 var(--focus-heading);box-shadow:3px 3px 0 var(--focus-ink)}
+.site-profile-link{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;border:2px solid var(--focus-ink);border-radius:12px;background:var(--focus-orange);color:#fff;text-decoration:none;box-shadow:3px 3px 0 var(--focus-ink)}
+.site-profile-link svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.site-profile-link img{width:24px;height:24px;border-radius:50%;object-fit:cover}
 .site-profile-link:hover{background:var(--focus-yellow);color:var(--focus-ink)}
 .site-profile-link-floating{position:fixed;top:18px;right:18px;z-index:20}
 .focus-page{max-width:1180px;margin:auto;padding:34px 24px 70px}
