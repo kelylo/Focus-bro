@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Focus Bro — Timetable</title>
+<meta name="theme-color" content="#ffd32a">
+<link rel="icon" type="image/png" href="Focus%20bro.png">
+<link rel="manifest" href="lock-in-manifest.json">
+<link rel="stylesheet" href="focus-bro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+</head>
+<body>
+<main class="focus-page">
+  <header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="The%20Lock-In%20Room.html">← Focus room</a></header>
+  <section class="hero"><div class="eyebrow">Protect the whole day</div><h1>Your learning rhythm.</h1><p>Give every kind of work a home: learn deeply, retrieve deliberately, build independently, and recover without guilt.</p></section>
+  <section class="card">
+    <div class="row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div><h2 style="margin:0">Weekly timetable</h2><div style="color:var(--focus-muted);font-size:13px">Changes save automatically on this device.</div></div>
+      <div class="sp"></div><button id="reset" class="icon-button" title="Reset timetable" aria-label="Reset timetable">↺</button><button id="add" title="Add timetable row">＋ Add block</button>
+    </div>
+    <div id="schedule" style="display:grid;gap:10px;margin-top:20px"></div>
+  </section>
+  <section style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px">
+    <article class="card"><span class="pill">Learn</span><h2>Deep work</h2><p>Watch your current lesson with your phone away. Stop at a natural checkpoint and write one note.</p></article>
+    <article class="card"><span class="pill">Retrieve</span><h2>Revision</h2><p>Use active recall first. Look at the answer only after you have attempted to retrieve it.</p></article>
+    <article class="card"><span class="pill">Recover</span><h2>Sleep + relax</h2><p>Rest is part of retention. Keep a consistent sleep window and make the last hour low-stimulation.</p></article>
+  </section>
+</main>
+<script>
+(function(){
+  var key='focusbro.timetable.v1';
+  var defaults=[
+    {day:'Monday',start:'07:00',end:'07:30',type:'Revision',detail:'Review yesterday’s notes'},
+    {day:'Monday',start:'18:00',end:'19:00',type:'Self-teach',detail:'Build or practise one skill'},
+    {day:'Tuesday',start:'18:00',end:'19:00',type:'Focus room',detail:'Continue the current video'},
+    {day:'Wednesday',start:'07:00',end:'07:30',type:'Revision',detail:'Active recall session'},
+    {day:'Thursday',start:'18:00',end:'19:00',type:'Self-teach',detail:'Make something small'},
+    {day:'Friday',start:'18:00',end:'18:45',type:'Review',detail:'Summarise the week'},
+    {day:'Saturday',start:'10:00',end:'11:30',type:'Deep work',detail:'Long uninterrupted block'},
+    {day:'Sunday',start:'21:30',end:'22:30',type:'Relax + sleep',detail:'Wind down; prepare tomorrow'}
+  ];
+  var rows;try{rows=JSON.parse(localStorage.getItem(key)||'null')||defaults}catch(e){rows=defaults}
+  var types=['Focus room','Revision','Self-teach','Review','Relax + sleep'];
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function save(){localStorage.setItem(key,JSON.stringify(rows))}
+  function render(){
+    document.getElementById('schedule').innerHTML=rows.map(function(r,i){
+      return '<div class="schedule-row" data-i="'+i+'" style="display:grid;grid-template-columns:110px 105px 105px minmax(130px,180px) 1fr auto;gap:8px;align-items:center;padding:10px;border:1px solid #eadfb8;border-radius:12px;background:#fffdf8">'+
+      '<select data-key="day">'+['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(function(x){return '<option'+(x===r.day?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
+      '<input type="time" data-key="start" value="'+esc(r.start)+'"><input type="time" data-key="end" value="'+esc(r.end)+'">'+
+      '<select data-key="type">'+types.map(function(x){return '<option'+(x===r.type?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
+      '<input data-key="detail" value="'+esc(r.detail)+'" aria-label="Block detail">'+
+      '<button class="icon-button remove" title="Delete block" aria-label="Delete block">×</button></div>';
+    }).join('');
+    document.querySelectorAll('#schedule [data-key]').forEach(function(el){el.oninput=function(){rows[+el.closest('.schedule-row').dataset.i][el.dataset.key]=el.value;save()}});
+    document.querySelectorAll('.remove').forEach(function(el){el.onclick=function(){rows.splice(+el.closest('.schedule-row').dataset.i,1);save();render()}});
+  }
+  document.getElementById('add').onclick=function(){rows.push({day:'Monday',start:'18:00',end:'19:00',type:'Focus room',detail:'New study block'});save();render()};
+  document.getElementById('reset').onclick=function(){if(confirm('Reset your timetable to the starter rhythm?')){rows=defaults.map(function(x){return Object.assign({},x)});save();render()}};
+  render();
+})();
+</script>
+<script src="focus-bro-nav.js"></script>
+</body>
+</html>

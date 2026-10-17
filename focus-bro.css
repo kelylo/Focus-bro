@@ -22,5 +22,20 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;background:ra
 .site-link:hover,.site-link.active{background:var(--focus-yellow)}
 .site-link span{font-size:18px;width:22px;text-align:center}
 .site-quote{margin-top:24px;padding:14px;border-radius:14px;background:var(--focus-ink);color:#fff;font:600 14px/1.5 Fraunces,Georgia,serif}
-.page-content{padding-top:18px}
-@media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.page-content{padding-top:8px}}
+.has-site-nav>header{padding-left:82px}
+.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:82px}
+.focus-page{max-width:1180px;margin:auto;padding:34px 24px 70px}
+.focus-page header{display:flex;align-items:center;gap:18px;border-bottom:1px solid rgba(17,17,20,.12);padding:12px 0 20px;background:transparent;position:static}
+.focus-page .brand{font:800 20px/1 Fraunces,Georgia,serif;letter-spacing:.04em}
+.focus-page .brand img{width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:8px}
+.focus-page .sp{flex:1}.focus-page .back{color:var(--focus-muted);text-decoration:none}
+.focus-page .hero{padding:66px 0 30px;max-width:760px}.focus-page .eyebrow{color:var(--focus-orange);text-transform:uppercase;letter-spacing:.2em;font-size:11px}
+.focus-page .hero h1{font:800 clamp(42px,7vw,78px)/.98 Fraunces;margin:12px 0}.focus-page .hero p{color:var(--focus-muted);font-size:18px}
+.focus-page .card{background:#fff;border:1px solid #eadfb8;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(17,17,20,.07)}
+.focus-page .card h2{font:600 27px Fraunces;margin:0 0 8px}.focus-page .card p,.focus-page .card li{color:var(--focus-muted)}
+.focus-page button{background:var(--focus-yellow);color:var(--focus-ink);border-color:var(--focus-yellow);font-weight:700}
+.focus-page input,.focus-page textarea,.focus-page select{font:inherit;border:1px solid #eadfb8;border-radius:10px;padding:10px 12px;background:#fffdf8;color:var(--focus-ink);width:100%}
+.focus-page input:focus,.focus-page textarea:focus,.focus-page select:focus{outline:2px solid rgba(255,211,42,.45);border-color:var(--focus-yellow)}
+.icon-button{width:36px;height:36px;padding:0!important;display:inline-grid;place-items:center;border-radius:10px!important}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;background:#fff4c7;color:var(--focus-ink);font-size:12px;font-weight:700}
+@media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.has-site-nav>header{padding-left:70px}.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:18px}.focus-page{padding:18px 18px 50px}.focus-page .hero{padding-top:48px}}

@@ -1,10 +1,12 @@
 (function(){
+  document.body.classList.add('has-site-nav');
   var page=location.pathname.split(/[\\/]/).pop()||'index.html';
   var links=[
     ['The%20Lock-In%20Room.html','Focus room','Video, notes + progress','O'],
     ['Study-Techniques.html','Study techniques','Active recall + memory','>'],
     ['Feyman-techniques.html','Feynman method','Explain to learn','*'],
-    ['Self-Tought-room.html','Self-taught room','Goals + atomic habits','+']
+    ['Self-Tought-room.html','Self-taught room','Goals + atomic habits','+'],
+    ['Timetable.html','Timetable','Study, revise + rest','T']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';

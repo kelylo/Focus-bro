@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#ffd32a">
 <link rel="icon" type="image/png" href="Focus%20bro.png">
 <link rel="manifest" href="lock-in-manifest.json">
+<link rel="stylesheet" href="focus-bro.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
 <style>
 :root{--bg:#fffdf8;--panel:rgba(255,255,255,.94);--panel2:#fff4c7;--line:#eadfb8;--text:#111114;--mute:#706b63;--gold:#ffd32a;--gold2:#dc8250;--ok:#39885c;--shadow:0 18px 60px rgba(17,17,20,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
@@ -41,6 +42,7 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:9px;transition:width .4s}
 .stage{aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
 .stage iframe{width:100%;height:100%;border:0;display:block}
+.player-help{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:8px;color:var(--mute);font-size:12px}
 .title{font:600 22px/1.2 Fraunces,Georgia,serif;background:transparent;border:1px solid transparent;padding:8px 4px;margin:10px 0 4px}
 .title:hover,.title:focus{border-color:var(--line);background:var(--panel)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -114,6 +116,7 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
   <a class="navlink" href="Study-Techniques.html">◇ Study techniques <span class="hint">active recall + memory</span></a>
   <a class="navlink" href="Feyman-techniques.html">✦ Feynman method <span class="hint">explain to learn</span></a>
   <a class="navlink" href="Self-Tought-room.html">＋ Self-taught room <span class="hint">goals + atomic habits</span></a>
+  <a class="navlink" href="Timetable.html">T Timetable <span class="hint">study + rest rhythm</span></a>
   <h3 style="margin-top:24px">History · all lessons</h3>
   <div class="history" id="history"></div>
   <div class="tip" style="margin-top:20px">One lesson. One clear next action. Protect your attention and let consistency compound.</div>
@@ -154,9 +157,9 @@ function commit(){ if(cur){cur.pos=pos; if(dur)cur.dur=dur; save();} }
 function mount(){
   if(!cur) return;
   var st=$('stage'); if(!st) return;
-  var src='https://www.youtube-nocookie.com/embed/'+cur.id+'?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&start='+Math.floor(pos);
+  var src='https://www.youtube.com/embed/'+cur.id+'?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&autoplay=0&start='+Math.floor(pos);
   if(location.protocol!=='file:') src+='&origin='+encodeURIComponent(location.origin);
-  st.innerHTML='<iframe title="Video" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  st.innerHTML='<iframe title="YouTube lesson player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
   iframe=st.firstChild; iframe.src=src;
   iframe.addEventListener('load',listen);
   clearInterval(ping); var n=0; ping=setInterval(function(){listen(); if(++n>20)clearInterval(ping)},800);
@@ -205,7 +208,8 @@ function renderMain(){
   m.innerHTML='<div class="eyebrow">Your current lesson</div><div class="stage" id="stage"></div>'+
   '<input class="title" id="ttl" value="'+esc(cur.title)+'" aria-label="Video title">'+
   '<div class="row"><span class="big" id="clock">0:00</span><span class="hint" id="dur"></span><span class="checkpoint">Auto-saved checkpoint</span><div class="sp"></div>'+
-  '<button id="back">−10s</button><button id="fwd">+10s</button><button id="del">Remove</button></div>'+
+  '<button id="back" class="icon-button" title="Back 10 seconds" aria-label="Back 10 seconds">⏪</button><button id="fwd" class="icon-button" title="Forward 10 seconds" aria-label="Forward 10 seconds">⏩</button><button id="del" class="icon-button" title="Remove lesson" aria-label="Remove lesson">🗑</button></div>'+
+  '<div class="player-help"><span>Playback stays inside Focus Bro. YouTube may still show its own ads.</span><a href="Timetable.html">Plan your next session →</a></div>'+
   '<div class="bar" style="height:8px;margin-top:12px"><i id="pb" style="width:0"></i></div>'+
   '<div class="grid3"><div class="card"><div class="lbl">Progress</div><div class="val" id="pct">0%</div></div>'+
   '<div class="card"><div class="lbl">Time left</div><div class="val" id="rem">—</div></div>'+
@@ -268,5 +272,6 @@ else if(S.vids[0]) open(S.vids[0].id);
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js').then(function(){},function(){})}
 })();
 </script>
+<script src="focus-bro-nav.js"></script>
 </body>
 </html>

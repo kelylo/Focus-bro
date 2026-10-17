@@ -1,13 +1,15 @@
-const CACHE = "focus-bro-shell-v2";
+const CACHE = "focus-bro-shell-v3";
 const ASSETS = [
   "index.html",
   "The%20Lock-In%20Room.html",
   "Study-Techniques.html",
   "Feyman-techniques.html",
   "Self-Tought-room.html",
+  "Timetable.html",
   "lock-in-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
+  "focus-bro.css",
   "Focus%20bro.png"
 ];
 self.addEventListener("install", event => {
