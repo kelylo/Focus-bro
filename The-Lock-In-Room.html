@@ -233,7 +233,7 @@ $('themeBtn').onclick=function(){
 renderAll();
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
-if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js').then(function(){},function(){})}
+if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js?v=5').then(function(){},function(){})}
 })();
 </script>
 <script src="focus-bro-nav.js"></script>
