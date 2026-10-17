@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v7";
+const CACHE = "focus-bro-shell-v8";
 const ASSETS = [
   "index.html",
   "The-Lock-In-Room.html",
@@ -32,7 +32,8 @@ self.addEventListener("fetch", event => {
   if (event.request.mode === "navigate") {
     const update = fetch(event.request).then(response => {
       const copy = response.clone();
-      return caches.open(CACHE).then(cache => cache.put(event.request, copy)).then(() => response);
+      event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));
+      return response;
     });
     event.respondWith(caches.match(event.request).then(cached => {
       if (cached) {
