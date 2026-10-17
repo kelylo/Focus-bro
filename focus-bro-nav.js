@@ -22,14 +22,15 @@
   toggle.className='site-sidebar-toggle';
   toggle.type='button';
   toggle.setAttribute('aria-label','Open learning menu');
+  toggle.setAttribute('aria-expanded','false');
   toggle.textContent='=';
   var backdrop=document.createElement('div');
   backdrop.className='site-sidebar-backdrop';
   document.body.prepend(backdrop);
   document.body.prepend(nav);
   document.body.prepend(toggle);
-  function close(){nav.classList.remove('open');backdrop.classList.remove('open');toggle.setAttribute('aria-expanded','false')}
-  toggle.onclick=function(){var open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop.classList.toggle('open',open);toggle.setAttribute('aria-expanded',String(open))}
+  function close(){nav.classList.remove('open');backdrop.classList.remove('open');document.body.classList.remove('nav-open');toggle.setAttribute('aria-expanded','false')}
+  toggle.onclick=function(){var open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop.classList.toggle('open',open);document.body.classList.toggle('nav-open',open);toggle.setAttribute('aria-expanded',String(open))}
   backdrop.onclick=close;
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
   var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
