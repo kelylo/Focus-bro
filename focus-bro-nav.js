@@ -4,16 +4,16 @@
   document.body.classList.add('has-site-nav');
   var page=location.pathname.split(/[\\/]/).pop()||'index.html';
   var links=[
-    ['Focus-Bro.html','Focus room','Video, notes + progress','O'],
-    ['Study-Techniques.html','Study techniques','Active recall + memory','>'],
-    ['Feyman-techniques.html','Feynman method','Explain to learn','*'],
-    ['Self-Tought-room.html','Self-taught room','Goals + atomic habits','+'],
-    ['Timetable.html','Timetable','Study, revise + rest','T']
+    ['Focus-Bro','Focus room','Video, notes + progress','O'],
+    ['Study-Techniques','Study techniques','Active recall + memory','>'],
+    ['Feyman-techniques','Feynman method','Explain to learn','*'],
+    ['Self-Tought-room','Self-taught room','Goals + atomic habits','+'],
+    ['Timetable','Timetable','Study, revise + rest','T']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
   nav.setAttribute('aria-label','Focus Bro learning menu');
-  nav.innerHTML='<a class="site-brand" href="index.html"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="site-section">Your learning system</div>'+
+  nav.innerHTML='<a class="site-brand" href="Focus-Bro"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="site-section">Your learning system</div>'+
     links.map(function(item){
       var active=decodeURIComponent(page).toLowerCase()===decodeURIComponent(item[0]).toLowerCase();
       return '<a class="site-link'+(active?' active':'')+'" href="'+item[0]+'"><span>'+item[3]+'</span><div>'+item[1]+'<small style="display:block;color:var(--focus-muted);font-size:11px;font-weight:400">'+item[2]+'</small></div></a>';
@@ -36,7 +36,7 @@
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
   var profile=document.createElement('a');
   profile.className='site-profile-link';
-  profile.href='Profile.html';
+  profile.href='Profile';
   profile.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
   profile.setAttribute('aria-label','Open account profile');
   profile.title='Account profile';
@@ -58,5 +58,5 @@
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=12').catch(function(){});
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=13').catch(function(){});
 })();

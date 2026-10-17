@@ -1,12 +1,11 @@
-const CACHE = "focus-bro-shell-v12";
+const CACHE = "focus-bro-shell-v13";
 const ASSETS = [
-  "index.html",
-  "Focus-Bro.html",
-  "Study-Techniques.html",
-  "Feyman-techniques.html",
-  "Self-Tought-room.html",
-  "Timetable.html",
-  "Profile.html",
+  "Focus-Bro",
+  "Study-Techniques",
+  "Feyman-techniques",
+  "Self-Tought-room",
+  "Timetable",
+  "Profile",
   "focus-bro-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
