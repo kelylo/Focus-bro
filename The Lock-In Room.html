@@ -61,19 +61,6 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
 .empty h1{font:800 clamp(28px,5vw,54px)/1.05 Fraunces,Georgia,serif;margin:0 0 14px;color:var(--gold)}
 .empty:before{content:'✦';display:block;color:var(--gold);font-size:28px;margin-bottom:18px}
 .checkpoint{font-size:12px;color:var(--gold);border:1px solid rgba(232,185,74,.25);background:rgba(232,185,74,.08);border-radius:999px;padding:5px 10px}
-.menuBtn{font-size:12px}
-.drawer{position:fixed;inset:0 auto 0 0;width:min(360px,92vw);background:var(--panel);border-right:1px solid var(--line);box-shadow:24px 0 70px rgba(0,0,0,.2);z-index:20;padding:22px;transform:translateX(-105%);transition:transform .25s ease;overflow:auto}
-.drawer.open{transform:translateX(0)}
-.drawerBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:19;opacity:0;pointer-events:none;transition:opacity .25s}
-.drawerBackdrop.open{opacity:1;pointer-events:auto}
-.drawerHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.navlink{display:block;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
-.navlink:hover{color:var(--gold)}
-.history{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.historyItem{padding:10px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--panel2)}
-.historyItem:hover{border-color:var(--gold)}
-.historyItem small{display:block;color:var(--mute);margin-top:2px}
-.tip{border-left:2px solid var(--gold);padding:10px 12px;background:rgba(232,185,74,.07);color:var(--mute);font-size:13px}
 .focus .app{grid-template-columns:minmax(0,1fr) 340px;max-width:1500px}
 .focus .side,.focus .grid3,.focus header .stat{display:none}
 @media (max-width:1100px){.app{grid-template-columns:1fr}.notes{position:static;max-height:none}.focus .app{grid-template-columns:1fr}}
@@ -86,7 +73,6 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
   <div class="stat">Today <b id="today">0m</b></div>
   <div class="stat">Streak <b id="streak">0d</b></div>
   <button id="focusBtn">Focus mode</button>
-  <button class="menuBtn" id="menuBtn">Learning menu</button>
   <button id="themeBtn" title="Toggle theme">◐</button>
 </header>
 
@@ -108,19 +94,6 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
     <div class="list" id="notes"></div>
   </aside>
 </div>
-
-<div class="drawerBackdrop" id="drawerBackdrop"></div>
-<aside class="drawer" id="drawer" aria-label="Room menu">
-  <div class="drawerHead"><strong>Focus Bro learning system</strong><button id="closeMenu" aria-label="Close menu">✕</button></div>
-  <a class="navlink" href="The%20Lock-In%20Room.html">◉ Focus room <span class="hint">watch + notes</span></a>
-  <a class="navlink" href="Study-Techniques.html">◇ Study techniques <span class="hint">active recall + memory</span></a>
-  <a class="navlink" href="Feyman-techniques.html">✦ Feynman method <span class="hint">explain to learn</span></a>
-  <a class="navlink" href="Self-Tought-room.html">＋ Self-taught room <span class="hint">goals + atomic habits</span></a>
-  <a class="navlink" href="Timetable.html">T Timetable <span class="hint">study + rest rhythm</span></a>
-  <h3 style="margin-top:24px">History · all lessons</h3>
-  <div class="history" id="history"></div>
-  <div class="tip" style="margin-top:20px">One lesson. One clear next action. Protect your attention and let consistency compound.</div>
-</aside>
 
 <script>
 (function(){
@@ -256,16 +229,6 @@ $('themeBtn').onclick=function(){
   var r=document.documentElement, dark=getComputedStyle(r).colorScheme==='dark';
   r.setAttribute('data-theme',dark?'light':'dark');
 };
-$('menuBtn').onclick=function(){$('drawer').classList.add('open');$('drawerBackdrop').classList.add('open');renderHistory()};
-$('closeMenu').onclick=$('drawerBackdrop').onclick=function(){$('drawer').classList.remove('open');$('drawerBackdrop').classList.remove('open')};
-function renderHistory(){
-  var h=$('history');
-  h.innerHTML=S.vids.slice().sort(function(a,b){return (b.added||0)-(a.added||0)}).map(function(v){
-    return '<div class="historyItem" data-id="'+v.id+'"><strong>'+esc(v.title)+'</strong><small>'+pct(v)+'% complete · last position '+fmt(v.pos)+'</small></div>';
-  }).join('')||'<div class="hint">Your pasted lessons will appear here.</div>';
-}
-$('history').onclick=function(e){var item=e.target.closest('.historyItem');if(item){open(item.dataset.id);$('closeMenu').click()}};
-
 renderAll();
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
