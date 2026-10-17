@@ -1,1 +1,1 @@
-{"name":"gratness-lock-in","private":true,"version":"1.0.0","scripts":{"build":"node -e \"console.log(\'Static site: no build step required\')\""}}
+{"name":"gratness-lock-in","private":true,"version":"1.0.0","scripts":{"build":"node -e \"console.log(1)\""}}
