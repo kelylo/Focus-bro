@@ -4,7 +4,7 @@
   document.body.classList.add('has-site-nav');
   var page=location.pathname.split(/[\\/]/).pop()||'index.html';
   var links=[
-    ['The-Lock-In-Room.html','Focus room','Video, notes + progress','O'],
+    ['Focus-Bro.html','Focus room','Video, notes + progress','O'],
     ['Study-Techniques.html','Study techniques','Active recall + memory','>'],
     ['Feyman-techniques.html','Feynman method','Explain to learn','*'],
     ['Self-Tought-room.html','Self-taught room','Goals + atomic habits','+'],
@@ -58,5 +58,5 @@
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('lock-in-sw.js?v=9').catch(function(){});
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=10').catch(function(){});
 })();

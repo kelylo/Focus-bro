@@ -1,13 +1,13 @@
-const CACHE = "focus-bro-shell-v9";
+const CACHE = "focus-bro-shell-v10";
 const ASSETS = [
   "index.html",
-  "The-Lock-In-Room.html",
+  "Focus-Bro.html",
   "Study-Techniques.html",
   "Feyman-techniques.html",
   "Self-Tought-room.html",
   "Timetable.html",
   "Profile.html",
-  "lock-in-manifest.json",
+  "focus-bro-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
   "supabase-config.js",

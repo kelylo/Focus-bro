@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Focus Bro — Self-Taught Room</title>
-<meta name="theme-color" content="#ffd32a"><link rel="icon" type="image/png" href="Focus%20bro.png"><link rel="manifest" href="lock-in-manifest.json"><link rel="stylesheet" href="focus-bro.css">
+<meta name="theme-color" content="#ffd32a"><link rel="icon" type="image/png" href="Focus%20bro.png"><link rel="manifest" href="focus-bro-manifest.json"><link rel="stylesheet" href="focus-bro.css">
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
 <style>
@@ -11,11 +11,11 @@
 </style>
 </head>
 <body><main class="self">
-<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="The-Lock-In-Room.html">← Focus room</a></header>
+<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="Focus-Bro.html">← Focus room</a></header>
 <section class="hero"><div class="eyebrow">Build your own curriculum</div><h1>Become your own teacher.</h1><p>Turn a vague ambition into a visible next action. Your goal gives direction; your habits make showing up automatic.</p></section>
 <section class="self-grid"><article class="card"><h2>North-star goal</h2><label for="goal">What are you becoming?</label><textarea id="goal" placeholder="Example: Build and ship useful Python tools..."></textarea><label for="next">Next visible milestone</label><input id="next" placeholder="Example: Finish module 2 and publish one project"><label for="why">Why does this matter?</label><textarea id="why" placeholder="Write the reason you want to keep going..."></textarea><button class="save" id="save">Save my direction</button><span class="saved" id="saved"></span></article>
 <article class="card"><h2>Today's atomic habits</h2><div class="score"><span id="done">0</span><small style="font:400 14px Inter;color:#706b63"> / 5 complete</small></div><div id="habits"></div><p style="color:#706b63;font-size:13px">Make the first step so small that starting feels easier than avoiding it.</p></article></section>
-<article class="card goal-card"><h2>Choose the next mode</h2><p>Do not ask what you feel like doing. Ask which mode your timetable says is next.</p><div class="micro-actions"><a href="The-Lock-In-Room.html">▶ Watch a lesson</a><a href="Study-Techniques.html">↺ Revise</a><a href="Timetable.html">◷ Open timetable</a></div></article>
+<article class="card goal-card"><h2>Choose the next mode</h2><p>Do not ask what you feel like doing. Ask which mode your timetable says is next.</p><div class="micro-actions"><a href="Focus-Bro.html">▶ Watch a lesson</a><a href="Study-Techniques.html">↺ Revise</a><a href="Timetable.html">◷ Open timetable</a></div></article>
 </main>
 <script>
 (function(){var key='lockin.selftaught.v2',d={goal:'',next:'',why:'',habits:{}},items=['Open the room and choose one lesson.','Do one distraction-free 25-minute block.','Write one note in your own words.','Build or practise one small thing.','Define tomorrow’s first action.'];try{d=Object.assign(d,JSON.parse(localStorage.getItem(key)||'{}'))}catch(e){}function $(x){return document.getElementById(x)}$('goal').value=d.goal||'';$('next').value=d.next||'';$('why').value=d.why||'';function save(){d.goal=$('goal').value;d.next=$('next').value;d.why=$('why').value;localStorage.setItem(key,JSON.stringify(d));$('saved').textContent='Saved';setTimeout(function(){$('saved').textContent=''},1400)}$('save').onclick=save;function render(){var h=$('habits');h.innerHTML=items.map(function(text,i){return '<label class="habit'+(d.habits[i]?' done':'')+'"><input type="checkbox" data-i="'+i+'" '+(d.habits[i]?'checked':'')+'><span>'+text+'</span></label>'}).join('');var n=Object.keys(d.habits).filter(function(i){return d.habits[i]}).length;$('done').textContent=n;h.querySelectorAll('input').forEach(function(x){x.onchange=function(){d.habits[x.dataset.i]=x.checked;localStorage.setItem(key,JSON.stringify(d));render()}})}render()})()

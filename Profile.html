@@ -5,7 +5,7 @@
 <title>Focus Bro — Profile</title>
 <meta name="theme-color" content="#ffd32a">
 <link rel="icon" type="image/png" href="Focus%20bro.png">
-<link rel="manifest" href="lock-in-manifest.json">
+<link rel="manifest" href="focus-bro-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
@@ -15,7 +15,7 @@
 </head>
 <body>
 <main class="profile-page">
-<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="The-Lock-In-Room.html">← Focus room</a></header>
+<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="Focus-Bro.html">← Focus room</a></header>
 <section class="profile-hero"><div class="eyebrow">Your learning identity</div><h1>Your progress lives here.</h1><p>One account connects your lessons, notes, progress, timetable, tasks, and study reflections across your devices.</p></section>
 <section class="profile-layout">
 <article class="profile-card"><h2>Profile</h2><div class="avatar" id="avatar">?</div><div id="profileState" class="signed-out">Use the account icon to sign in and sync your learning data.</div><form id="profileForm" hidden><label for="displayName">Display name</label><input id="displayName" maxlength="60" placeholder="How should Focus Bro call you?"><label for="avatarFile">Profile image</label><input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp"><div class="profile-image-help">Choose an image up to 5 MB. It will be resized for fast loading.</div><button type="submit">Save profile</button><div class="profile-error" id="profileError"></div></form><button id="signOut" hidden>Sign out</button><div class="profile-note">Your data is stored under your authenticated Supabase user. Offline changes remain on this device and sync when you sign in again.</div></article>

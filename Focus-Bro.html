@@ -6,7 +6,7 @@
 <title>Focus Bro — Learning Room</title>
 <meta name="theme-color" content="#ffd32a">
 <link rel="icon" type="image/png" href="Focus%20bro.png">
-<link rel="manifest" href="lock-in-manifest.json">
+<link rel="manifest" href="focus-bro-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
@@ -244,7 +244,7 @@ renderAll();
 window.addEventListener('focusbro:state-ready',renderAll);
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
-if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('lock-in-sw.js?v=9').then(function(){},function(){})}
+if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('focus-bro-sw.js?v=10').then(function(){},function(){})}
 })();
 </script>
 <script src="focus-bro-nav.js"></script>
