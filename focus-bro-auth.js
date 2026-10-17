@@ -41,7 +41,21 @@
   var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
   function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
   function apply(data){if(!data)return;syncing=true;Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
-  function syncAfterLogin(){if(hydrating)return;hydrating=true;var cached=cachedState();if(cached){apply(cached);window.dispatchEvent(new CustomEvent('focusbro:state-ready'));hydrating=false;return}cloudState().then(function(cloud){if(cloud){apply(cloud);cacheState(cloud)}else return saveState(collect());}).then(function(){window.dispatchEvent(new CustomEvent('focusbro:state-ready'))}).catch(function(){}).then(function(){hydrating=false})}
+  function syncAfterLogin(){
+    if(hydrating)return;
+    hydrating=true;
+    var cached=cachedState();
+    if(cached)apply(cached);
+    cloudState().then(function(cloud){
+      if(cloud){apply(cloud);cacheState(cloud);return}
+      var current=collect();
+      if(Object.keys(current).length)return saveState(current);
+    }).then(function(){
+      window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
+    }).catch(function(){
+      if(cached)window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
+    }).then(function(){hydrating=false});
+  }
   function queueCloudSave(){
     if(!state.user||syncing)return;
     cloudSaveQueued=true;clearTimeout(cloudSaveTimer);
