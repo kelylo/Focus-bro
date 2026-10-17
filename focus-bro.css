@@ -30,6 +30,9 @@ body::before{content:none}
 .has-site-nav>header{padding-left:82px}
 .has-site-nav>.shell,.has-site-nav>.feynman{padding-left:82px}
 .nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 18px);transform:translateY(0)}
+.site-profile-link{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border:2px solid var(--focus-ink);border-radius:10px;background:var(--focus-orange);color:#fff;text-decoration:none;font:700 12px/1 var(--focus-heading);box-shadow:3px 3px 0 var(--focus-ink)}
+.site-profile-link:hover{background:var(--focus-yellow);color:var(--focus-ink)}
+.site-profile-link-floating{position:fixed;top:18px;right:18px;z-index:20}
 .focus-page{max-width:1180px;margin:auto;padding:34px 24px 70px}
 .focus-page header{display:flex;align-items:center;gap:18px;border-bottom:1px solid rgba(17,17,20,.12);padding:12px 0 20px;background:transparent;position:static}
 .focus-page .brand{font:800 20px/1 Fraunces,Georgia,serif;letter-spacing:.04em}
@@ -48,4 +51,4 @@ body{font-family:var(--focus-font)!important;background:var(--focus-paper)!impor
 h1,h2,h3,h4,.brand,.big,.title,.val{font-family:var(--focus-heading)!important}
 .card{background:var(--focus-card)!important;border:3px solid var(--focus-ink)!important;box-shadow:4px 4px 0 var(--focus-ink)!important}
 button,.gold{font-family:var(--focus-heading)!important}
-@media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 12px)}.has-site-nav>header{padding-left:70px}.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:18px}.focus-page{padding:18px 18px 50px}.focus-page .hero{padding-top:48px}}
+@media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 12px)}.site-profile-link-floating{top:12px;right:12px}.has-site-nav>header{padding-left:70px}.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:18px}.focus-page{padding:18px 18px 50px}.focus-page .hero{padding-top:48px}}

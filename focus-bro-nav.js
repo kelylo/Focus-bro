@@ -7,7 +7,6 @@
     ['Feyman-techniques.html','Feynman method','Explain to learn','*'],
     ['Self-Tought-room.html','Self-taught room','Goals + atomic habits','+'],
     ['Timetable.html','Timetable','Study, revise + rest','T']
-    ,['Profile.html','Profile','Account + synced progress','@']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
@@ -33,6 +32,14 @@
   toggle.onclick=function(){var open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop.classList.toggle('open',open);document.body.classList.toggle('nav-open',open);toggle.setAttribute('aria-expanded',String(open))}
   backdrop.onclick=close;
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+  var profile=document.createElement('a');
+  profile.className='site-profile-link';
+  profile.href='Profile.html';
+  profile.textContent='Profile';
+  profile.setAttribute('aria-label','Open profile');
+  var theme=document.getElementById('themeBtn');
+  if(theme) theme.insertAdjacentElement('afterend',profile);
+  else {profile.classList.add('site-profile-link-floating');document.body.appendChild(profile)}
   var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
   var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
 })();
