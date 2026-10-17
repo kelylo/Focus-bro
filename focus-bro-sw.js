@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v11";
+const CACHE = "focus-bro-shell-v12";
 const ASSETS = [
   "index.html",
   "Focus-Bro.html",
@@ -30,17 +30,13 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   if (event.request.mode === "navigate") {
-    const update = fetch(event.request).then(response => {
-      const copy = response.clone();
-      event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));
-      return response;
-    });
     event.respondWith(caches.match(event.request).then(cached => {
-      if (cached) {
-        event.waitUntil(update.catch(() => {}));
-        return cached;
-      }
-      return update.catch(() => caches.match(event.request));
+      if (cached) return cached;
+      return fetch(event.request).then(response => {
+        const copy = response.clone();
+        event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));
+        return response;
+      });
     }));
     return;
   }

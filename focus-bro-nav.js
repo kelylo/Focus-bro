@@ -58,5 +58,5 @@
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=11').catch(function(){});
+  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=12').catch(function(){});
 })();
