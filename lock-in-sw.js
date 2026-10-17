@@ -1,11 +1,12 @@
-const CACHE = "focus-bro-shell-v4";
+const CACHE = "focus-bro-shell-v5";
 const ASSETS = [
   "index.html",
-  "The%20Lock-In%20Room.html",
+  "The-Lock-In-Room.html",
   "Study-Techniques.html",
   "Feyman-techniques.html",
   "Self-Tought-room.html",
   "Timetable.html",
+  "Profile.html",
   "lock-in-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
@@ -20,7 +21,11 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
 });
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;

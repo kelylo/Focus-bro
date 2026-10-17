@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Focus Bro — Profile</title>
+<meta name="theme-color" content="#ffd32a">
+<link rel="icon" type="image/png" href="Focus%20bro.png">
+<link rel="manifest" href="lock-in-manifest.json">
+<link rel="stylesheet" href="focus-bro.css">
+<script src="supabase-config.js"></script>
+<script src="focus-bro-auth.js"></script>
+<style>
+.profile-page{max-width:1000px;margin:auto;padding:34px 24px 70px}.profile-page header{display:flex;align-items:center;gap:18px;border-bottom:3px solid var(--focus-ink);padding:12px 0 20px;background:transparent;position:static}.profile-page .brand{font:800 20px var(--focus-heading);letter-spacing:.04em}.profile-page .brand img{width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:8px}.sp{flex:1}.back{color:var(--focus-muted);text-decoration:none}.profile-hero{padding:65px 0 30px;max-width:720px}.eyebrow{color:var(--focus-orange);text-transform:uppercase;letter-spacing:.2em;font-size:11px}.profile-hero h1{font:800 clamp(42px,7vw,72px)/.98 var(--focus-heading);margin:12px 0}.profile-hero p{color:var(--focus-muted);font-size:18px}.profile-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}.profile-card{background:var(--focus-card);border:3px solid var(--focus-ink);border-radius:18px;padding:24px;box-shadow:6px 6px 0 var(--focus-ink)}.profile-card h2{font:800 25px var(--focus-heading);margin:0 0 14px}.avatar{width:86px;height:86px;display:grid;place-items:center;border:4px solid var(--focus-ink);border-radius:50%;background:var(--focus-orange);color:#fff;font:800 28px var(--focus-heading);margin-bottom:14px}.profile-card label{display:block;margin:14px 0 6px;color:var(--focus-muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em}.profile-card input{width:100%;padding:11px;border:3px solid var(--focus-ink);border-radius:10px;background:#fff;font:inherit}.profile-card button{margin-top:14px;padding:10px 14px;border:3px solid var(--focus-ink);border-radius:10px;background:var(--focus-orange);color:#fff;font:700 13px var(--focus-heading);cursor:pointer;box-shadow:3px 3px 0 var(--focus-ink)}.profile-error{min-height:18px;color:#a52e24;font-size:12px;margin-top:10px}.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat-box{padding:14px;border:2px solid var(--focus-ink);border-radius:12px;background:var(--focus-yellow)}.stat-box strong{display:block;font:800 30px var(--focus-heading)}.stat-box span{font-size:12px;color:var(--focus-muted)}.signed-out{color:var(--focus-muted);line-height:1.6}.profile-note{margin-top:14px;padding:12px;border-left:4px solid var(--focus-orange);background:#fff4c7;color:var(--focus-ink);font-size:13px}@media(max-width:700px){.profile-page{padding:18px}.profile-layout{grid-template-columns:1fr}.profile-hero{padding-top:48px}}
+</style>
+</head>
+<body>
+<main class="profile-page">
+<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="The-Lock-In-Room.html">← Focus room</a></header>
+<section class="profile-hero"><div class="eyebrow">Your learning identity</div><h1>Your progress lives here.</h1><p>One account connects your lessons, notes, progress, timetable, tasks, and study reflections across your devices.</p></section>
+<section class="profile-layout">
+<article class="profile-card"><h2>Profile</h2><div class="avatar" id="avatar">?</div><div id="profileState" class="signed-out">Sign in from the menu to manage your profile and cloud sync.</div><form id="profileForm" hidden><label for="displayName">Display name</label><input id="displayName" maxlength="60" placeholder="How should Focus Bro call you?"><button type="submit">Save profile</button><div class="profile-error" id="profileError"></div></form><button id="signOut" hidden>Sign out</button><div class="profile-note">Your data is stored under your authenticated Supabase user. Offline changes remain on this device and sync when you sign in again.</div></article>
+<article class="profile-card"><h2>Learning snapshot</h2><div class="stat-grid"><div class="stat-box"><strong id="videoCount">0</strong><span>Lessons saved</span></div><div class="stat-box"><strong id="noteCount">0</strong><span>Notes captured</span></div><div class="stat-box"><strong id="taskCount">0</strong><span>Tasks planned</span></div><div class="stat-box"><strong id="habitCount">0</strong><span>Habits completed</span></div></div><div class="profile-note">Keep showing up. Small checkpoints become a body of work.</div></article>
+</section>
+</main>
+<script>
+(function(){
+  function $(id){return document.getElementById(id)}
+  function initials(user){var name=user&&user.user_metadata&&user.user_metadata.display_name||user&&user.email||'?';return name.split(/[\s@]+/).filter(Boolean).slice(0,2).map(function(x){return x.charAt(0).toUpperCase()}).join('')}
+  function updateStats(){var videos={},tasks=[],habits=0;try{videos=JSON.parse(localStorage.getItem('lockin.v1')||'{}');tasks=JSON.parse(localStorage.getItem('focusbro.timetable.tasks.v1')||'[]');var self=JSON.parse(localStorage.getItem('lockin.selftaught.v2')||'{}');habits=Object.keys(self.habits||{}).filter(function(k){return self.habits[k]}).length}catch(e){}$('videoCount').textContent=(videos.vids||[]).length;$('noteCount').textContent=(videos.vids||[]).reduce(function(n,v){return n+(v.notes||[]).length},0);$('taskCount').textContent=tasks.length;$('habitCount').textContent=habits}
+  FocusBroAuth.onChange(function(s){var user=s.user;if(!user){$('profileState').hidden=false;$('profileForm').hidden=true;$('signOut').hidden=true;$('avatar').textContent='?';return}$('profileState').textContent=user.email;$('profileState').className='';$('profileForm').hidden=false;$('signOut').hidden=false;$('avatar').textContent=initials(user);$('displayName').value=user.user_metadata&&user.user_metadata.display_name||'';updateStats()});
+  $('profileForm').onsubmit=function(e){e.preventDefault();var error=$('profileError');error.textContent='';FocusBroAuth.updateProfile({display_name:$('displayName').value.trim()}).then(function(){$('profileState').textContent=FocusBroAuth.getState().user.email+' · profile saved'}).catch(function(err){error.textContent=err.message})};
+  $('signOut').onclick=function(){FocusBroAuth.signOut()};updateStats();
+})();
+</script>
+<script src="focus-bro-nav.js"></script>
+</body>
+</html>

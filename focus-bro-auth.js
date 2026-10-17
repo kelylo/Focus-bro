@@ -16,6 +16,10 @@
     return request(path,{method:'POST',body:JSON.stringify({email:email,password:password})}).then(function(data){if(data.access_token)setSession(data);return data});
   }
   function signOut(){return request('/auth/v1/logout',{method:'POST',token:state.session&&state.session.access_token}).catch(function(){}).then(function(){setSession(null)})}
+  function updateProfile(values){
+    if(!state.session)return Promise.reject(new Error('Sign in to update your profile.'));
+    return request('/auth/v1/user',{method:'PUT',token:state.session.access_token,body:JSON.stringify({data:values})}).then(function(user){state.user=user;state.session.user=user;localStorage.setItem('focusbro.auth.session',JSON.stringify(state.session));emit();return user});
+  }
   function cloudState(){
     if(!state.user)return Promise.resolve(null);
     return request('/rest/v1/focus_bro_state?select=state&user_id=eq.'+encodeURIComponent(state.user.id),{token:state.session.access_token}).then(function(rows){return rows[0]?rows[0].state:null})
@@ -31,6 +35,6 @@
   function syncAfterLogin(){cloudState().then(function(cloud){if(cloud)apply(cloud);else saveState(collect())}).catch(function(){})}
   function emit(){listeners.forEach(function(fn){fn(state)});if(state.user)syncAfterLogin()}
   localStorage.setItem=function(k,v){nativeSet(k,v);if(!syncing&&state.user&&syncKeys.indexOf(k)!==-1){clearTimeout(localStorage._focusSyncTimer);localStorage._focusSyncTimer=setTimeout(function(){saveState(collect()).catch(function(){})},700)}};
-  window.FocusBroAuth={onChange:function(fn){listeners.push(fn);fn(state)},signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},signOut:signOut,getState:function(){return state},loadState:cloudState,saveState:saveState};
+  window.FocusBroAuth={onChange:function(fn){listeners.push(fn);fn(state)},signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},signOut:signOut,updateProfile:updateProfile,getState:function(){return state},loadState:cloudState,saveState:saveState};
   restore();
 })();
