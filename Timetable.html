@@ -8,6 +8,24 @@
 <link rel="manifest" href="lock-in-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+.schedule-grid{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:12px;margin-top:22px;overflow-x:auto;padding-bottom:4px}
+.day-card{min-height:190px;padding:14px;border:1px solid #eadfb8;border-radius:18px;background:linear-gradient(160deg,#fff 0%,#fffdf8 100%);box-shadow:0 10px 26px rgba(17,17,20,.06)}
+.day-card.today{border-color:var(--focus-orange);box-shadow:0 0 0 2px rgba(220,130,80,.12),0 10px 26px rgba(17,17,20,.06)}
+.day-name{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font:600 18px Fraunces;color:var(--focus-ink)}
+.day-name small{font:600 10px Inter;color:var(--focus-orange);letter-spacing:.12em;text-transform:uppercase}
+.block{position:relative;padding:11px 30px 11px 12px;margin-top:9px;border-radius:12px;background:var(--focus-yellow);color:var(--focus-ink);border-left:4px solid var(--focus-orange)}
+.block[data-type="Revision"],.block[data-type="Review"]{background:#fff4c7}
+.block[data-type="Self-teach"],.block[data-type="Deep work"]{background:#ffe2d2}
+.block[data-type="Relax + sleep"]{background:#eee9e2;border-left-color:#706b63}
+.block-time{font-size:12px;font-weight:800}.block-type{display:block;margin-top:2px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.block-detail{display:block;margin-top:5px;font-size:12px;line-height:1.35}
+.block-edit{display:grid;gap:6px;margin-top:10px}.block-edit input,.block-edit select{font-size:12px;padding:7px;background:rgba(255,255,255,.72)}
+.block-delete{position:absolute;right:5px;top:5px;width:25px!important;height:25px!important;background:transparent!important;border:0!important;color:var(--focus-ink);font-size:18px;padding:0!important}
+.empty-day{color:var(--focus-muted);font-size:12px;line-height:1.4;padding:12px 4px}
+.rhythm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+@media(max-width:1100px){.schedule-grid{grid-template-columns:repeat(7,190px)}}
+@media(max-width:700px){.rhythm-cards{grid-template-columns:1fr}.schedule-grid{grid-template-columns:repeat(7,180px)}}
+</style>
 </head>
 <body>
 <main class="focus-page">
@@ -15,12 +33,12 @@
   <section class="hero"><div class="eyebrow">Protect the whole day</div><h1>Your learning rhythm.</h1><p>Give every kind of work a home: learn deeply, retrieve deliberately, build independently, and recover without guilt.</p></section>
   <section class="card">
     <div class="row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <div><h2 style="margin:0">Weekly timetable</h2><div style="color:var(--focus-muted);font-size:13px">Changes save automatically on this device.</div></div>
-      <div class="sp"></div><button id="reset" class="icon-button" title="Reset timetable" aria-label="Reset timetable">↺</button><button id="add" title="Add timetable row">＋ Add block</button>
+      <div><h2 style="margin:0">Weekly rhythm</h2><div style="color:var(--focus-muted);font-size:13px">Tap any block to adjust it. Changes save automatically.</div></div>
+      <div class="sp"></div><button id="reset" class="icon-button" title="Reset timetable" aria-label="Reset timetable">↺</button><button id="add" title="Add timetable block">＋ Add block</button>
     </div>
-    <div id="schedule" style="display:grid;gap:10px;margin-top:20px"></div>
+    <div id="schedule" class="schedule-grid"></div>
   </section>
-  <section style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px">
+  <section class="rhythm-cards">
     <article class="card"><span class="pill">Learn</span><h2>Deep work</h2><p>Watch your current lesson with your phone away. Stop at a natural checkpoint and write one note.</p></article>
     <article class="card"><span class="pill">Retrieve</span><h2>Revision</h2><p>Use active recall first. Look at the answer only after you have attempted to retrieve it.</p></article>
     <article class="card"><span class="pill">Recover</span><h2>Sleep + relax</h2><p>Rest is part of retention. Keep a consistent sleep window and make the last hour low-stimulation.</p></article>
@@ -29,6 +47,8 @@
 <script>
 (function(){
   var key='focusbro.timetable.v1';
+  var days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var types=['Focus room','Revision','Self-teach','Review','Deep work','Relax + sleep'];
   var defaults=[
     {day:'Monday',start:'07:00',end:'07:30',type:'Revision',detail:'Review yesterday’s notes'},
     {day:'Monday',start:'18:00',end:'19:00',type:'Self-teach',detail:'Build or practise one skill'},
@@ -40,20 +60,24 @@
     {day:'Sunday',start:'21:30',end:'22:30',type:'Relax + sleep',detail:'Wind down; prepare tomorrow'}
   ];
   var rows;try{rows=JSON.parse(localStorage.getItem(key)||'null')||defaults}catch(e){rows=defaults}
-  var types=['Focus room','Revision','Self-teach','Review','Relax + sleep'];
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function save(){localStorage.setItem(key,JSON.stringify(rows))}
   function render(){
-    document.getElementById('schedule').innerHTML=rows.map(function(r,i){
-      return '<div class="schedule-row" data-i="'+i+'" style="display:grid;grid-template-columns:110px 105px 105px minmax(130px,180px) 1fr auto;gap:8px;align-items:center;padding:10px;border:1px solid #eadfb8;border-radius:12px;background:#fffdf8">'+
-      '<select data-key="day">'+['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(function(x){return '<option'+(x===r.day?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
-      '<input type="time" data-key="start" value="'+esc(r.start)+'"><input type="time" data-key="end" value="'+esc(r.end)+'">'+
-      '<select data-key="type">'+types.map(function(x){return '<option'+(x===r.type?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
-      '<input data-key="detail" value="'+esc(r.detail)+'" aria-label="Block detail">'+
-      '<button class="icon-button remove" title="Delete block" aria-label="Delete block">×</button></div>';
+    var today=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+    document.getElementById('schedule').innerHTML=days.map(function(day){
+      var dayRows=rows.map(function(r,i){return {r:r,i:i}}).filter(function(x){return x.r.day===day});
+      var blocks=dayRows.length?dayRows.map(function(x){
+        var r=x.r;
+        return '<article class="block" data-type="'+esc(r.type)+'"><button class="block-delete" data-remove="'+x.i+'" title="Delete block" aria-label="Delete block">×</button><span class="block-time">'+esc(r.start)+'–'+esc(r.end)+'</span><span class="block-type">'+esc(r.type)+'</span><span class="block-detail">'+esc(r.detail)+'</span><div class="block-edit">'+
+          '<input type="time" data-index="'+x.i+'" data-key="start" value="'+esc(r.start)+'" aria-label="Start time">'+
+          '<input type="time" data-index="'+x.i+'" data-key="end" value="'+esc(r.end)+'" aria-label="End time">'+
+          '<select data-index="'+x.i+'" data-key="type" aria-label="Block type">'+types.map(function(t){return '<option'+(t===r.type?' selected':'')+'>'+t+'</option>'}).join('')+'</select>'+
+          '<input data-index="'+x.i+'" data-key="detail" value="'+esc(r.detail)+'" aria-label="Block detail"></div></article>';
+      }).join(''):'<div class="empty-day">No block yet.<br>Add one when you are ready.</div>';
+      return '<section class="day-card'+(day===today?' today':'')+'"><div class="day-name">'+day+(day===today?'<small>Today</small>':'')+'</div>'+blocks+'</section>';
     }).join('');
-    document.querySelectorAll('#schedule [data-key]').forEach(function(el){el.oninput=function(){rows[+el.closest('.schedule-row').dataset.i][el.dataset.key]=el.value;save()}});
-    document.querySelectorAll('.remove').forEach(function(el){el.onclick=function(){rows.splice(+el.closest('.schedule-row').dataset.i,1);save();render()}});
+    document.querySelectorAll('#schedule [data-key]').forEach(function(el){el.oninput=function(){rows[+el.dataset.index][el.dataset.key]=el.value;save();render()}});
+    document.querySelectorAll('[data-remove]').forEach(function(el){el.onclick=function(){rows.splice(+el.dataset.remove,1);save();render()}});
   }
   document.getElementById('add').onclick=function(){rows.push({day:'Monday',start:'18:00',end:'19:00',type:'Focus room',detail:'New study block'});save();render()};
   document.getElementById('reset').onclick=function(){if(confirm('Reset your timetable to the starter rhythm?')){rows=defaults.map(function(x){return Object.assign({},x)});save();render()}};
