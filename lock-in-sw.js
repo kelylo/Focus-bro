@@ -9,7 +9,6 @@ const ASSETS = [
   "lock-in-manifest.json",
   "focus-bro.css",
   "focus-bro-nav.js",
-  "focus-bro.css",
   "Focus%20bro.png"
 ];
 self.addEventListener("install", event => {

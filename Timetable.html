@@ -7,24 +7,25 @@
 <link rel="icon" type="image/png" href="Focus%20bro.png">
 <link rel="manifest" href="lock-in-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap">
 <style>
-.schedule-grid{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:12px;margin-top:22px;overflow-x:auto;padding-bottom:4px}
-.day-card{min-height:190px;padding:14px;border:1px solid #eadfb8;border-radius:18px;background:linear-gradient(160deg,#fff 0%,#fffdf8 100%);box-shadow:0 10px 26px rgba(17,17,20,.06)}
-.day-card.today{border-color:var(--focus-orange);box-shadow:0 0 0 2px rgba(220,130,80,.12),0 10px 26px rgba(17,17,20,.06)}
-.day-name{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font:600 18px Fraunces;color:var(--focus-ink)}
+.schedule-controls{display:flex;justify-content:center;gap:12px;margin:22px 0}.schedule-controls button.active{background:var(--focus-orange);color:#fff}
+.schedule-view[hidden]{display:none}.schedule-grid{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:12px;overflow-x:auto;padding:4px 4px 10px}
+.day-card{min-height:190px;padding:14px;border:3px solid var(--focus-ink);border-radius:18px;background:var(--focus-card);box-shadow:5px 5px 0 var(--focus-ink)}
+.day-card.today{background:var(--focus-yellow)}
+.day-name{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font:600 18px var(--focus-heading);color:var(--focus-ink)}
 .day-name small{font:600 10px Inter;color:var(--focus-orange);letter-spacing:.12em;text-transform:uppercase}
-.block{position:relative;padding:11px 30px 11px 12px;margin-top:9px;border-radius:12px;background:var(--focus-yellow);color:var(--focus-ink);border-left:4px solid var(--focus-orange)}
-.block[data-type="Revision"],.block[data-type="Review"]{background:#fff4c7}
-.block[data-type="Self-teach"],.block[data-type="Deep work"]{background:#ffe2d2}
-.block[data-type="Relax + sleep"]{background:#eee9e2;border-left-color:#706b63}
+.block{position:relative;padding:11px 30px 11px 12px;margin-top:9px;border:2px solid var(--focus-ink);border-radius:12px;background:var(--focus-orange);color:#fff}
+.block[data-type="Revision"],.block[data-type="Review"]{background:#fff}
+.block[data-type="Self-teach"],.block[data-type="Deep work"]{background:#ffe1d1;color:var(--focus-ink)}
+.block[data-type="Relax + sleep"]{background:#1a1a1a}
 .block-time{font-size:12px;font-weight:800}.block-type{display:block;margin-top:2px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.block-detail{display:block;margin-top:5px;font-size:12px;line-height:1.35}
 .block-edit{display:grid;gap:6px;margin-top:10px}.block-edit input,.block-edit select{font-size:12px;padding:7px;background:rgba(255,255,255,.72)}
 .block-delete{position:absolute;right:5px;top:5px;width:25px!important;height:25px!important;background:transparent!important;border:0!important;color:var(--focus-ink);font-size:18px;padding:0!important}
 .empty-day{color:var(--focus-muted);font-size:12px;line-height:1.4;padding:12px 4px}
-.rhythm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.mindmap{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:28px 8px}.mindmap-center{display:grid;place-items:center;width:180px;height:180px;border:4px solid var(--focus-ink);border-radius:50%;background:var(--focus-orange);color:#fff;font:800 22px var(--focus-heading);box-shadow:7px 7px 0 var(--focus-ink)}.mind-node{width:210px;border:3px solid var(--focus-ink);border-radius:16px;background:#fff;padding:14px;box-shadow:4px 4px 0 var(--focus-ink)}.mind-node h3{font:800 16px var(--focus-heading);color:var(--focus-orange);margin:0 0 8px}.mind-node p{font-size:12px;color:var(--focus-muted)}
+.task-section{margin-top:14px}.task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.task-card{position:relative;border:3px solid var(--focus-ink);border-radius:16px;background:#fff;padding:14px;box-shadow:4px 4px 0 var(--focus-ink)}.task-card.done{background:#fff4c7}.task-card.done .task-title{text-decoration:line-through}.task-title{font:800 16px var(--focus-heading);padding-right:28px}.task-card input,.task-card select{margin-top:8px;border:2px solid var(--focus-ink);border-radius:8px;padding:7px;width:100%;background:#fff}.task-check{width:auto!important;accent-color:var(--focus-orange);margin-right:6px}.task-delete{position:absolute;right:6px;top:6px;border:0!important;box-shadow:none!important;background:transparent!important;color:var(--focus-ink)!important;padding:2px!important;font-size:18px}
 @media(max-width:1100px){.schedule-grid{grid-template-columns:repeat(7,190px)}}
-@media(max-width:700px){.rhythm-cards{grid-template-columns:1fr}.schedule-grid{grid-template-columns:repeat(7,180px)}}
+@media(max-width:700px){.rhythm-cards,.task-grid{grid-template-columns:1fr}.schedule-grid{grid-template-columns:repeat(7,180px)}}
 </style>
 </head>
 <body>
@@ -36,7 +37,13 @@
       <div><h2 style="margin:0">Weekly rhythm</h2><div style="color:var(--focus-muted);font-size:13px">Tap any block to adjust it. Changes save automatically.</div></div>
       <div class="sp"></div><button id="reset" class="icon-button" title="Reset timetable" aria-label="Reset timetable">↺</button><button id="add" title="Add timetable block">＋ Add block</button>
     </div>
-    <div id="schedule" class="schedule-grid"></div>
+    <div class="schedule-controls"><button class="active" data-view="cards">Card view</button><button data-view="mindmap">Mind map</button></div>
+    <div id="cards-view" class="schedule-view"><div id="schedule" class="schedule-grid"></div></div>
+    <div id="mindmap-view" class="schedule-view" hidden><div class="mindmap"><div class="mindmap-center">FOCUS<br>WEEK</div><article class="mind-node"><h3>Learn</h3><p>Focus room blocks for long-form lessons and checkpoint notes.</p></article><article class="mind-node"><h3>Retrieve</h3><p>Revision blocks for active recall and spaced repetition.</p></article><article class="mind-node"><h3>Build</h3><p>Self-teaching blocks for projects and deliberate practice.</p></article><article class="mind-node"><h3>Recover</h3><p>Relaxation and sleep protect attention and memory.</p></article></div></div>
+  </section>
+  <section class="card task-section">
+    <div class="row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">Flexible task cards</h2><div style="color:var(--focus-muted);font-size:13px">Add the small actions that make each block useful.</div></div><div class="sp"></div><button id="addTask">＋ Add task</button></div>
+    <div id="tasks" class="task-grid"></div>
   </section>
   <section class="rhythm-cards">
     <article class="card"><span class="pill">Learn</span><h2>Deep work</h2><p>Watch your current lesson with your phone away. Stop at a natural checkpoint and write one note.</p></article>
@@ -47,6 +54,7 @@
 <script>
 (function(){
   var key='focusbro.timetable.v1';
+  var taskKey='focusbro.timetable.tasks.v1';
   var days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   var types=['Focus room','Revision','Self-teach','Review','Deep work','Relax + sleep'];
   var defaults=[
@@ -60,8 +68,10 @@
     {day:'Sunday',start:'21:30',end:'22:30',type:'Relax + sleep',detail:'Wind down; prepare tomorrow'}
   ];
   var rows;try{rows=JSON.parse(localStorage.getItem(key)||'null')||defaults}catch(e){rows=defaults}
+  var tasks;try{tasks=JSON.parse(localStorage.getItem(taskKey)||'null')||[{title:'Choose one lesson for the next focus block',category:'Learn',done:false},{title:'Write one retrieval question',category:'Revision',done:false}]}catch(e){tasks=[]}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function save(){localStorage.setItem(key,JSON.stringify(rows))}
+  function saveTasks(){localStorage.setItem(taskKey,JSON.stringify(tasks))}
   function render(){
     var today=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
     document.getElementById('schedule').innerHTML=days.map(function(day){
@@ -79,9 +89,19 @@
     document.querySelectorAll('#schedule [data-key]').forEach(function(el){el.oninput=function(){rows[+el.dataset.index][el.dataset.key]=el.value;save();render()}});
     document.querySelectorAll('[data-remove]').forEach(function(el){el.onclick=function(){rows.splice(+el.dataset.remove,1);save();render()}});
   }
+  function renderTasks(){
+    document.getElementById('tasks').innerHTML=tasks.map(function(t,i){return '<article class="task-card'+(t.done?' done':'')+'"><button class="task-delete" data-task-remove="'+i+'" title="Delete task" aria-label="Delete task">×</button><label><input class="task-check" type="checkbox" data-task-done="'+i+'" '+(t.done?'checked':'')+'>Done</label><input class="task-title" data-task-title="'+i+'" value="'+esc(t.title)+'" aria-label="Task title"><select data-task-category="'+i+'" aria-label="Task category">'+['Learn','Revision','Self-teach','Rest'].map(function(c){return '<option'+(c===t.category?' selected':'')+'>'+c+'</option>'}).join('')+'</select></article>'}).join('');
+    document.querySelectorAll('[data-task-title]').forEach(function(el){el.oninput=function(){tasks[+el.dataset.taskTitle].title=el.value;saveTasks()}});
+    document.querySelectorAll('[data-task-category]').forEach(function(el){el.onchange=function(){tasks[+el.dataset.taskCategory].category=el.value;saveTasks()}});
+    document.querySelectorAll('[data-task-done]').forEach(function(el){el.onchange=function(){tasks[+el.dataset.taskDone].done=el.checked;saveTasks();renderTasks()}});
+    document.querySelectorAll('[data-task-remove]').forEach(function(el){el.onclick=function(){tasks.splice(+el.dataset.taskRemove,1);saveTasks();renderTasks()}});
+  }
+  document.querySelectorAll('[data-view]').forEach(function(button){button.onclick=function(){document.querySelectorAll('[data-view]').forEach(function(b){b.classList.remove('active')});button.classList.add('active');document.getElementById('cards-view').hidden=button.dataset.view!=='cards';document.getElementById('mindmap-view').hidden=button.dataset.view!=='mindmap'}});
   document.getElementById('add').onclick=function(){rows.push({day:'Monday',start:'18:00',end:'19:00',type:'Focus room',detail:'New study block'});save();render()};
   document.getElementById('reset').onclick=function(){if(confirm('Reset your timetable to the starter rhythm?')){rows=defaults.map(function(x){return Object.assign({},x)});save();render()}};
+  document.getElementById('addTask').onclick=function(){tasks.push({title:'New task',category:'Learn',done:false});saveTasks();renderTasks()};
   render();
+  renderTasks();
 })();
 </script>
 <script src="focus-bro-nav.js"></script>
