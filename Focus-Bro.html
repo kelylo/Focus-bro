@@ -244,10 +244,9 @@ $('themeBtn').onclick=function(){
   r.setAttribute('data-theme',dark?'light':'dark');
   sessionStorage.setItem('focusbro.theme',dark?'light':'dark');
 };
-renderAll();
-window.addEventListener('focusbro:state-ready',function(){loadStore();cur=S.cur&&find(S.cur)||S.vids[0]||null;if(cur){pos=cur.pos||0;dur=cur.dur||0}renderAll();if(cur)mount()});
-if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
-else if(S.vids[0]) open(S.vids[0].id);
+function hydrateRoom(){loadStore();cur=S.cur&&find(S.cur)||S.vids[0]||null;if(cur){pos=cur.pos||0;dur=cur.dur||0}renderAll();if(cur)mount()}
+if(FocusBroAuth.isReady())hydrateRoom();else{$('lib').innerHTML='<div class="hint">Loading your cloud library…</div>';$('main').innerHTML='<div class="empty"><h1>Loading your room.</h1><p class="hint" style="font-size:15px">Checking your account and restoring your learning data.</p></div>'}
+window.addEventListener('focusbro:state-ready',hydrateRoom);
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('focus-bro-sw.js?v=14').then(function(){},function(){})}
 })();
 </script>

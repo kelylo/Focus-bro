@@ -1,7 +1,7 @@
 (function(){
   var cfg=window.FOCUS_BRO_SUPABASE;
   if(!cfg)return;
-  var state={session:null,user:null},listeners=[],memory={},syncing=false,hydrating=false,cloudSaveTimer=0,lastCloudSave=0,cloudSaveQueued=false,stateCacheKey='focusbro.cloud.state',status='idle';
+  var state={session:null,user:null},listeners=[],readyListeners=[],memory={},syncing=false,hydrating=false,ready=false,cloudSaveTimer=0,lastCloudSave=0,cloudSaveQueued=false,stateCacheKey='focusbro.cloud.state',status='idle';
   function emit(){listeners.slice().forEach(function(fn){try{fn(state)}catch(e){}})}
   function sessionGet(key){try{return sessionStorage.getItem(key)}catch(e){return null}}
   function sessionSet(key,value){try{sessionStorage.setItem(key,value)}catch(e){}}
@@ -12,6 +12,7 @@
   function cachedState(){try{var raw=sessionGet(stateCacheKey)||localGet(cacheKey()),item=JSON.parse(raw||'null');if(item&&item.userId===state.user.id&&Date.now()-item.savedAt<86400000)return item.state}catch(e){}return null}
   function cacheState(data){try{var value=JSON.stringify({userId:state.user.id,savedAt:Date.now(),state:data});sessionSet(stateCacheKey,value);localSet(cacheKey(),value)}catch(e){}}
   function setStatus(next,message){status=next;window.dispatchEvent(new CustomEvent('focusbro:sync-status',{detail:{status:next,message:message||''}}))}
+  function signalReady(){ready=true;readyListeners.splice(0).forEach(function(fn){try{fn(state)}catch(e){}});window.dispatchEvent(new CustomEvent('focusbro:state-ready'))}
   function headers(token){return {'apikey':cfg.publishableKey,'Authorization':'Bearer '+(token||cfg.publishableKey),'Content-Type':'application/json'}}
   function request(path,options){
     options=options||{};options.headers=Object.assign(headers(options.token),options.headers||{});
@@ -23,8 +24,8 @@
       throw error;
     }).then(function(data){if(timer)clearTimeout(timer);return data},function(error){if(timer)clearTimeout(timer);throw error});
   }
-  function setSession(session){state.session=session||null;state.user=session&&session.user||null;if(session)sessionSet('focusbro.auth.session',JSON.stringify(session));else{sessionRemove('focusbro.auth.session');memory={}};if(state.user){var cached=cachedState();if(cached)apply(cached)}emit();if(state.user)syncAfterLogin()}
-  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null'),hash=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('type'),hashAccess=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('access_token'),hashRefresh=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('refresh_token');if(hash==='recovery'&&hashAccess){request('/auth/v1/user',{token:hashAccess}).then(function(user){setSession({access_token:hashAccess,refresh_token:hashRefresh||'',user:user,expires_at:Math.floor(Date.now()/1000)+3600})}).catch(function(){window.dispatchEvent(new CustomEvent('focusbro:state-ready'))});return}if(!s||!s.access_token||!s.refresh_token){window.dispatchEvent(new CustomEvent('focusbro:state-ready'));return}state.session=s;state.user=s.user||null;var cached=cachedState();if(cached)apply(cached);emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
+  function setSession(session){ready=false;state.session=session||null;state.user=session&&session.user||null;if(session)sessionSet('focusbro.auth.session',JSON.stringify(session));else{sessionRemove('focusbro.auth.session');memory={}};if(state.user){var cached=cachedState();if(cached)apply(cached)}emit();if(state.user)syncAfterLogin();else signalReady()}
+  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null'),hash=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('type'),hashAccess=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('access_token'),hashRefresh=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('refresh_token');if(hash==='recovery'&&hashAccess){request('/auth/v1/user',{token:hashAccess}).then(function(user){setSession({access_token:hashAccess,refresh_token:hashRefresh||'',user:user,expires_at:Math.floor(Date.now()/1000)+3600})}).catch(function(){signalReady()});return}if(!s||!s.access_token||!s.refresh_token){signalReady();return}ready=false;state.session=s;state.user=s.user||null;var cached=cachedState();if(cached)apply(cached);emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
   function auth(mode,email,password){
     var path=mode==='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
     return request(path,{method:'POST',body:JSON.stringify({email:email,password:password})}).then(function(data){if(data.access_token)setSession(data);return data});
@@ -67,10 +68,10 @@
       if(Object.keys(current).length)return saveState(current);
       setStatus('empty');
     }).then(function(){
-      window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
+      signalReady();
     }).catch(function(error){
       setStatus('error',error.message);
-      window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
+      signalReady();
     }).then(function(){hydrating=false});
   }
   function queueCloudSave(){
@@ -113,6 +114,7 @@
     level:gameLevel
   };
   function onChange(fn){listeners.push(fn);fn(state)}
-  window.FocusBroAuth={onChange:onChange,signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,updatePassword:updatePassword,getState:function(){return state},loadState:cloudState,saveState:saveState,getSyncStatus:function(){return status}};
+  function onReady(fn){if(ready)fn(state);else readyListeners.push(fn)}
+  window.FocusBroAuth={onChange:onChange,onReady:onReady,isReady:function(){return ready},signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,updatePassword:updatePassword,getState:function(){return state},loadState:cloudState,saveState:saveState,getSyncStatus:function(){return status}};
   restore();
 })();
