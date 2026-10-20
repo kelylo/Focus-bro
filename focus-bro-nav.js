@@ -13,7 +13,7 @@
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
   nav.setAttribute('aria-label','Focus Bro learning menu');
-  nav.innerHTML='<a class="site-brand" href="Focus-Bro"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="site-section">Your learning system</div>'+
+  nav.innerHTML='<a class="site-brand" href="Focus-Bro"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="game-status" id="game-status"><div class="game-status-top"><strong>Level 1</strong><span>0 XP</span></div><div class="game-bar"><i></i></div><small>Sign in to keep your streak and XP</small></div><div class="site-section">Your learning system</div>'+
     links.map(function(item){
       var active=decodeURIComponent(page).toLowerCase()===decodeURIComponent(item[0]).toLowerCase();
       return '<a class="site-link'+(active?' active':'')+'" href="'+item[0]+'"><span>'+item[3]+'</span><div>'+item[1]+'<small style="display:block;color:var(--focus-muted);font-size:11px;font-weight:400">'+item[2]+'</small></div></a>';
@@ -30,6 +30,8 @@
   document.body.prepend(backdrop);
   document.body.prepend(nav);
   document.body.prepend(toggle);
+  function renderGame(){var status=document.getElementById('game-status');if(!status||!window.FocusBroGame)return;var user=window.FocusBroAuth&&window.FocusBroAuth.getState().user,game=FocusBroGame.get(),floor=(game.level-1)*100,progress=Math.min(100,Math.round((game.xp-floor)/100*100));status.querySelector('strong').textContent='Level '+game.level;status.querySelector('span').textContent=game.xp+' XP';status.querySelector('i').style.width=progress+'%';status.querySelector('small').textContent=user?'Keep going: '+(game.nextLevel-game.xp)+' XP to level '+(game.level+1):'Sign in to keep your streak and XP'}
+  document.addEventListener('focusbro:game-change',renderGame);document.addEventListener('focusbro:state-ready',renderGame);setTimeout(renderGame,0);
   function close(){nav.classList.remove('open');backdrop.classList.remove('open');document.body.classList.remove('nav-open');toggle.setAttribute('aria-expanded','false')}
   toggle.onclick=function(){var open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop.classList.toggle('open',open);document.body.classList.toggle('nav-open',open);toggle.setAttribute('aria-expanded',String(open))}
   backdrop.onclick=close;

@@ -132,7 +132,7 @@ function addVideo(){
   if(!id){$('err').textContent='That doesn’t look like a YouTube link.';return}
   $('err').textContent='';
   if(!find(id)) S.vids.push({id:id,title:$('name').value.trim()||'Lesson '+(S.vids.length+1),pos:0,dur:0,max:0,notes:[],added:Date.now()});
-  $('url').value=''; $('name').value=''; save(); open(id);
+  $('url').value=''; $('name').value=''; save(); FocusBroGame.award('lesson-'+id,25); open(id);
 }
 
 function open(id){
@@ -168,7 +168,7 @@ window.addEventListener('message',function(e){
 });
 
 setInterval(function(){ // real watch time
-  if(state===1){var k=dk(); S.log[k]=(S.log[k]||0)+1; if(S.log[k]%10===0)save(); top();}
+  if(state===1){var k=dk(); S.log[k]=(S.log[k]||0)+1; if(S.log[k]%60===0)FocusBroGame.award('focus-minute-'+k+'-'+S.log[k],5); if(S.log[k]%10===0)save(); top();}
 },1000);
 window.addEventListener('beforeunload',commit);
 document.addEventListener('visibilitychange',commit);
@@ -220,7 +220,7 @@ function renderAll(){top();updateLib();renderMain();renderNotes();updateBits()}
 
 function addNote(){
   var t=$('note').value.trim(); if(!t||!cur) return;
-  cur.notes.push({id:Date.now(),t:Math.floor(pos),text:t}); $('note').value=''; save(); renderNotes();
+  var noteId=Date.now();cur.notes.push({id:noteId,t:Math.floor(pos),text:t}); $('note').value=''; save(); FocusBroGame.award('note-'+noteId,10); renderNotes();
 }
 $('addBtn').onclick=addVideo;
 $('url').onkeydown=function(e){if(e.key==='Enter')addVideo()};

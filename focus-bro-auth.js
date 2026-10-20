@@ -38,7 +38,7 @@
     if(!state.user)return Promise.reject(new Error('Sign in to save your learning data.'));
     return request('/rest/v1/focus_bro_state?on_conflict=user_id',{method:'POST',token:state.session.access_token,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:state.user.id,state:data,updated_at:new Date().toISOString()})}).then(function(){cacheState(data);return true});
   }
-  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
+  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.game.v1','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
   function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
   function apply(data){if(!data)return;syncing=true;syncKeys.forEach(function(k){delete memory[k]});Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
   function syncAfterLogin(){
@@ -70,6 +70,14 @@
     getItem:function(k){return Object.prototype.hasOwnProperty.call(memory,k)?memory[k]:null},
     setItem:function(k,v){memory[k]=String(v);if(syncKeys.indexOf(k)!==-1)queueCloudSave()},
     removeItem:function(k){delete memory[k];if(syncKeys.indexOf(k)!==-1)queueCloudSave()}
+  };
+  var gameKey='focusbro.game.v1',defaultGame={xp:0,awards:{}};
+  function gameData(){var game=defaultGame;try{game=Object.assign({},defaultGame,JSON.parse(window.FocusBroStore.getItem(gameKey)||'{}'));game.awards=game.awards||{}}catch(e){}return game}
+  function gameLevel(xp){return Math.floor(Math.max(0,xp||0)/100)+1}
+  window.FocusBroGame={
+    get:function(){var game=gameData();game.level=gameLevel(game.xp);game.nextLevel=game.level*100;return game},
+    award:function(id,points){if(!state.user)return false;var game=gameData();if(game.awards[id])return false;game.awards[id]={points:points,at:new Date().toISOString()};game.xp+=points;window.FocusBroStore.setItem(gameKey,JSON.stringify(game));document.dispatchEvent(new CustomEvent('focusbro:game-change'));return true},
+    level:gameLevel
   };
   function onChange(fn){listeners.push(fn);fn(state)}
   window.FocusBroAuth={onChange:onChange,signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},signOut:signOut,updateProfile:updateProfile,getState:function(){return state},loadState:cloudState,saveState:saveState};
