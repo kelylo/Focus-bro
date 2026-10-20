@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v14";
+const CACHE = "focus-bro-shell-v15";
 const ASSETS = [
   "Focus-Bro",
   "Study-Techniques",
@@ -17,7 +17,9 @@ const ASSETS = [
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
-  self.skipWaiting();
+});
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "FOCUS_BRO_ACTIVATE_UPDATE") self.skipWaiting();
 });
 self.addEventListener("activate", event => {
   event.waitUntil(

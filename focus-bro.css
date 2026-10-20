@@ -49,6 +49,8 @@ body::before{content:none}
 .site-profile-link img{display:block;width:100%;height:100%;border-radius:inherit;object-fit:cover}
 .site-profile-link:hover{background:var(--focus-yellow);color:var(--focus-ink)}
 .site-profile-link-floating{position:fixed;top:18px;right:18px;z-index:20}
+.focus-update{position:fixed;right:18px;bottom:18px;z-index:40;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center;max-width:min(420px,calc(100vw - 36px));padding:14px 16px;background:var(--focus-card);color:var(--focus-ink);border:3px solid var(--focus-ink);border-radius:14px;box-shadow:6px 6px 0 var(--focus-ink)}
+.focus-update strong{font-family:var(--focus-heading)}.focus-update span{grid-column:1;color:var(--focus-muted);font-size:12px}.focus-update button{grid-column:2;grid-row:1 / span 2;padding:9px 12px;border:2px solid var(--focus-ink);border-radius:9px;background:var(--focus-orange);color:#fff;font:700 12px var(--focus-heading);cursor:pointer}.focus-update button:disabled{opacity:.7;cursor:wait}
 .focus-page{max-width:1180px;margin:auto;padding:34px 24px 70px}
 .focus-page header{display:flex;align-items:center;gap:18px;border-bottom:1px solid rgba(17,17,20,.12);padding:12px 0 20px;background:transparent;position:static}
 .focus-page .brand{font:800 20px/1 Fraunces,Georgia,serif;letter-spacing:.04em}
@@ -98,6 +100,7 @@ h1,h2,h3,h4,.brand,.big,.title,.val{font-family:var(--focus-heading)!important}
 button,.gold{font-family:var(--focus-heading)!important}
 @media(max-width:850px){.steps{grid-template-columns:repeat(2,1fr)}.step.active{transform:none}}
 @media(max-width:700px){.site-sidebar-toggle{left:12px;top:12px}.nav-open .site-sidebar-toggle{left:calc(var(--focus-sidebar-width) + 12px)}.site-profile-link-floating{top:12px;right:12px}.has-site-nav>header{padding-left:70px}.has-site-nav>.shell,.has-site-nav>.feynman{padding-left:18px}.focus-page{padding:18px 18px 50px}.focus-page .hero{padding-top:48px}.feynman{padding:18px}.feynman .hero{padding-top:48px}.reflection{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
+@media(max-width:500px){.focus-update{right:12px;bottom:12px;grid-template-columns:1fr}.focus-update span{grid-column:1}.focus-update button{grid-column:1;grid-row:auto;width:100%}}
 [data-theme="dark"] body{background:var(--focus-paper)!important;color:var(--focus-ink)!important}
 [data-theme="dark"] .site-sidebar{background:#2d3a52;border-color:#a9c2d8;box-shadow:8px 8px 0 rgba(8,14,25,.55)}
 [data-theme="dark"] .site-sidebar-backdrop{background:rgba(8,14,25,.72)}

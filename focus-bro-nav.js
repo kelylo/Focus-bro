@@ -60,5 +60,37 @@
     var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  if('serviceWorker' in navigator && location.protocol!=='file:')navigator.serviceWorker.register('focus-bro-sw.js?v=14').catch(function(){});
+  var updateRequested=false;
+  function showUpdate(registration){
+    if(document.getElementById('focus-update'))return;
+    var update=document.createElement('div');
+    update.id='focus-update';
+    update.className='focus-update';
+    update.setAttribute('role','status');
+    update.innerHTML='<strong>Update available</strong><span>Refresh Focus Bro to use the latest version.</span><button type="button">Update now</button>';
+    document.body.appendChild(update);
+    update.querySelector('button').onclick=function(){
+      var button=this;
+      button.disabled=true;
+      button.textContent='Updating…';
+      updateRequested=true;
+      if(registration.waiting)registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
+      else window.location.reload();
+    };
+  }
+  if('serviceWorker' in navigator && location.protocol!=='file:'){
+    navigator.serviceWorker.register('focus-bro-sw.js?v=15').then(function(registration){
+      if(registration.waiting)showUpdate(registration);
+      registration.addEventListener('updatefound',function(){
+        var worker=registration.installing;
+        if(!worker)return;
+        worker.addEventListener('statechange',function(){
+          if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdate(registration);
+        });
+      });
+      navigator.serviceWorker.addEventListener('controllerchange',function(){
+        if(updateRequested)window.location.reload();
+      });
+    }).catch(function(){});
+  }
 })();

@@ -36,6 +36,10 @@ All existing feature records remain inside the `focus_bro_state.state` JSON docu
 
 Writes are debounced briefly, cached per user, and flushed when the page is hidden or navigated away from. The account UI reports pending, saving, synced, and failed states. A failed request remains in the local per-user cache and is retried on the next change or session.
 
+## App updates
+
+The service worker keeps the app available offline and checks for a newer release when a page opens. When an update is ready, an **Update available** prompt appears on desktop and mobile. Choose **Update now** to activate the new version and reload the current page; this avoids needing a browser-specific hard-refresh gesture.
+
 ## Backup and migration
 
 Before schema changes, export the `focus_bro_state` table from Supabase or run:
