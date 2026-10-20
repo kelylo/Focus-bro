@@ -19,8 +19,8 @@
       throw error;
     }).then(function(data){if(timer)clearTimeout(timer);return data},function(error){if(timer)clearTimeout(timer);throw error});
   }
-  function setSession(session){state.session=session||null;state.user=session&&session.user||null;if(session)sessionSet('focusbro.auth.session',JSON.stringify(session));else sessionRemove('focusbro.auth.session');emit();if(state.user)syncAfterLogin()}
-  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null');if(!s||!s.access_token||!s.refresh_token)return;state.session=s;state.user=s.user||null;emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
+  function setSession(session){state.session=session||null;state.user=session&&session.user||null;if(session)sessionSet('focusbro.auth.session',JSON.stringify(session));else{sessionRemove('focusbro.auth.session');memory={}};if(state.user){var cached=cachedState();if(cached)apply(cached)}emit();if(state.user)syncAfterLogin()}
+  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null');if(!s||!s.access_token||!s.refresh_token){window.dispatchEvent(new CustomEvent('focusbro:state-ready'));return}state.session=s;state.user=s.user||null;var cached=cachedState();if(cached)apply(cached);emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
   function auth(mode,email,password){
     var path=mode==='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
     return request(path,{method:'POST',body:JSON.stringify({email:email,password:password})}).then(function(data){if(data.access_token)setSession(data);return data});
@@ -38,9 +38,9 @@
     if(!state.user)return Promise.reject(new Error('Sign in to save your learning data.'));
     return request('/rest/v1/focus_bro_state?on_conflict=user_id',{method:'POST',token:state.session.access_token,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:state.user.id,state:data,updated_at:new Date().toISOString()})}).then(function(){cacheState(data);return true});
   }
-  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
+  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
   function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
-  function apply(data){if(!data)return;syncing=true;Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
+  function apply(data){if(!data)return;syncing=true;syncKeys.forEach(function(k){delete memory[k]});Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
   function syncAfterLogin(){
     if(hydrating)return;
     hydrating=true;
@@ -53,7 +53,7 @@
     }).then(function(){
       window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
     }).catch(function(){
-      if(cached)window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
+      window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
     }).then(function(){hydrating=false});
   }
   function queueCloudSave(){
