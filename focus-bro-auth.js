@@ -54,7 +54,7 @@
     options=options||{};cacheState(data);setStatus('saving');
     return request('/rest/v1/focus_bro_state?on_conflict=user_id',{method:'POST',token:state.session.access_token,keepalive:!!options.keepalive,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:state.user.id,state:data,updated_at:new Date().toISOString()})}).then(function(){lastCloudSave=Date.now();setStatus('saved');return true},function(error){setStatus('error',error.message);throw error});
   }
-  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.game.v1','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
+  var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.game.v1','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.unified.timetable.v2','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
   function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
   function apply(data){if(!data)return;syncing=true;syncKeys.forEach(function(k){delete memory[k]});Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
   function syncAfterLogin(){

@@ -28,7 +28,8 @@ All existing feature records remain inside the `focus_bro_state.state` JSON docu
 - `lockin.v1`: lessons, YouTube checkpoints, notes, and focus minutes
 - `lockin.selftaught.v2`: goal, milestone, reason, and habits
 - `focusbro.feynman.v2`: Feynman reflection
-- `focusbro.mindmap.v1`: timetable custom entries
+- `focusbro.mindmap.v1`: timetable custom entries from older releases
+- `focusbro.unified.timetable.v2`: timetable days and classes
 - `focusbro.timetable.tasks.v1`: tasks
 - `focusbro.techniques.v1`: study practice completion
 - `focusbro.game.v1`: XP and idempotent reward records

@@ -10,47 +10,730 @@
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
 <style>
-.timetable-hero{max-width:760px}.timetable-hero h1{max-width:700px}.section-title{width:max-content;max-width:100%;margin:30px auto 18px;padding:10px 18px;border:3px solid var(--focus-ink);border-radius:15px;background:var(--focus-card);box-shadow:4px 4px 0 var(--focus-ink);font:800 20px var(--focus-heading);text-transform:uppercase;text-align:center}
-.mindmap-container{max-width:1200px;margin:0 auto;padding:4px;display:flex;justify-content:center}.mindmap-canvas{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;width:100%}.mm-node{position:relative;min-width:280px;flex:1 1 280px;max-width:370px;padding:18px;border:4px solid var(--focus-ink);border-radius:20px;background:var(--focus-card);box-shadow:6px 6px 0 var(--focus-ink);transition:transform .2s}.mm-node:hover{transform:translateY(-4px)}.mm-center{display:grid;place-items:center;flex:0 1 200px;width:200px;height:200px;margin:auto;border:4px solid var(--focus-ink);border-radius:50%;background:var(--focus-orange);box-shadow:8px 8px 0 var(--focus-ink);color:#fff;font:800 24px var(--focus-heading);text-align:center}.mm-day{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid var(--focus-ink);color:var(--focus-orange);font:800 19px var(--focus-heading)}.mm-subject{position:relative;margin-bottom:10px;padding:9px 34px 9px 13px;border:2px solid var(--focus-ink);border-left:5px solid var(--focus-yellow);border-radius:8px;background:#f9f9f9}.mm-subject:last-child{margin-bottom:0}.mm-subject strong,.mm-subject span{display:block}.mm-subject strong{font-size:14px}.mm-subject span{margin-top:3px;color:var(--focus-muted);font-size:12px}.mm-time{color:var(--focus-orange)!important;font-weight:800}.btn-add{padding:5px 9px;border:2px solid var(--focus-ink);border-radius:8px;background:var(--focus-yellow);box-shadow:2px 2px 0 var(--focus-ink);font:800 11px var(--focus-heading);cursor:pointer}.btn-add:active{transform:translate(2px,2px);box-shadow:none}.btn-del-subject{position:absolute;right:5px;top:5px;width:23px;height:23px;padding:0;border:2px solid var(--focus-ink);border-radius:50%;background:#ff4d4d;color:#fff;font-weight:800;cursor:pointer}.empty-subject{color:var(--focus-muted);font-size:12px}.timetable-modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:20px;background:rgba(17,17,20,.55)}.timetable-modal.open{display:grid}.timetable-modal-box{width:min(420px,100%);padding:24px;border:4px solid var(--focus-ink);border-radius:20px;background:var(--focus-card);box-shadow:8px 8px 0 var(--focus-ink)}.timetable-modal-box h2{margin:0 0 14px;font:800 22px var(--focus-heading)}.timetable-modal-box input{display:block;width:100%;margin:9px 0;padding:10px;border:3px solid var(--focus-ink);border-radius:9px;background:var(--focus-card);color:var(--focus-ink);font:inherit}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}.modal-actions button{border:3px solid var(--focus-ink);box-shadow:3px 3px 0 var(--focus-ink);font-weight:800}.modal-cancel{background:#ddd}.modal-save{background:var(--focus-orange);color:#fff}.task-section{margin-top:28px}.task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.task-card{position:relative;border:3px solid var(--focus-ink);border-radius:16px;background:#fff;padding:14px;box-shadow:4px 4px 0 var(--focus-ink)}.task-card.done{background:#fff4c7}.task-card.done .task-title{text-decoration:line-through}.task-title{font:800 16px var(--focus-heading);padding-right:28px}.task-card input,.task-card select{margin-top:8px;border:2px solid var(--focus-ink);border-radius:8px;padding:7px;width:100%;background:#fff}.task-check{width:auto!important;accent-color:var(--focus-orange);margin-right:6px}.task-delete{position:absolute;right:6px;top:6px;border:0!important;box-shadow:none!important;background:transparent!important;color:var(--focus-ink)!important;padding:2px!important;font-size:18px}
-@media(max-width:700px){.task-grid{grid-template-columns:1fr}.mm-node{min-width:0;flex-basis:100%}.mm-center{width:160px;height:160px;flex-basis:160px;font-size:20px}}
+/* =========================================
+   FOCUS BRO THEME VARIABLES (Professional)
+   ========================================= */
+:root {
+    --focus-yellow: #ffd32a;
+    --focus-green: #2ecc71;
+    --focus-green-dark: #27ae60;
+    --focus-ink: #111114;
+    --focus-card: #ffffff;
+    --focus-muted: #666;
+    --focus-heading: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--focus-yellow) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--focus-ink);
+}
+
+/* =========================================
+   TRIVIA GATE (Mindfulness Lock)
+   ========================================= */
+#trivia-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--focus-yellow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: opacity 0.4s ease;
+}
+#trivia-gate.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.trivia-card {
+    background: var(--focus-card);
+    border: 4px solid var(--focus-ink);
+    border-radius: 20px;
+    padding: 30px 20px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 8px 8px 0 var(--focus-ink);
+    text-align: center;
+}
+.trivia-card h2 {
+    font-family: var(--focus-heading);
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    margin-top: 0;
+    border-bottom: 3px solid var(--focus-ink);
+    padding-bottom: 15px;
+}
+.trivia-question {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 25px 0;
+    line-height: 1.4;
+}
+.trivia-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.trivia-btn {
+    background: var(--focus-card);
+    border: 3px solid var(--focus-ink);
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--focus-ink);
+    transition: all 0.1s;
+    text-align: left;
+}
+.trivia-btn:hover {
+    background: #f0f0f0;
+}
+.trivia-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--focus-ink);
+}
+.trivia-btn.correct {
+    background: var(--focus-green);
+    color: white;
+}
+.trivia-btn.wrong {
+    background: #ff4d4d;
+    color: white;
+}
+.trivia-error {
+    color: #ff4d4d;
+    font-weight: bold;
+    margin-top: 15px;
+    min-height: 20px;
+}
+
+/* =========================================
+   MAIN APP LAYOUT & CONTROLS
+   ========================================= */
+.focus-page { padding: 20px; padding-bottom: 100px; max-width: 1200px; margin: 0 auto; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 800 20px var(--focus-heading); text-transform: uppercase; }
+.brand img { height: 40px; width: auto; border-radius: 50%; border: 2px solid var(--focus-ink); }
+.back { text-decoration: none; color: var(--focus-ink); font-weight: bold; background: var(--focus-card); padding: 8px 12px; border: 3px solid var(--focus-ink); border-radius: 10px; box-shadow: 3px 3px 0 var(--focus-ink); }
+
+.view-toggle-container {
+    display: flex; justify-content: center; gap: 15px; margin: 20px auto;
+    flex-wrap: wrap;
+}
+.toggle-btn {
+    background: var(--focus-card); border: 3px solid var(--focus-ink);
+    padding: 10px 20px; border-radius: 12px; font: 800 16px var(--focus-heading);
+    cursor: pointer; box-shadow: 4px 4px 0 var(--focus-ink); transition: all 0.1s;
+}
+.toggle-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--focus-ink); }
+.toggle-btn.active { background: var(--focus-green); color: white; }
+
+.btn-add-day {
+    display: block; margin: 0 auto 20px auto; background: var(--focus-ink); color: white;
+    border: 3px solid var(--focus-ink); padding: 10px 20px; border-radius: 12px;
+    font-weight: bold; cursor: pointer; box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   VIEW 1: CARD MIND MAP
+   ========================================= */
+.mindmap-view-container { display: block; }
+.mindmap-view-container.hidden { display: none; }
+.mindmap-canvas { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; width: 100%; }
+.mm-node { position: relative; min-width: 280px; flex: 1 1 280px; max-width: 370px; padding: 18px; border: 4px solid var(--focus-ink); border-radius: 20px; background: var(--focus-card); box-shadow: 6px 6px 0 var(--focus-ink); transition: transform .2s; }
+.mm-node:hover { transform: translateY(-4px); }
+.mm-center { display: grid; place-items: center; flex: 0 1 200px; width: 200px; height: 200px; margin: auto; border: 4px solid var(--focus-ink); border-radius: 50%; background: var(--focus-green); box-shadow: 8px 8px 0 var(--focus-ink); color: #fff; font: 800 24px var(--focus-heading); text-align: center; }
+.mm-day { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 3px solid var(--focus-ink); color: var(--focus-green-dark); font: 800 19px var(--focus-heading); }
+.mm-subject { position: relative; margin-bottom: 10px; padding: 9px 34px 9px 13px; border: 2px solid var(--focus-ink); border-left: 5px solid var(--focus-yellow); border-radius: 8px; background: #f9f9f9; }
+.mm-subject strong { display: block; font-size: 14px; }
+.mm-subject span { display: block; margin-top: 3px; color: var(--focus-muted); font-size: 12px; }
+.mm-time { color: var(--focus-green-dark)!important; font-weight: 800; }
+.btn-add { padding: 5px 9px; border: 2px solid var(--focus-ink); border-radius: 8px; background: var(--focus-green); color: #fff; box-shadow: 2px 2px 0 var(--focus-ink); font: 800 11px var(--focus-heading); cursor: pointer; }
+.btn-add:active { transform: translate(2px,2px); box-shadow: none; }
+.btn-del-subject { position: absolute; right: 5px; top: 5px; width: 23px; height: 23px; padding: 0; border: 2px solid var(--focus-ink); border-radius: 50%; background: #ff4d4d; color: #fff; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 10px;}
+.btn-del-day { position: absolute; right: 10px; top: -15px; background: #ff4d4d; color: white; border: 2px solid var(--focus-ink); border-radius: 10px; font-size: 10px; font-weight: bold; padding: 2px 6px; cursor: pointer; z-index: 10; }
+
+/* =========================================
+   VIEW 2: ROADMAP
+   ========================================= */
+.roadmap-view-container { display: none; max-width: 800px; margin: 0 auto; position: relative; padding-left: 30px; padding-bottom: 40px; }
+.roadmap-view-container.active { display: block; }
+.roadmap-view-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 6px; background: var(--focus-ink); border-radius: 10px; }
+.roadmap-day-section { position: relative; margin-bottom: 40px; }
+.roadmap-day-dot { position: absolute; left: -23px; top: 15px; width: 24px; height: 24px; background: var(--focus-green); border: 4px solid var(--focus-ink); border-radius: 50%; z-index: 2; }
+.roadmap-day-header { display: flex; justify-content: space-between; align-items: center; background: var(--focus-card); border: 4px solid var(--focus-ink); border-radius: 15px; padding: 10px 15px; margin-bottom: 15px; box-shadow: 4px 4px 0 var(--focus-ink); position: relative; z-index: 1; font: 800 19px var(--focus-heading); }
+.roadmap-class-list { display: flex; flex-direction: column; gap: 15px; margin-left: 10px; }
+.roadmap-class-card { background: var(--focus-card); border: 4px solid var(--focus-ink); border-radius: 15px; padding: 15px; box-shadow: 5px 5px 0 var(--focus-ink); position: relative; display: flex; flex-direction: column; gap: 8px; transition: transform 0.2s; }
+.roadmap-class-card:hover { transform: translateY(-3px); }
+.roadmap-time-badge { background: var(--focus-yellow); border: 3px solid var(--focus-ink); border-radius: 8px; padding: 4px 10px; font-weight: bold; font-size: 0.85rem; align-self: flex-start; display: inline-block; }
+.roadmap-subject-title { font: 800 1.1rem var(--focus-heading); line-height: 1.2; padding-right: 60px; }
+.roadmap-subject-prof { font-size: 0.9rem; font-weight: bold; color: var(--focus-green-dark); }
+.roadmap-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; }
+.btn-icon-sm { width: 30px; height: 30px; border: 2px solid var(--focus-ink); border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.8rem; box-shadow: 2px 2px 0 var(--focus-ink); transition: all 0.1s; }
+.btn-icon-sm:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--focus-ink); }
+.btn-edit { background: var(--focus-yellow); color: var(--focus-ink); }
+.btn-delete { background: #ff4d4d; color: white; }
+
+/* =========================================
+   MODAL & TASKS
+   ========================================= */
+.timetable-modal { position: fixed; inset: 0; z-index: 100; display: none; place-items: center; padding: 20px; background: rgba(17,17,20,.6); }
+.timetable-modal.open { display: grid; }
+.timetable-modal-box { width: min(420px,100%); padding: 24px; border: 4px solid var(--focus-ink); border-radius: 20px; background: var(--focus-card); box-shadow: 8px 8px 0 var(--focus-ink); }
+.timetable-modal-box h2 { margin: 0 0 14px; font: 800 22px var(--focus-heading); }
+.timetable-modal-box input { display: block; width: 100%; margin: 9px 0; padding: 10px; border: 3px solid var(--focus-ink); border-radius: 9px; background: var(--focus-card); color: var(--focus-ink); font: inherit; box-sizing: border-box;}
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.modal-actions button { border: 3px solid var(--focus-ink); box-shadow: 3px 3px 0 var(--focus-ink); font-weight: 800; padding: 10px 15px; border-radius: 10px; cursor: pointer; }
+.modal-cancel { background: #ddd; }
+.modal-save { background: var(--focus-green); color: #fff; }
+
+.task-section { margin-top: 40px; background: var(--focus-card); padding: 20px; border: 4px solid var(--focus-ink); border-radius: 20px; box-shadow: 6px 6px 0 var(--focus-ink); }
+.task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 16px; }
+.task-card { position: relative; border: 3px solid var(--focus-ink); border-radius: 16px; background: #fff; padding: 14px; box-shadow: 4px 4px 0 var(--focus-ink); }
+.task-card.done { background: #d4f5e2; border-color: var(--focus-green-dark); }
+.task-card.done .task-title { text-decoration: line-through; }
+.task-title { font: 800 16px var(--focus-heading); padding-right: 28px; width: 100%; border: none; background: transparent; outline: none;}
+.task-card input,.task-card select { margin-top: 8px; border: 2px solid var(--focus-ink); border-radius: 8px; padding: 7px; width: 100%; background: #fff; font-family: inherit;}
+.task-check { width: auto!important; accent-color: var(--focus-green); margin-right: 6px; }
+.task-delete { position: absolute; right: 6px; top: 6px; border: 0!important; box-shadow: none!important; background: transparent!important; color: var(--focus-ink)!important; padding: 2px!important; font-size: 18px; cursor: pointer;}
+#addTask { background: var(--focus-green); color: white; border: 3px solid var(--focus-ink); padding: 8px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0 var(--focus-ink); }
+
+@media(max-width:700px){
+    .mm-node { min-width: 100%; }
+    .mm-center { width: 160px; height: 160px; font-size: 20px; }
+}
 </style>
 </head>
 <body>
+
+<!-- =========================================
+     MINDFULNESS TRIVIA GATE
+     ========================================= -->
+<div id="trivia-gate">
+    <div class="trivia-card">
+        <h2>Mindfulness Check</h2>
+        <p style="color: var(--focus-muted); font-size: 0.9rem;">Answer correctly to view your timetable.</p>
+        <div class="trivia-question" id="trivia-question">Loading question...</div>
+        <div class="trivia-options" id="trivia-options">
+            <!-- Options injected via JS -->
+        </div>
+        <div class="trivia-error" id="trivia-error"></div>
+    </div>
+</div>
+
+<!-- =========================================
+     MAIN APP
+     ========================================= -->
 <main class="focus-page">
-  <header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div><div class="sp"></div><a class="back" href="Focus-Bro">← Focus room</a></header>
-  <section class="hero timetable-hero"><div class="eyebrow">ING 4 CDD · Amphi 2</div><h1>Emploi du temps &amp; Focus Space.</h1><p>1er semestre · Your university schedule, arranged as an editable Focus Bro mind map.</p></section>
-  <div class="section-title">Timetable mind map</div>
-  <section class="mindmap-container" aria-label="Editable timetable mind map"><div class="mindmap-canvas" id="mindmap-canvas">
-    <div class="mm-center">ING 4<br>CDD</div>
-    <article class="mm-node" id="day-samedi"><div class="mm-day">SAMEDI <button class="btn-add" data-day="samedi">+ Add</button></div><div class="mm-subject"><strong>Corps d'état secondaire</strong><span>HAMMOUCHE (EAD)</span></div></article>
-    <article class="mm-node" id="day-dimanche"><div class="mm-day">DIMANCHE <button class="btn-add" data-day="dimanche">+ Add</button></div><div class="mm-subject"><span class="mm-time">08:00–11:00</span><strong>Conception des STRs</strong><span>BOUDJELLAL (A2)</span></div><div class="mm-subject"><span class="mm-time">11:00–12:30</span><strong>TD CDS</strong><span>BOUDJELLAL (A4)</span></div><div class="mm-subject"><span class="mm-time">13:00–16:00</span><strong>Métré et estimation</strong><span>ALIOU (A2)</span></div></article>
-    <article class="mm-node" id="day-lundi"><div class="mm-day">LUNDI <button class="btn-add" data-day="lundi">+ Add</button></div><div class="mm-subject"><span class="mm-time">08:00–09:30</span><strong>Renforcement des STRs</strong><span>MAGHAGHI (D1)</span></div><div class="mm-subject"><span class="mm-time">09:30–11:00</span><strong>DDS 1</strong><span>Mme. BELGASMIA (A5)</span></div><div class="mm-subject"><span class="mm-time">11:00–12:30</span><strong>TD RRS</strong><span>MAGHAGHI (A5)</span></div><div class="mm-subject"><span class="mm-time">12:30–15:30</span><strong>TD DDS</strong><span>Mme. BELGASMIA (A2)</span></div></article>
-    <article class="mm-node" id="day-mardi"><div class="mm-day">MARDI <button class="btn-add" data-day="mardi">+ Add</button></div><div class="mm-subject"><span class="mm-time">09:30–11:00</span><strong>TP Plan d'expérience</strong><span>DOUADI (S INF)</span></div><div class="mm-subject"><span class="mm-time">11:00–12:30</span><strong>Plan d'expérience</strong><span>DOUADI (A2)</span></div><div class="mm-subject"><span class="mm-time">12:30–15:30</span><strong>TP Calcul Num en GC</strong><span>M. BELGASMIA (A2)</span></div></article>
-    <article class="mm-node" id="day-mercredi"><div class="mm-day">MERCREDI <button class="btn-add" data-day="mercredi">+ Add</button></div><div class="mm-subject"><span class="mm-time">08:00–11:00</span><strong>MMC 1</strong><span>MANSOURI (A2)</span></div><div class="mm-subject"><span class="mm-time">11:00–12:30</span><strong>TD MMC1</strong><span>MANSOURI (A2)</span></div><div class="mm-subject"><span class="mm-time">12:30–14:00</span><strong>TP Python</strong><span>(Gi/15jrs)</span></div><div class="mm-subject"><span class="mm-time">14:00–15:30</span><strong>Programmation Python</strong><span>SAADI (A8)</span></div></article>
-    <article class="mm-node" id="day-jeudi"><div class="mm-day">JEUDI <button class="btn-add" data-day="jeudi">+ Add</button></div><div class="mm-subject"><strong>Projet personnel professionnel</strong><span>Volume horaire hors quota</span></div></article>
-  </div></section>
-  <section class="card task-section">
-    <div class="row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">Flexible task cards</h2><div style="color:var(--focus-muted);font-size:13px">Add the small actions that make each block useful.</div></div><div class="sp"></div><button id="addTask">＋ Add task</button></div>
+  <header>
+      <div class="brand"><img src="Focus%20bro.png" alt="Logo">FOCUS BRO</div>
+      <a class="back" href="Focus-Bro">← Focus room</a>
+  </header>
+
+  <section class="hero timetable-hero">
+    <div class="eyebrow" style="font-weight:bold; color:var(--focus-green-dark);">ING 4 CDD · Amphi 2</div>
+    <h1 style="margin: 5px 0 10px 0;">Emploi du temps &amp; Focus Space.</h1>
+    <p style="margin-top:0;">1er semestre · Your university schedule, arranged as an editable Focus Bro timetable.</p>
+  </section>
+
+  <div class="view-toggle-container">
+      <button class="toggle-btn active" id="btn-card-view">Card Mind Map</button>
+      <button class="toggle-btn" id="btn-roadmap-view">Roadmap View</button>
+  </div>
+
+  <button class="btn-add-day" onclick="addNewDay()">+ Add Entire New Day</button>
+
+  <!-- VIEW 1: CARD MIND MAP -->
+  <div id="mindmap-view-container" class="mindmap-view-container">
+      <div class="section-title" style="display:none;">Timetable Mind Map</div>
+      <section class="mindmap-container">
+        <div class="mindmap-canvas" id="mindmap-canvas">
+          <div class="mm-center">ING 4<br>CDD</div>
+          <!-- Dynamic Days injected here -->
+        </div>
+      </section>
+  </div>
+
+  <!-- VIEW 2: ROADMAP -->
+  <div id="roadmap-view-container" class="roadmap-view-container">
+      <!-- Dynamic Roadmap injected here -->
+  </div>
+
+  <!-- FLEXIBLE TASKS SECTION -->
+  <section class="task-section">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+            <h2 style="margin:0; font-family:var(--focus-heading);">Flexible task cards</h2>
+            <div style="color:var(--focus-muted);font-size:13px">Add the small actions that make each block useful.</div>
+        </div>
+        <div style="flex-grow:1;"></div>
+        <button id="addTask">+ Add task</button>
+    </div>
     <div id="tasks" class="task-grid"></div>
   </section>
 </main>
-<div class="timetable-modal" id="add-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="timetable-modal-box"><h2 id="modal-title">Add to timetable</h2><input id="modal-time" placeholder="Time or label (optional)"><input id="modal-subject" placeholder="Subject or session name" required><input id="modal-detail" placeholder="Detail, professor, or room (optional)"><div class="modal-actions"><button class="modal-cancel" id="modal-cancel">Cancel</button><button class="modal-save" id="modal-save">Save</button></div></div></div>
+
+<!-- MODAL FOR ADDING/EDITING CLASS -->
+<div class="timetable-modal" id="add-modal" role="dialog" aria-modal="true">
+    <div class="timetable-modal-box">
+        <h2 id="modal-title">Add to timetable</h2>
+        <input id="modal-time" placeholder="Time or label (e.g. 08:00 - 09:30)">
+        <input id="modal-subject" placeholder="Subject or session name" required>
+        <input id="modal-detail" placeholder="Detail, professor, or room">
+        <div class="modal-actions">
+            <button class="modal-cancel" id="modal-cancel">Cancel</button>
+            <button class="modal-save" id="modal-save">Save</button>
+        </div>
+    </div>
+</div>
+
 <script>
-(function(){
-  var timetableKey='focusbro.mindmap.v1',taskKey='focusbro.timetable.tasks.v1',targetDay='',saved=null;
-  function readTimetable(){try{saved=JSON.parse(FocusBroStore.getItem(timetableKey)||'null')}catch(e){saved=null}}
-  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function saveTimetable(){var data={};document.querySelectorAll('.mm-node').forEach(function(node){var day=node.id.replace('day-','');data[day]=[].slice.call(node.querySelectorAll('.mm-subject')).map(function(subject){return {html:subject.innerHTML}})});FocusBroStore.setItem(timetableKey,JSON.stringify(data))}
-  function loadTimetable(){readTimetable();if(!saved)return;document.querySelectorAll('.mm-node .mm-subject').forEach(function(subject){subject.remove()});Object.keys(saved).forEach(function(day){var node=document.getElementById('day-'+day);if(!node||!Array.isArray(saved[day]))return;saved[day].forEach(function(item){if(item&&item.html){var wrap=document.createElement('div');wrap.innerHTML='<div class="mm-subject">'+item.html+'</div>';node.appendChild(wrap.firstChild)}});bindDelete(node)})}
-  function bindDelete(scope){scope.querySelectorAll('.btn-del-subject').forEach(function(button){button.onclick=function(){if(confirm('Delete this timetable item?')){button.parentElement.remove();saveTimetable()}}})}
-  document.querySelectorAll('.mm-subject').forEach(function(subject){if(!subject.querySelector('.btn-del-subject')){var button=document.createElement('button');button.className='btn-del-subject';button.type='button';button.setAttribute('aria-label','Delete timetable item');button.textContent='x';subject.appendChild(button)}})
-  function openModal(day){targetDay=day;document.getElementById('modal-title').textContent='Add to '+day;document.getElementById('add-modal').classList.add('open');document.getElementById('modal-time').value='';document.getElementById('modal-subject').value='';document.getElementById('modal-detail').value='';document.getElementById('modal-subject').focus()}
-  function closeModal(){document.getElementById('add-modal').classList.remove('open')}
-  document.querySelectorAll('.btn-add').forEach(function(button){button.onclick=function(){openModal(button.dataset.day)}});document.getElementById('modal-cancel').onclick=closeModal;document.getElementById('add-modal').onclick=function(e){if(e.target===this)closeModal()};document.getElementById('modal-save').onclick=function(){var subject=document.getElementById('modal-subject').value.trim();if(!subject){document.getElementById('modal-subject').focus();return}var node=document.getElementById('day-'+targetDay.toLowerCase());var item=document.createElement('div');item.className='mm-subject';item.innerHTML=(document.getElementById('modal-time').value.trim()?'<span class="mm-time">'+esc(document.getElementById('modal-time').value.trim())+'</span>':'')+'<button class="btn-del-subject" type="button" aria-label="Delete timetable item">x</button><strong>'+esc(subject)+'</strong>'+(document.getElementById('modal-detail').value.trim()?'<span>'+esc(document.getElementById('modal-detail').value.trim())+'</span>':'');node.appendChild(item);bindDelete(node);saveTimetable();closeModal()};document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});document.querySelectorAll('.mm-node').forEach(bindDelete);
-  var tasks=[];function loadTasks(){try{tasks=JSON.parse(FocusBroStore.getItem(taskKey)||'null')||[{title:'Choose one lesson for the next focus block',category:'Learn',done:false},{title:'Write one retrieval question',category:'Revision',done:false}]}catch(e){tasks=[]}}
-  function saveTasks(){FocusBroStore.setItem(taskKey,JSON.stringify(tasks))}
-  function renderTasks(){document.getElementById('tasks').innerHTML=tasks.map(function(t,i){return '<article class="task-card'+(t.done?' done':'')+'"><button class="task-delete" data-task-remove="'+i+'" title="Delete task" aria-label="Delete task">×</button><label><input class="task-check" type="checkbox" data-task-done="'+i+'" '+(t.done?'checked':'')+'>Done</label><input class="task-title" data-task-title="'+i+'" value="'+esc(t.title)+'" aria-label="Task title"><select data-task-category="'+i+'" aria-label="Task category">'+['Learn','Revision','Self-teach','Rest'].map(function(c){return '<option'+(c===t.category?' selected':'')+'>'+c+'</option>'}).join('')+'</select></article>'}).join('');document.querySelectorAll('[data-task-title]').forEach(function(el){el.oninput=function(){tasks[+el.dataset.taskTitle].title=el.value;saveTasks()}});document.querySelectorAll('[data-task-category]').forEach(function(el){el.onchange=function(){tasks[+el.dataset.taskCategory].category=el.value;saveTasks()}});document.querySelectorAll('[data-task-done]').forEach(function(el){el.onchange=function(){tasks[+el.dataset.taskDone].done=el.checked;if(el.checked)FocusBroGame.award('task-'+el.dataset.taskDone+'-'+tasks[+el.dataset.taskDone].title,15);saveTasks();renderTasks()}});document.querySelectorAll('[data-task-remove]').forEach(function(el){el.onclick=function(){tasks.splice(+el.dataset.taskRemove,1);saveTasks();renderTasks()}})}
-  document.getElementById('addTask').onclick=function(){tasks.push({title:'New task',category:'Learn',done:false});saveTasks();renderTasks()};function hydrate(){loadTimetable();loadTasks();renderTasks()}FocusBroAuth.onReady(hydrate);
+(function() {
+    // --- LOCAL STORAGE FALLBACK (In case FocusBroStore isn't defined) ---
+    const Store = window.FocusBroStore || {
+        getItem: (k) => localStorage.getItem(k),
+        setItem: (k, v) => localStorage.setItem(k, v)
+    };
+
+    const timetableKey = 'focusbro.unified.timetable.v2';
+    const legacyTimetableKey = 'focusbro.timetable.v1';
+    const taskKey = 'focusbro.timetable.tasks.v1';
+
+    let appData = null;
+    let currentTargetDay = '';
+    let currentEditId = null;
+
+    // =========================================
+    // 1. TRIVIA GATE LOGIC (50+ Questions)
+    // =========================================
+    const triviaPool = [
+        { q: "What does the acronym 'CDD' stand for in your program name?", options: ["Construction et Développement Durable", "Civil Design & Development", "Calcul Différentiel Dynamique", "Centre de Développement Digital"], a: 0 },
+        { q: "Who is the professor for 'Renforcement des STRs' on Monday?", options: ["BOUDJELLAL", "MAGHAGHI", "MANSOURI", "SAADI"], a: 1 },
+        { q: "In which room does 'TD CDS' take place on Sunday?", options: ["A2", "A4", "A5", "A8"], a: 1 },
+        { q: "What is the typical duration of a standard university block (e.g., 08:00 to 09:30)?", options: ["45 minutes", "1 hour", "1.5 hours", "2 hours"], a: 2 },
+        { q: "Which subject is scheduled for Thursday?", options: ["Projet personnel professionnel", "MMC 1", "Programmation Python", "Métré et estimation"], a: 0 },
+        { q: "What does 'EAD' mean in the context of the Samedi class?", options: ["École Avancée de Design", "Enseignement à Distance", "Évaluation et Analyse de Données", "Étude Appliquée Dirigée"], a: 1 },
+        { q: "Who teaches 'Programmation Python' on Wednesday?", options: ["Mme. BELGASMIA", "DOUADI", "SAADI", "MANSOURI"], a: 2 },
+        { q: "On which day is 'TD DDS' scheduled at 12:30?", options: ["Dimanche", "Lundi", "Mardi", "Mercredi"], a: 1 },
+        { q: "What is the room number for 'TP Plan d'expérience'?", options: ["A2", "A4", "S INF", "D1"], a: 2 },
+        { q: "Which class takes place at 13:00 on Dimanche?", options: ["Conception des STRs", "TD CDS", "Métré et estimation des prix", "TD RRS"], a: 2 },
+        { q: "Who is the professor for 'MMC 1'?", options: ["MAGHAGHI", "MANSOURI", "DOUADI", "ALIOU"], a: 1 },
+        { q: "What does 'TD' usually stand for in a university timetable?", options: ["Travaux Dirigés", "Temps Disponible", "Test Diagnostique", "Travail de Documentation"], a: 0 },
+        { q: "What does 'TP' usually stand for?", options: ["Travaux Pratiques", "Temps Personnel", "Test de Progression", "Tâche Planifiée"], a: 0 },
+        { q: "On Mercredi, what class is scheduled at 14:00?", options: ["MMC 1", "TP Python", "TD MMC1", "Programmation Python"], a: 3 },
+        { q: "Which day has a class ending at 16:00?", options: ["Samedi", "Dimanche", "Lundi", "Mardi"], a: 1 },
+        { q: "Who teaches 'TD RRS' on Lundi?", options: ["Mme. BELGASMIA", "MAGHAGHI", "BOUDJELLAL", "ALIOU"], a: 1 },
+        { q: "In which room is 'DDS 1' located?", options: ["A2", "A5", "A14", "A8"], a: 1 },
+        { q: "How many distinct days are in a standard university week (Monday-Friday)?", options: ["4", "5", "6", "7"], a: 1 },
+        { q: "What is the Pomodoro Technique primarily used for?", options: ["Cooking", "Time Management & Focus", "Programming", "Calculating grades"], a: 1 },
+        { q: "What does 'Amphi 2' refer to?", options: ["A specific professor", "A type of exam", "An Amphitheater / Lecture Hall", "A computer software"], a: 2 },
+        { q: "Which subject is listed on Samedi?", options: ["MMC 1", "Corps d'état secondaire", "Métré et estimation", "TP Python"], a: 1 },
+        { q: "Who is the professor for 'TP Calcul Num en GC'?", options: ["DOUADI", "M. BELGASMIA", "SAADI", "MANSOURI"], a: 1 },
+        { q: "On Lundi, what is the first class of the day (08:00)?", options: ["DDS 1", "Renforcement des STRs", "TD RRS", "TD DDS"], a: 1 },
+        { q: "If a class is 1.5 hours long and starts at 09:30, what time does it end?", options: ["10:30", "11:00", "11:30", "12:00"], a: 1 },
+        { q: "What is the room for 'TD MMC1'?", options: ["A2", "A4", "A5", "A8"], a: 0 },
+        { q: "Which day starts with a class at 08:00?", options: ["Mardi", "Mercredi", "Jeudi", "Dimanche"], a: 1 },
+        { q: "What does the acronym 'GC' likely stand for in 'TP Calcul Num en GC'?", options: ["Génie Civil", "Génie Chimique", "Gestion de Compte", "Grand Calcul"], a: 0 },
+        { q: "How many days in this timetable have classes starting at 08:00?", options: ["1", "2", "3", "4"], a: 2 },
+        { q: "What is the best way to retain information from a lecture?", options: ["Highlighting everything", "Active recall & spaced repetition", "Reading notes once", "Cramming the night before"], a: 1 },
+        { q: "Which professor teaches on Mardi?", options: ["BOUDJELLAL", "DOUADI", "SAADI", "MAGHAGHI"], a: 1 },
+        { q: "On Mercredi, the 'TP Python' is marked with which condition?", options: ["Weekly", "Bi-weekly (15jrs)", "Monthly", "Once a semester"], a: 1 },
+        { q: "What is the room for 'Métré et estimation des prix'?", options: ["A2", "A4", "A5", "D1"], a: 0 },
+        { q: "What is a 'Mind Map' best used for?", options: ["Calculating math", "Visualizing connections and brainstorming", "Writing essays", "Memorizing dates"], a: 1 },
+        { q: "Which of these is NOT a typical engineering subject?", options: ["MMC", "Calcul Num", "STR", "Poetry"], a: 3 },
+        { q: "Who teaches 'Conception des STRs' on Dimanche?", options: ["BOUDJELLAL", "MAGHAGHI", "ALIOU", "MANSOURI"], a: 0 },
+        { q: "How long is the gap between 'TD CDS' and 'Métré et estimation' on Dimanche?", options: ["30 mins", "1 hour", "1.5 hours", "No gap"], a: 0 },
+        { q: "Which day has the most continuous classes?", options: ["Dimanche", "Lundi", "Mercredi", "Mardi"], a: 2 },
+        { q: "If you study for 50 minutes and rest for 10, what technique are you using?", options: ["Feynman Technique", "Pomodoro Technique", "Cornell Notes", "Mind Mapping"], a: 1 },
+        { q: "What room is used on Samedi?", options: ["A2", "A4", "A5", "EAD (Online)"], a: 3 },
+        { q: "Who teaches 'DDS 1'?", options: ["Mme. BELGASMIA", "MANSOURI", "DOUADI", "SAADI"], a: 0 },
+        { q: "What does the 'S' in 'S INF' likely stand for?", options: ["Salle", "Système", "Science", "Supérieur"], a: 0 },
+        { q: "Which subject is taught by ALIOU?", options: ["TD RRS", "Métré et estimation des prix", "TP Plan d'expérience", "MMC 1"], a: 1 },
+        { q: "Which day has a class from 12:30 to 15:30?", options: ["Samedi", "Lundi", "Mardi", "Dimanche"], a: 2 },
+        { q: "Which of these is a crucial part of effective studying?", options: ["Multitasking", "Adequate sleep", "Skipping meals", "All-nighters"], a: 1 },
+        { q: "How many different professors are listed on the timetable?", options: ["4", "5", "6", "8"], a: 3 },
+        { q: "What is the primary goal of a 'To-Do List'?", options: ["To look busy", "To clear your mind and track tasks", "To waste paper", "To memorize facts"], a: 1 },
+        { q: "Which day has no classes starting at 08:00?", options: ["Dimanche", "Lundi", "Mardi", "Mercredi"], a: 2 },
+        { q: "On Mardi, what is the room for 'Plan d'expérience'?", options: ["A2", "A4", "A5", "S INF"], a: 0 },
+        { q: "Which of these is a good habit for focus?", options: ["Checking phone every 5 mins", "Studying in a noisy cafe", "Putting phone in another room", "Listening to podcasts while reading"], a: 2 }
+    ];
+
+    function initTrivia() {
+        const randomIndex = Math.floor(Math.random() * triviaPool.length);
+        const currentTrivia = triviaPool[randomIndex];
+
+        document.getElementById('trivia-question').innerText = currentTrivia.q;
+
+        const optionsContainer = document.getElementById('trivia-options');
+        optionsContainer.innerHTML = '';
+        document.getElementById('trivia-error').innerText = '';
+
+        // Shuffle options
+        const shuffledOptions = currentTrivia.options.map((opt, i) => ({ text: opt, isCorrect: i === currentTrivia.a }));
+        shuffledOptions.sort(() => Math.random() - 0.5);
+
+        shuffledOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'trivia-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => checkAnswer(btn, opt.isCorrect);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(btn, isCorrect) {
+        const errorMsg = document.getElementById('trivia-error');
+        if (isCorrect) {
+            btn.classList.add('correct');
+            setTimeout(() => {
+                document.getElementById('trivia-gate').classList.add('hidden');
+                // Application is already hydrated in the background
+            }, 500);
+        } else {
+            btn.classList.add('wrong');
+            btn.disabled = true;
+            errorMsg.innerText = "Incorrect. Reflect on your schedule and try again.";
+            setTimeout(() => {
+                btn.classList.remove('wrong');
+                btn.disabled = false;
+                errorMsg.innerText = "";
+            }, 1500);
+        }
+    }
+
+    // =========================================
+    // 2. TIMETABLE DATA & RENDERING
+    // =========================================
+    function loadData() {
+        try {
+            const current = Store.getItem(timetableKey);
+            const legacy = Store.getItem(legacyTimetableKey);
+            appData = JSON.parse(current || legacy || 'null');
+            if (!current && legacy && appData) {
+                Store.setItem(timetableKey, JSON.stringify(appData));
+            }
+        } catch (e) {
+            appData = null;
+        }
+
+        if (!appData) {
+            appData = {
+                'SAMEDI': [
+                    { id: 's1', time: '08:00 - 09:30', subject: "Corps d'état secondaire", prof: 'HAMMOUCHE (EAD)' }
+                ],
+                'DIMANCHE': [
+                    { id: 's2', time: '08:00 - 09:30', subject: "Conception des STRs", prof: 'BOUDJELLAL (A2)' },
+                    { id: 's3', time: '09:30 - 11:00', subject: "Conception des STRs", prof: 'BOUDJELLAL (A2)' },
+                    { id: 's4', time: '11:00 - 12:30', subject: "TD CDS", prof: 'BOUDJELLAL (A4)' },
+                    { id: 's5', time: '13:00 - 16:00', subject: "Métré et estimation des prix", prof: 'ALIOU (A2)' }
+                ],
+                'LUNDI': [
+                    { id: 's6', time: '08:00 - 09:30', subject: "Renforcement des STRs", prof: 'MAGHAGHI (D1)' },
+                    { id: 's7', time: '09:30 - 11:00', subject: "DDS 1", prof: 'Mme. BELGASMIA (A5)' },
+                    { id: 's8', time: '11:00 - 12:30', subject: "TD RRS", prof: 'MAGHAGHI (A5)' },
+                    { id: 's9', time: '12:30 - 14:00', subject: "TD DDS", prof: 'Mme. BELGASMIA (A2)' }
+                ],
+                'MARDI': [
+                    { id: 's10', time: '09:30 - 11:00', subject: "TP Plan d'expérience", prof: 'DOUADI (S INF)' },
+                    { id: 's11', time: '11:00 - 12:30', subject: "Plan d'expérience", prof: 'DOUADI (A2)' },
+                    { id: 's12', time: '13:00 - 16:00', subject: "TP Calcul Num en GC", prof: 'M. BELGASMIA (A2)' }
+                ],
+                'MERCREDI': [
+                    { id: 's13', time: '08:00 - 09:30', subject: "MMC 1", prof: 'MANSOURI (A2)' },
+                    { id: 's14', time: '09:30 - 11:00', subject: "MMC 1", prof: 'MANSOURI (A2)' },
+                    { id: 's15', time: '11:00 - 12:30', subject: "TD MMC1", prof: 'MANSOURI (A2)' },
+                    { id: 's16', time: '12:30 - 14:00', subject: "TP Python", prof: '(Gi/15jrs)' },
+                    { id: 's17', time: '14:00 - 15:30', subject: "Programmation Python", prof: 'SAADI (A8)' }
+                ],
+                'JEUDI': [
+                    { id: 's18', time: '', subject: "Projet personnel professionnel", prof: 'Volume horaire hors quota' }
+                ]
+            };
+            saveData();
+        }
+    }
+
+    function saveData() {
+        Store.setItem(timetableKey, JSON.stringify(appData));
+        renderAllViews();
+    }
+
+    function esc(s) {
+        return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    }
+
+    function renderAllViews() {
+        renderMindMap();
+        renderRoadmap();
+    }
+
+    function renderMindMap() {
+        const canvas = document.getElementById('mindmap-canvas');
+        canvas.innerHTML = '<div class="mm-center">ING 4<br>CDD</div>';
+
+        for (const day in appData) {
+            const article = document.createElement('article');
+            article.className = 'mm-node';
+            article.id = 'mindmap-day-' + day;
+
+            let html = `
+                <button class="btn-del-day" onclick="window.deleteDay('${day}')">Delete Day</button>
+                <div class="mm-day">${day.toUpperCase()} <button class="btn-add" onclick="window.openModal('${day}')">+ Add</button></div>
+            `;
+
+            appData[day].forEach(item => {
+                html += `
+                    <div class="mm-subject">
+                        <button class="btn-del-subject" onclick="window.deleteSubject('${day}', '${item.id}')">x</button>
+                        ${item.time ? `<span class="mm-time">${esc(item.time)}</span>` : ''}
+                        <strong>${esc(item.subject)}</strong>
+                        ${item.prof ? `<span>${esc(item.prof)}</span>` : ''}
+                    </div>
+                `;
+            });
+
+            article.innerHTML = html;
+            canvas.appendChild(article);
+        }
+    }
+
+    function renderRoadmap() {
+        const container = document.getElementById('roadmap-view-container');
+        container.innerHTML = '';
+
+        for (const day in appData) {
+            const section = document.createElement('div');
+            section.className = 'roadmap-day-section';
+
+            let html = `
+                <div class="roadmap-day-dot"></div>
+                <div class="roadmap-day-header">
+                    <span>${day.toUpperCase()}</span>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-add" style="background:#ff4d4d;" onclick="window.deleteDay('${day}')">Delete</button>
+                        <button class="btn-add" onclick="window.openModal('${day}')">+ Add</button>
+                    </div>
+                </div>
+                <div class="roadmap-class-list">
+            `;
+
+            if (appData[day].length === 0) {
+                html += `<div style="text-align:center; padding: 10px; font-style: italic; color: #666; border: 2px dashed #ccc; border-radius: 10px;">No classes today</div>`;
+            } else {
+                appData[day].forEach(item => {
+                    html += `
+                        <div class="roadmap-class-card">
+                            <div class="roadmap-actions">
+                                <button class="btn-icon-sm btn-edit" onclick="window.openModal('${day}', '${item.id}')">Edit</button>
+                                <button class="btn-icon-sm btn-delete" onclick="window.deleteSubject('${day}', '${item.id}')">x</button>
+                            </div>
+                            ${item.time ? `<span class="roadmap-time-badge">${esc(item.time)}</span>` : ''}
+                            <div class="roadmap-subject-title">${esc(item.subject)}</div>
+                            ${item.prof ? `<div class="roadmap-subject-prof">${esc(item.prof)}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            section.innerHTML = html;
+            container.appendChild(section);
+        }
+    }
+
+    // =========================================
+    // 3. INTERACTION HANDLERS
+    // =========================================
+    window.openModal = function(day, editId = null) {
+        currentTargetDay = day;
+        currentEditId = editId;
+
+        const titleEl = document.getElementById('modal-title');
+        const timeInput = document.getElementById('modal-time');
+        const subInput = document.getElementById('modal-subject');
+        const detInput = document.getElementById('modal-detail');
+
+        if (editId) {
+            titleEl.innerText = 'Edit Class - ' + day.toUpperCase();
+            const item = appData[day].find(i => i.id === editId);
+            timeInput.value = item.time;
+            subInput.value = item.subject;
+            detInput.value = item.prof;
+        } else {
+            titleEl.innerText = 'Add to ' + day.toUpperCase();
+            timeInput.value = '';
+            subInput.value = '';
+            detInput.value = '';
+        }
+
+        document.getElementById('add-modal').classList.add('open');
+        subInput.focus();
+    };
+
+    function closeModal() {
+        document.getElementById('add-modal').classList.remove('open');
+    }
+
+    window.deleteSubject = function(day, id) {
+        if (confirm("Delete this timetable item?")) {
+            appData[day] = appData[day].filter(item => item.id !== id);
+            saveData();
+        }
+    };
+
+    window.deleteDay = function(day) {
+        if (confirm("Delete the entire " + day + " day?")) {
+            delete appData[day];
+            saveData();
+        }
+    };
+
+    window.addNewDay = function() {
+        const newDay = prompt("Enter the name of the new day (e.g., VENDREDI):");
+        if (newDay) {
+            const cleanDay = newDay.trim().toUpperCase();
+            if (appData[cleanDay]) {
+                alert("This day already exists!");
+            } else if (cleanDay) {
+                appData[cleanDay] = [];
+                saveData();
+            }
+        }
+    };
+
+    document.getElementById('modal-save').onclick = function() {
+        const time = document.getElementById('modal-time').value.trim();
+        const subject = document.getElementById('modal-subject').value.trim();
+        const prof = document.getElementById('modal-detail').value.trim();
+
+        if (!subject) {
+            document.getElementById('modal-subject').focus();
+            return;
+        }
+
+        if (currentEditId) {
+            const index = appData[currentTargetDay].findIndex(i => i.id === currentEditId);
+            appData[currentTargetDay][index] = { id: currentEditId, time, subject, prof };
+        } else {
+            const newId = 'cls_' + Date.now();
+            appData[currentTargetDay].push({ id: newId, time, subject, prof });
+        }
+
+        saveData();
+        closeModal();
+    };
+
+    document.getElementById('modal-cancel').onclick = closeModal;
+    document.getElementById('add-modal').onclick = function(e) { if (e.target === this) closeModal(); };
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+    // --- VIEW TOGGLING ---
+    const btnCard = document.getElementById('btn-card-view');
+    const btnRoadmap = document.getElementById('btn-roadmap-view');
+    const viewCard = document.getElementById('mindmap-view-container');
+    const viewRoadmap = document.getElementById('roadmap-view-container');
+
+    btnCard.onclick = function() {
+        this.classList.add('active');
+        btnRoadmap.classList.remove('active');
+        viewCard.classList.remove('hidden');
+        viewRoadmap.classList.remove('active');
+    };
+
+    btnRoadmap.onclick = function() {
+        this.classList.add('active');
+        btnCard.classList.remove('active');
+        viewCard.classList.add('hidden');
+        viewRoadmap.classList.add('active');
+    };
+
+    // =========================================
+    // 4. TASKS SECTION
+    // =========================================
+    let tasks = [];
+
+    function loadTasks() {
+        try {
+            tasks = JSON.parse(Store.getItem(taskKey) || 'null') || [
+                { title: 'Review STRs notes', category: 'Revision', done: false },
+                { title: 'Prepare questions for MMC', category: 'Learn', done: false }
+            ];
+        } catch (e) {
+            tasks = [];
+        }
+    }
+
+    function saveTasks() {
+        Store.setItem(taskKey, JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+        document.getElementById('tasks').innerHTML = tasks.map((t, i) => `
+            <article class="task-card ${t.done ? 'done' : ''}">
+                <button class="task-delete" data-task-remove="${i}" title="Delete">×</button>
+                <label>
+                    <input class="task-check" type="checkbox" data-task-done="${i}" ${t.done ? 'checked' : ''}> Done
+                </label>
+                <input class="task-title" data-task-title="${i}" value="${esc(t.title)}" placeholder="Task name">
+                <select data-task-category="${i}">
+                    ${['Learn', 'Revision', 'Self-teach', 'Rest'].map(c => `<option ${c === t.category ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+            </article>
+        `).join('');
+
+        document.querySelectorAll('[data-task-title]').forEach(el => {
+            el.oninput = function() { tasks[+el.dataset.taskTitle].title = el.value; saveTasks(); };
+        });
+        document.querySelectorAll('[data-task-category]').forEach(el => {
+            el.onchange = function() { tasks[+el.dataset.taskCategory].category = el.value; saveTasks(); };
+        });
+        document.querySelectorAll('[data-task-done]').forEach(el => {
+            el.onchange = function() {
+                tasks[+el.dataset.taskDone].done = el.checked;
+                if (el.checked && window.FocusBroGame) {
+                    FocusBroGame.award('task-' + el.dataset.taskDone + '-' + tasks[+el.dataset.taskDone].title, 15);
+                }
+                saveTasks();
+                renderTasks();
+            };
+        });
+        document.querySelectorAll('[data-task-remove]').forEach(el => {
+            el.onclick = function() {
+                tasks.splice(+el.dataset.taskRemove, 1);
+                saveTasks();
+                renderTasks();
+            };
+        });
+    }
+
+    document.getElementById('addTask').onclick = function() {
+        tasks.push({ title: 'New task', category: 'Learn', done: false });
+        saveTasks();
+        renderTasks();
+    };
+
+    // =========================================
+    // 5. INITIALIZATION (The Fix)
+    // =========================================
+    function hydrate() {
+        loadData();
+        loadTasks();
+        renderTasks();
+        initTrivia();
+    }
+
+    // Ensure auth integration works smoothly with the new hydrate function
+    if(window.FocusBroAuth) {
+        FocusBroAuth.onReady(hydrate);
+    } else {
+        document.addEventListener('DOMContentLoaded', hydrate);
+    }
+
 })();
 </script>
 <script src="focus-bro-nav.js"></script>
