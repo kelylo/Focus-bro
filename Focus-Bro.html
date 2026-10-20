@@ -110,7 +110,8 @@ h3{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;c
 <script>
 (function(){
 var KEY='lockin.v1', S={vids:[],cur:null,log:{}}, cur=null, pos=0, dur=0, state=-1, lastSave=0, iframe=null, ping=null;
-try{var raw=FocusBroStore.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function loadStore(){try{var raw=FocusBroStore.getItem(KEY);if(raw)S=Object.assign({vids:[],cur:null,log:{}},JSON.parse(raw))}catch(e){}}
+loadStore();
 function save(){try{FocusBroStore.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function $(i){return document.getElementById(i)}
 function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')}
@@ -244,7 +245,7 @@ $('themeBtn').onclick=function(){
   sessionStorage.setItem('focusbro.theme',dark?'light':'dark');
 };
 renderAll();
-window.addEventListener('focusbro:state-ready',renderAll);
+window.addEventListener('focusbro:state-ready',function(){loadStore();cur=S.cur&&find(S.cur)||S.vids[0]||null;if(cur){pos=cur.pos||0;dur=cur.dur||0}renderAll();if(cur)mount()});
 if(S.cur&&find(S.cur)){cur=find(S.cur);pos=cur.pos||0;dur=cur.dur||0;renderAll();mount()}
 else if(S.vids[0]) open(S.vids[0].id);
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('focus-bro-sw.js?v=14').then(function(){},function(){})}

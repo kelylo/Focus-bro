@@ -45,6 +45,7 @@
   }
   function cloudState(){
     if(!state.user)return Promise.resolve(null);
+    setStatus('loading');
     return request('/rest/v1/focus_bro_state?select=state&user_id=eq.'+encodeURIComponent(state.user.id),{token:state.session.access_token}).then(function(rows){return rows[0]?rows[0].state:null});
   }
   function saveState(data,options){
@@ -61,12 +62,14 @@
     var cached=cachedState();
     if(cached)apply(cached);
     cloudState().then(function(cloud){
-      if(cloud){apply(cloud);cacheState(cloud);return}
+      if(cloud){apply(cloud);cacheState(cloud);setStatus('saved');return}
       var current=collect();
       if(Object.keys(current).length)return saveState(current);
+      setStatus('empty');
     }).then(function(){
       window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
-    }).catch(function(){
+    }).catch(function(error){
+      setStatus('error',error.message);
       window.dispatchEvent(new CustomEvent('focusbro:state-ready'));
     }).then(function(){hydrating=false});
   }
@@ -91,6 +94,15 @@
     getItem:function(k){return Object.prototype.hasOwnProperty.call(memory,k)?memory[k]:null},
     setItem:function(k,v){memory[k]=String(v);if(syncKeys.indexOf(k)!==-1)queueCloudSave()},
     removeItem:function(k){delete memory[k];if(syncKeys.indexOf(k)!==-1)queueCloudSave()}
+  };
+  window.FocusBroStore.exportData=function(){return {version:1,userId:state.user&&state.user.id||null,exportedAt:new Date().toISOString(),state:collect()}};
+  window.FocusBroStore.importData=function(payload){
+    if(!state.user)return Promise.reject(new Error('Sign in before importing a backup.'));
+    if(!payload||payload.version!==1||!payload.state||typeof payload.state!=='object')return Promise.reject(new Error('That backup file is not a Focus Bro export.'));
+    return cloudState().then(function(cloud){
+      if(cloud&&Object.keys(cloud).length)return Promise.reject(new Error('Cloud data already exists. Export it first; import will not overwrite it.'));
+      apply(payload.state);return saveState(collect());
+    });
   };
   var gameKey='focusbro.game.v1',defaultGame={xp:0,awards:{}};
   function gameData(){var game=defaultGame;try{game=Object.assign({},defaultGame,JSON.parse(window.FocusBroStore.getItem(gameKey)||'{}'));game.awards=game.awards||{}}catch(e){}return game}

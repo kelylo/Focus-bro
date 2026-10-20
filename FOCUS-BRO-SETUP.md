@@ -17,6 +17,8 @@ on conflict (email) do nothing;
 4. In Authentication settings, keep email/password enabled, configure the Site URL and redirect URLs for the deployed app, and enable email confirmation if desired.
 5. Add the deployed app URL to the password-reset redirect allowlist. The UI uses Supabase's `/auth/v1/recover` endpoint.
 
+The application expects `public.focus_bro_state` to exist. If the app shows `Sync failed` and the browser network request to `/rest/v1/focus_bro_state` returns `404`, the SQL migration has not been run in this Supabase project. Do not keep editing data in multiple browsers until the migration is applied.
+
 The frontend contains only the public project URL and publishable key. Never put a service-role key in this repository. `focus_bro_state` is protected by RLS, and the allowlist trigger rejects new accounts not explicitly approved by the owner.
 
 ## Persistence model
@@ -42,6 +44,8 @@ select user_id, state, updated_at from public.focus_bro_state;
 ```
 
 The current release does not delete or reshape existing state. Older keys are retained and included in the shared sync allowlist.
+
+If Chrome has data while another browser does not, sign in to Chrome, open Profile, choose **Export backup**, apply the SQL migration, sign in to the same account in the target browser, and choose **Import backup** there. Import refuses to overwrite a non-empty cloud row. Repeat imports are therefore safe and do not create duplicate records because the state is keyed by the authenticated user's UUID.
 
 ## Verification checklist
 
