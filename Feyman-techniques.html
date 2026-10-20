@@ -3,39 +3,453 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Focus Bro — Feynman Method</title>
+<title>Focus Bro — Feynman Quest</title>
 <meta name="theme-color" content="#ffd32a">
 <link rel="icon" type="image/png" href="Focus%20bro.png">
 <link rel="manifest" href="focus-bro-manifest.json">
 <link rel="stylesheet" href="focus-bro.css">
 <script src="supabase-config.js"></script>
 <script src="focus-bro-auth.js"></script>
-<style>
-.feynman{max-width:1100px;margin:auto;padding:24px}
-.feynman header{display:flex;align-items:center;gap:18px;border-bottom:1px solid #eadfb8;padding:12px 0 20px;background:transparent;position:static}
-.feynman .brand{font:800 20px Fraunces;color:#111114;letter-spacing:.04em}
-.feynman .sp{flex:1}.feynman .back{color:#706b63;text-decoration:none}
-.hero{padding:70px 0 34px;max-width:760px}.eyebrow{color:#dc8250;text-transform:uppercase;letter-spacing:.2em;font-size:11px}
-.hero h1{font:800 clamp(42px,7vw,78px)/.98 Fraunces;margin:12px 0;color:#111114}.hero p{color:#706b63;font-size:18px}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{background:#fff;border:1px solid #eadfb8;border-radius:18px;padding:22px;box-shadow:0 14px 40px rgba(17,17,20,.07)}.step strong{display:block;color:#dc8250;font:800 40px Fraunces}.step h2{font:600 25px Fraunces;margin:10px 0 6px}.step p{color:#706b63}.prompt{margin-top:14px;padding:14px;border-left:3px solid #ffd32a;background:#fff4c7;font-size:13px}
-.practice{margin-top:18px;background:#111114;color:#fff;border-radius:18px;padding:24px}.practice h2{font:600 28px Fraunces;color:#ffd32a;margin-top:0}.practice textarea{width:100%;min-height:130px;resize:vertical;border:1px solid #3a3942;border-radius:12px;padding:12px;background:#25252d;color:#fff;font:inherit}.practice button{margin-top:12px;border:0;border-radius:10px;padding:10px 14px;background:#ffd32a;color:#111114;font-weight:700;cursor:pointer}.saved{color:#ffd32a;font-size:12px;margin-left:8px}.reflection{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.reflection label{display:block;color:#aaa6a0;font-size:12px;text-transform:uppercase;letter-spacing:.12em;margin:10px 0 6px}.reflection select{width:100%;padding:10px;border-radius:10px;background:#25252d;color:#fff;border:1px solid #3a3942}.reflection textarea{min-height:90px}.checkline{display:flex;gap:9px;align-items:center;margin-top:12px;color:#fff;font-size:13px}.checkline input{accent-color:#ffd32a}@media(max-width:600px){.reflection{grid-template-columns:1fr}}
-@media(max-width:850px){.steps{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.feynman{padding:18px}.steps{grid-template-columns:1fr}.hero{padding-top:48px}}
-</style>
 </head>
 <body>
 <div class="feynman">
-<header><div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo" style="width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:8px">FOCUS BRO</div><div class="sp"></div><a class="back" href="Focus-Bro">← Focus room</a></header>
+<header>
+    <div class="brand"><img src="Focus%20bro.png" alt="Focus Bro logo">FOCUS BRO</div>
+    <div class="sp"></div>
+    <a class="back" href="Focus-Bro">← Focus room</a>
+</header>
+
 <main>
-<section class="hero"><div class="eyebrow">The explain-to-learn loop</div><h1>Make it simple.<br>Make it yours.</h1><p>The Feynman technique turns passive watching into proof that you understand. Use it after a lesson, then return to the room and capture the gaps as timestamped notes.</p></section>
-<section class="steps">
-<article class="step"><strong>01</strong><h2>Choose</h2><p>Pick one idea from your lesson. Keep it narrow enough to explain in two minutes.</p><div class="prompt">“What exactly am I trying to understand?”</div></article>
-<article class="step"><strong>02</strong><h2>Explain</h2><p>Write or speak as if you are teaching a curious beginner. Use plain words, not impressive words.</p><div class="prompt">“How would I explain this without jargon?”</div></article>
-<article class="step"><strong>03</strong><h2>Find gaps</h2><p>Circle every place where you hesitate, hand-wave, or reach for the source. Those are your next study targets.</p><div class="prompt">“Where did my explanation become vague?”</div></article>
-<article class="step"><strong>04</strong><h2>Simplify</h2><p>Return to the video, close the gap, and rewrite the explanation with a useful example or analogy.</p><div class="prompt">“Can I make this clearer in one sentence?”</div></article>
-</section>
-<section class="practice"><h2>Try it now</h2><p>Choose a concept from your current lesson and explain it below. This is saved on this device.</p><textarea id="explain" placeholder="I am explaining..."></textarea><div class="reflection"><div><label for="confidence">How clear is it?</label><select id="confidence"><option value="">Choose a confidence level</option><option>Still foggy</option><option>Getting there</option><option>Clear enough to teach</option></select><label class="checkline"><input type="checkbox" id="gap"> I found and fixed a gap</label></div><div><label for="example">Give one concrete example</label><textarea id="example" placeholder="For example..."></textarea></div></div><div><button id="save">Save reflection</button><span class="saved" id="saved"></span></div></section>
-</main></div>
-<script>(function(){var k='focusbro.feynman.v2',d={explain:'',example:'',confidence:'',gap:false};var el=document.getElementById('explain'),ex=document.getElementById('example'),co=document.getElementById('confidence'),gap=document.getElementById('gap'),saved=document.getElementById('saved');function load(){try{d=Object.assign({explain:'',example:'',confidence:'',gap:false},JSON.parse(FocusBroStore.getItem(k)||'{}'))}catch(e){}el.value=d.explain||'';ex.value=d.example||'';co.value=d.confidence||'';gap.checked=!!d.gap}document.getElementById('save').onclick=function(){d={explain:el.value,example:ex.value,confidence:co.value,gap:gap.checked};FocusBroStore.setItem(k,JSON.stringify(d));FocusBroGame.award('feynman-reflection',30);saved.textContent='Saved';setTimeout(function(){saved.textContent=''},1400)}FocusBroAuth.onReady(load)})()</script>
+    <section class="hero">
+        <div class="eyebrow">The explain-to-learn loop</div>
+        <h1>Feynman Quest.<br>Master the concept.</h1>
+        <p>Turn passive watching into proof that you understand. Complete the 4 levels to earn XP. You must pass a Knowledge Check at each stage to proceed.</p>
+    </section>
+
+    <!-- HUD -->
+    <div class="game-hud">
+        <div>STATUS: <span id="status-text">READY</span></div>
+        <div class="xp-counter">XP: <span id="xp-display">0</span></div>
+    </div>
+
+    <section class="steps" id="game-steps">
+        <article class="step active" id="step-1" data-level="1">
+            <strong>01</strong>
+            <h2>Choose</h2>
+            <p>Pick one idea from your lesson. Keep it narrow enough to explain in two minutes.</p>
+            <div class="prompt">“What exactly am I trying to understand?”</div>
+        </article>
+        <article class="step" id="step-2" data-level="2">
+            <strong>02</strong>
+            <h2>Explain</h2>
+            <p>Write or speak as if teaching a beginner. Use plain words, not impressive words.</p>
+            <div class="prompt">“How would I explain this without jargon?”</div>
+        </article>
+        <article class="step" id="step-3" data-level="3">
+            <strong>03</strong>
+            <h2>Find Gaps</h2>
+            <p>Circle where you hesitate. Those are your study targets.</p>
+            <div class="prompt">“Where did my explanation become vague?”</div>
+        </article>
+        <article class="step" id="step-4" data-level="4">
+            <strong>04</strong>
+            <h2>Simplify</h2>
+            <p>Close the gap and rewrite the explanation with a useful example.</p>
+            <div class="prompt">“Can I make this clearer in one sentence?”</div>
+        </article>
+    </section>
+
+    <!-- Interactive Area -->
+    <section class="practice">
+        <h2 id="practice-title">Level 1: Choose your concept</h2>
+        <p id="practice-desc">Enter the specific topic or concept you are going to master right now.</p>
+
+        <textarea id="input-main" placeholder="I am trying to understand..."></textarea>
+
+        <div class="reflection" id="extra-fields" hidden>
+            <div>
+                <label for="confidence">How clear is it?</label>
+                <select id="confidence">
+                    <option value="">Choose a confidence level</option>
+                    <option>Still foggy</option>
+                    <option>Getting there</option>
+                    <option>Clear enough to teach</option>
+                </select>
+                <label class="checkline"><input type="checkbox" id="gap"> I found and fixed a gap</label>
+            </div>
+            <div>
+                <label for="example">Give one concrete example</label>
+                <textarea id="example" placeholder="For example..."></textarea>
+            </div>
+        </div>
+
+        <!-- Trivia Mini-Game -->
+        <div class="trivia-box" id="trivia-container">
+            <div class="trivia-question" id="trivia-q">Loading question...</div>
+            <div class="trivia-options" id="trivia-opts"></div>
+        </div>
+
+        <div class="practice-actions">
+            <button id="save-btn" hidden>Save Reflection</button>
+            <button id="action-btn" disabled>Lock Level</button>
+        </div>
+    </section>
+</main>
+</div>
+
+<script>
+(function(){
+    // --- STATE MANAGEMENT ---
+    const K_PROGRESS = 'focusbro.feynman.game.v3';
+    const K_DATA = 'focusbro.feynman.v2'; // Original data key
+    let gameState = {
+        xp: 0,
+        currentLevel: 1,
+        maxLevel: 4,
+        completedLevels: []
+    };
+    let data = { explain: '', example: '', confidence: '', gap: false };
+
+    // DOM Elements
+    const elMain = document.getElementById('input-main');
+    const elExample = document.getElementById('example');
+    const elConfidence = document.getElementById('confidence');
+    const elGap = document.getElementById('gap');
+    const elExtra = document.getElementById('extra-fields');
+
+    const btnAction = document.getElementById('action-btn');
+    const btnSave = document.getElementById('save-btn');
+    const triviaContainer = document.getElementById('trivia-container');
+    const triviaQ = document.getElementById('trivia-q');
+    const triviaOpts = document.getElementById('trivia-opts');
+
+    const statusText = document.getElementById('status-text');
+    const xpDisplay = document.getElementById('xp-display');
+
+    // --- 50+ TRIVIA QUESTIONS (Engineering & Study Focus) ---
+    const triviaPool = [
+        { q: "What is the primary goal of the Feynman Technique?", a: ["To memorize dates", "To explain concepts in simple terms", "To read faster", "To write essays"], c: 1 },
+        { q: "In 'ING 4 CDD', what does 'CDD' stand for?", a: ["Construction Durable et Design", "Civil Design & Development", "Calcul Différentiel Dynamique", "Centre de Développement Digital"], c: 0 },
+        { q: "Which subject involves 'TD RRS' on Monday?", a: ["MMC 1", "STRs", "Python", "DDS"], c: 1 },
+        { q: "Who teaches 'Programmation Python' on Wednesday?", a: ["BOUDJELLAL", "SAADI", "MANSOURI", "DOUADI"], c: 1 },
+        { q: "What does 'TP' stand for in university timetables?", a: ["Travaux Pratiques", "Temps Personnel", "Test de Progression", "Tâche Planifiée"], c: 0 },
+        { q: "If a class starts at 09:30 and lasts 1.5 hours, when does it end?", a: ["10:30", "11:00", "11:30", "12:00"], c: 1 },
+        { q: "What does 'EAD' mean?", a: ["Enseignement à Distance", "Examen Anticipé Dirigé", "Étude Avancée de Données", "École d'Architecture et Design"], c: 0 },
+        { q: "Which day has a class from 13:00 to 16:00?", a: ["Dimanche", "Lundi", "Mardi", "Mercredi"], c: 0 },
+        { q: "What is the Pomodoro Technique?", a: ["A cooking method", "A time management method (25m work/5m break)", "A type of exam", "A programming language"], c: 1 },
+        { q: "Who teaches 'MMC 1'?", a: ["MAGHAGHI", "MANSOURI", "DOUADI", "ALIOU"], c: 1 },
+        { q: "What does 'Amphi 2' refer to?", a: ["A specific professor", "A type of exam", "An Amphitheater / Lecture Hall", "A computer software"], c: 2 },
+        { q: "Which subject is listed on Samedi?", a: ["MMC 1", "Corps d'état secondaire", "Métré et estimation", "TP Python"], c: 1 },
+        { q: "What is the room for 'TD CDS' on Sunday?", a: ["A2", "A4", "A5", "A8"], c: 1 },
+        { q: "What is a 'Mind Map' best used for?", a: ["Calculating math", "Visualizing connections and brainstorming", "Writing essays", "Memorizing dates"], c: 1 },
+        { q: "Which of these is NOT a typical engineering subject?", a: ["MMC", "Calcul Num", "STR", "Poetry"], c: 3 },
+        { q: "Who teaches 'Conception des STRs'?", a: ["BOUDJELLAL", "MAGHAGHI", "ALIOU", "MANSOURI"], c: 0 },
+        { q: "What is the best way to retain information from a lecture?", a: ["Highlighting everything", "Active recall & spaced repetition", "Reading notes once", "Cramming the night before"], c: 1 },
+        { q: "Who teaches 'DDS 1'?", a: ["Mme. BELGASMIA", "MANSOURI", "DOUADI", "SAADI"], c: 0 },
+        { q: "Which subject is taught by ALIOU?", a: ["TD RRS", "Métré et estimation des prix", "TP Plan d'expérience", "MMC 1"], c: 1 },
+        { q: "What does the 'S' in 'S INF' likely stand for?", a: ["Salle", "Système", "Science", "Supérieur"], c: 0 },
+        { q: "Which day has the most continuous classes?", a: ["Dimanche", "Lundi", "Mercredi", "Mardi"], c: 2 },
+        { q: "What does 'TD' stand for?", a: ["Travaux Dirigés", "Temps Disponible", "Test Diagnostique", "Travail de Documentation"], c: 0 },
+        { q: "Who teaches 'TP Calcul Num en GC'?", a: ["DOUADI", "M. BELGASMIA", "SAADI", "MANSOURI"], c: 1 },
+        { q: "What is the first step to solve a complex engineering problem?", a: ["Start calculating", "Draw a diagram", "Define the problem clearly", "Ask a friend"], c: 2 },
+        { q: "What is the purpose of a 'To-Do List'?", a: ["To look busy", "To clear your mind and track tasks", "To waste paper", "To memorize facts"], c: 1 },
+        { q: "Which room is used for 'MMC 1' on Wednesday?", a: ["A2", "A4", "A5", "A8"], c: 0 },
+        { q: "Who is the professor for 'Renforcement des STRs'?", a: ["BOUDJELLAL", "MAGHAGHI", "MANSOURI", "SAADI"], c: 1 },
+        { q: "What is the typical duration of a standard university block?", a: ["45 minutes", "1 hour", "1.5 hours", "2 hours"], c: 2 },
+        { q: "What does the acronym 'GC' likely stand for in 'TP Calcul Num en GC'?", a: ["Génie Civil", "Génie Chimique", "Gestion de Compte", "Grand Calcul"], c: 0 },
+        { q: "Which class takes place at 13:00 on Dimanche?", a: ["Conception des STRs", "TD CDS", "Métré et estimation des prix", "TD RRS"], c: 2 },
+        { q: "What is a 'gap' in the Feynman technique?", a: ["A break time", "A moment of hesitation or lack of understanding", "A physical space", "A type of exam"], c: 1 },
+        { q: "Which day starts with a class at 08:00?", a: ["Mardi", "Mercredi", "Jeudi", "Samedi"], c: 3 },
+        { q: "What is the room for 'Métré et estimation des prix'?", a: ["A2", "A4", "A5", "D1"], c: 0 },
+        { q: "Why is sleep important for studying?", a: ["It wastes time", "It helps consolidate memory", "It makes you tired", "It doesn't matter"], c: 1 },
+        { q: "Who teaches 'TD RRS' on Lundi?", a: ["Mme. BELGASMIA", "MAGHAGHI", "BOUDJELLAL", "ALIOU"], c: 1 },
+        { q: "What is active recall?", a: ["Re-reading notes", "Testing yourself without looking at the answer", "Listening to a podcast", "Highlighting text"], c: 1 },
+        { q: "Which of these is a good habit for focus?", a: ["Checking phone every 5 mins", "Studying in a noisy cafe", "Putting phone in another room", "Listening to podcasts while reading"], c: 2 },
+        { q: "What does 'Volume horaire hors quota' mean?", a: ["Hours outside the standard quota", "Extra credit", "Mandatory hours", "Missed classes"], c: 0 },
+        { q: "On Mercredi, what class is scheduled at 14:00?", a: ["MMC 1", "TP Python", "TD MMC1", "Programmation Python"], c: 3 },
+        { q: "What is spaced repetition?", a: ["Studying everything at once", "Reviewing material at increasing intervals", "Cramming", "Skipping topics"], c: 1 },
+        { q: "Which day has a class ending at 16:00?", a: ["Samedi", "Dimanche", "Lundi", "Mardi"], c: 1 },
+        { q: "Who teaches 'TD DDS'?", a: ["Mme. BELGASMIA", "MAGHAGHI", "BOUDJELLAL", "ALIOU"], c: 0 },
+        { q: "What is the 'Feynman Technique' named after?", a: ["A famous author", "A Nobel Prize-winning physicist", "A university", "A software"], c: 1 },
+        { q: "In which room is 'DDS 1' located?", a: ["A2", "A5", "A14", "A8"], c: 1 },
+        { q: "What is the best time to review notes?", a: ["Right before the exam", "Within 24 hours of the lecture", "Never", "Once a month"], c: 1 },
+        { q: "Who is the professor for 'TP Plan d'expérience'?", a: ["DOUADI", "M. BELGASMIA", "SAADI", "MANSOURI"], c: 0 },
+        { q: "What does 'CM' usually stand for in university?", a: ["Cours Magistral", "Certificat Médical", "Calcul Mental", "Centre de Maths"], c: 0 },
+        { q: "Which subject is taught on Thursday?", a: ["Projet personnel professionnel", "MMC 1", "Programmation Python", "Métré et estimation"], c: 0 },
+        { q: "What is the main benefit of the Feynman technique?", a: ["It's fast", "It exposes gaps in your understanding", "It requires no effort", "It replaces lectures"], c: 1 },
+        { q: "How many distinct days are in a standard university week (Mon-Fri)?", a: ["4", "5", "6", "7"], c: 1 }
+    ];
+
+    let currentTrivia = null;
+    let isTriviaAnswered = false;
+
+    // --- INITIALIZATION ---
+    function init() {
+        loadState();
+        loadData();
+        updateUI();
+        setupEventListeners();
+    }
+
+    function loadState() {
+        try {
+            const saved = FocusBroStore.getItem(K_PROGRESS);
+            if (saved) gameState = JSON.parse(saved);
+        } catch(e) {}
+        xpDisplay.innerText = gameState.xp;
+    }
+
+    function loadData() {
+        try {
+            data = Object.assign(data, JSON.parse(FocusBroStore.getItem(K_DATA) || '{}'));
+        } catch(e) {}
+
+        if(gameState.currentLevel > 1) {
+            elMain.value = data.explain || '';
+        }
+        elExample.value = data.example || '';
+        elConfidence.value = data.confidence || '';
+        elGap.checked = !!data.gap;
+    }
+
+    function saveState() {
+        FocusBroStore.setItem(K_PROGRESS, JSON.stringify(gameState));
+        xpDisplay.innerText = gameState.xp;
+    }
+
+    function saveData() {
+        FocusBroStore.setItem(K_DATA, JSON.stringify(data));
+    }
+
+    // --- GAME LOGIC ---
+    function updateUI() {
+        // Update Steps UI
+        document.querySelectorAll('.step').forEach(el => {
+            el.classList.remove('active', 'completed');
+            const level = parseInt(el.dataset.level);
+            if (gameState.completedLevels.includes(level)) {
+                el.classList.add('completed');
+            } else if (level === gameState.currentLevel) {
+                el.classList.add('active');
+            }
+        });
+
+        // Update Practice Area
+        const titleEl = document.getElementById('practice-title');
+        const descEl = document.getElementById('practice-desc');
+
+        btnSave.hidden = true;
+        btnAction.hidden = false;
+        btnAction.disabled = true;
+        btnAction.innerText = 'Lock Level';
+        triviaContainer.classList.remove('active');
+        isTriviaAnswered = false;
+
+        if (gameState.currentLevel === 1) {
+            titleEl.innerText = "Level 1: Choose your concept";
+            descEl.innerText = "Enter the specific topic or concept you are going to master right now.";
+            elMain.placeholder = "I am trying to understand...";
+            elExtra.hidden = true;
+            elMain.readOnly = false;
+            checkActionButtonState();
+        }
+        else if (gameState.currentLevel === 2) {
+            titleEl.innerText = "Level 2: Explain simply";
+            descEl.innerText = "Explain your concept as if teaching a 10-year-old. No jargon allowed.";
+            elMain.placeholder = "To explain this simply, it's like...";
+            elExtra.hidden = true;
+            elMain.readOnly = false;
+            checkActionButtonState();
+        }
+        else if (gameState.currentLevel === 3) {
+            titleEl.innerText = "Level 3: Find Gaps";
+            descEl.innerText = "Review your explanation. Where did you hesitate? Check the box below if you found a gap.";
+            elExtra.hidden = false;
+            elMain.readOnly = true; // Read only to reflect
+            elExample.readOnly = true;
+            elConfidence.disabled = false;
+            elGap.disabled = false;
+
+            // Set up trivia for this level
+            setupTrivia();
+        }
+        else if (gameState.currentLevel === 4) {
+            titleEl.innerText = "Level 4: Simplify & Master";
+            descEl.innerText = "Rewrite your explanation incorporating the fix for the gap. Provide a concrete example.";
+            elExtra.hidden = false;
+            elMain.readOnly = false;
+            elExample.readOnly = false;
+            elConfidence.disabled = false;
+            elGap.disabled = false;
+
+            setupTrivia();
+        }
+        else {
+            // Game Complete
+            titleEl.innerText = "Quest Complete!";
+            descEl.innerText = "You have mastered this concept. You can reset to start a new topic.";
+            elMain.hidden = true;
+            elExtra.hidden = true;
+            btnAction.hidden = true;
+            btnSave.hidden = false;
+            btnSave.innerText = "Start New Concept";
+            statusText.innerText = "MASTERED";
+            statusText.classList.add('status-success');
+        }
+    }
+
+    function checkActionButtonState() {
+        if (gameState.currentLevel === 1 || gameState.currentLevel === 2) {
+            btnAction.disabled = elMain.value.trim().length < 15;
+        }
+    }
+
+    // --- TRIVIA MINI-GAME ---
+    function setupTrivia() {
+        // Pick random question
+        currentTrivia = triviaPool[Math.floor(Math.random() * triviaPool.length)];
+        triviaQ.innerText = currentTrivia.q;
+        triviaOpts.innerHTML = '';
+
+        // Shuffle options
+        const opts = currentTrivia.a.map((text, i) => ({ text, isCorrect: i === currentTrivia.c }));
+        opts.sort(() => Math.random() - 0.5);
+
+        opts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'trivia-opt';
+            btn.innerText = opt.text;
+            btn.onclick = () => handleTriviaAnswer(btn, opt.isCorrect);
+            triviaOpts.appendChild(btn);
+        });
+
+        triviaContainer.classList.add('active');
+        btnAction.innerText = "Unlock Level";
+    }
+
+    function handleTriviaAnswer(btn, isCorrect) {
+        if (isTriviaAnswered) return;
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+            isTriviaAnswered = true;
+            btnAction.disabled = false;
+
+            // Award XP for knowledge
+            awardXP(10, btn.parentElement.parentElement);
+
+            // Disable other buttons
+            Array.from(triviaOpts.children).forEach(b => {
+                if (b !== btn) b.style.opacity = '0.5';
+                b.disabled = true;
+            });
+        } else {
+            btn.classList.add('wrong');
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.classList.remove('wrong');
+                btn.disabled = false;
+            }, 1000);
+        }
+    }
+
+    // --- ACTION HANDLERS ---
+    function awardXP(amount, targetEl) {
+        gameState.xp += amount;
+        saveState();
+
+        // Visual Float
+        const floater = document.createElement('div');
+        floater.className = 'floating-xp';
+        floater.innerText = '+' + amount + ' XP';
+        if(targetEl) {
+            targetEl.style.position = 'relative';
+            targetEl.appendChild(floater);
+        } else {
+            document.querySelector('.game-hud').appendChild(floater);
+        }
+        setTimeout(() => floater.remove(), 1000);
+    }
+
+    function handleAction() {
+        const currentText = elMain.value.trim();
+
+        // Save data depending on level
+        if (gameState.currentLevel === 1) {
+            data.explain = currentText;
+            saveData();
+            awardXP(20, document.getElementById('step-1'));
+        }
+        else if (gameState.currentLevel === 2) {
+            data.explain = currentText;
+            saveData();
+            awardXP(30, document.getElementById('step-2'));
+        }
+        else if (gameState.currentLevel === 3 || gameState.currentLevel === 4) {
+            if (!isTriviaAnswered && gameState.currentLevel !== 4) {
+                alert("Please answer the Knowledge Check first!");
+                return;
+            }
+            data.explain = currentText;
+            data.example = elExample.value.trim();
+            data.confidence = elConfidence.value;
+            data.gap = elGap.checked;
+            saveData();
+            awardXP(30, document.getElementById(gameState.currentLevel === 3 ? 'step-3' : 'step-4'));
+        }
+
+        // Advance Level
+        if (!gameState.completedLevels.includes(gameState.currentLevel)) {
+            gameState.completedLevels.push(gameState.currentLevel);
+        }
+        gameState.currentLevel++;
+
+        // Reset specific fields for next level
+        if (gameState.currentLevel === 2) {
+            elMain.value = ''; // Clear for explanation
+        }
+
+        saveState();
+        updateUI();
+
+        // Scroll to top of steps
+        window.scrollTo({ top: document.getElementById('game-steps').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    function resetGame() {
+        if(confirm("Start a new concept? This will reset your current progress but keep your XP.")) {
+            gameState.currentLevel = 1;
+            gameState.completedLevels = [];
+            data = { explain: '', example: '', confidence: '', gap: false };
+            elMain.value = '';
+            elExample.value = '';
+            elConfidence.value = '';
+            elGap.checked = false;
+            elMain.hidden = false;
+            statusText.classList.remove('status-success');
+            saveState();
+            saveData();
+            updateUI();
+        }
+    }
+
+    // --- EVENT LISTENERS ---
+    function setupEventListeners() {
+        elMain.addEventListener('input', checkActionButtonState);
+
+        btnAction.addEventListener('click', handleAction);
+        btnSave.addEventListener('click', resetGame);
+    }
+
+    // Init on auth ready
+    if(window.FocusBroAuth) {
+        FocusBroAuth.onReady(init);
+    } else {
+        document.addEventListener('DOMContentLoaded', init);
+    }
+
+})();
+</script>
 <script src="focus-bro-nav.js"></script>
 </body>
 </html>
