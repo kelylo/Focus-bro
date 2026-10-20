@@ -24,7 +24,7 @@
     }).then(function(data){if(timer)clearTimeout(timer);return data},function(error){if(timer)clearTimeout(timer);throw error});
   }
   function setSession(session){state.session=session||null;state.user=session&&session.user||null;if(session)sessionSet('focusbro.auth.session',JSON.stringify(session));else{sessionRemove('focusbro.auth.session');memory={}};if(state.user){var cached=cachedState();if(cached)apply(cached)}emit();if(state.user)syncAfterLogin()}
-  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null');if(!s||!s.access_token||!s.refresh_token){window.dispatchEvent(new CustomEvent('focusbro:state-ready'));return}state.session=s;state.user=s.user||null;var cached=cachedState();if(cached)apply(cached);emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
+  function restore(){try{var s=JSON.parse(sessionGet('focusbro.auth.session')||'null'),hash=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('type'),hashAccess=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('access_token'),hashRefresh=new URLSearchParams((location.hash||'').replace(/^#/,'').replace(/^\?/,'')).get('refresh_token');if(hash==='recovery'&&hashAccess){request('/auth/v1/user',{token:hashAccess}).then(function(user){setSession({access_token:hashAccess,refresh_token:hashRefresh||'',user:user,expires_at:Math.floor(Date.now()/1000)+3600})}).catch(function(){window.dispatchEvent(new CustomEvent('focusbro:state-ready'))});return}if(!s||!s.access_token||!s.refresh_token){window.dispatchEvent(new CustomEvent('focusbro:state-ready'));return}state.session=s;state.user=s.user||null;var cached=cachedState();if(cached)apply(cached);emit();var expiresAt=Number(s.expires_at||0)*1000;if(expiresAt>Date.now()+300000){syncAfterLogin();return}request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})}).then(setSession).catch(function(){setSession(null)})}catch(e){setSession(null)}}
   function auth(mode,email,password){
     var path=mode==='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
     return request(path,{method:'POST',body:JSON.stringify({email:email,password:password})}).then(function(data){if(data.access_token)setSession(data);return data});
@@ -37,6 +37,11 @@
   function updateProfile(values){
     if(!state.session)return Promise.reject(new Error('Sign in to update your profile.'));
     return request('/auth/v1/user',{method:'PUT',token:state.session.access_token,body:JSON.stringify({data:values})}).then(function(user){state.user=user;state.session.user=user;sessionSet('focusbro.auth.session',JSON.stringify(state.session));emit();return user});
+  }
+  function updatePassword(password){
+    if(!state.session)return Promise.reject(new Error('Open the password reset link again to choose a new password.'));
+    if(!password||password.length<6)return Promise.reject(new Error('Use a password with at least 6 characters.'));
+    return request('/auth/v1/user',{method:'PUT',token:state.session.access_token,body:JSON.stringify({password:password})});
   }
   function cloudState(){
     if(!state.user)return Promise.resolve(null);
@@ -96,6 +101,6 @@
     level:gameLevel
   };
   function onChange(fn){listeners.push(fn);fn(state)}
-  window.FocusBroAuth={onChange:onChange,signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,getState:function(){return state},loadState:cloudState,saveState:saveState,getSyncStatus:function(){return status}};
+  window.FocusBroAuth={onChange:onChange,signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,updatePassword:updatePassword,getState:function(){return state},loadState:cloudState,saveState:saveState,getSyncStatus:function(){return status}};
   restore();
 })();
