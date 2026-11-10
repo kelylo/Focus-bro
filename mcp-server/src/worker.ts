@@ -18,10 +18,38 @@ function server(env: Env, token: string): McpServer {
   return mcp;
 }
 
+function metadata(url: URL): Response {
+  const resource = `${url.origin}/mcp`;
+  return json({
+    resource,
+    authorization_servers: [url.origin],
+    scopes_supported: ['academic.read', 'academic.write', 'resources.read', 'analytics.read'],
+    bearer_methods_supported: ['header']
+  });
+}
+
+function authorizationMetadata(url: URL): Response {
+  return json({
+    issuer: url.origin,
+    authorization_endpoint: `${url.origin}/oauth/authorize`,
+    token_endpoint: `${url.origin}/oauth/token`,
+    revocation_endpoint: `${url.origin}/oauth/revoke`,
+    response_types_supported: ['code'],
+    grant_types_supported: ['authorization_code', 'refresh_token'],
+    code_challenge_methods_supported: ['S256'],
+    scopes_supported: ['academic.read', 'academic.write', 'resources.read', 'analytics.read']
+  });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === '/health' && request.method === 'GET') return json({ ok: true, service: 'focus-bro-mcp' });
+    if (url.pathname === '/.well-known/oauth-protected-resource' && request.method === 'GET') return metadata(url);
+    if (url.pathname === '/.well-known/oauth-authorization-server' && request.method === 'GET') return authorizationMetadata(url);
+    if (url.pathname.startsWith('/oauth/')) {
+      return json({ error: 'OAuth authorization is not enabled on this deployment yet. Deploy Phase 4 grant storage and consent routes before connecting an AI provider.' }, 501);
+    }
     if (url.pathname !== '/mcp') return json({ error: 'Not found.' }, 404);
     if (request.method !== 'POST' && request.method !== 'GET' && request.method !== 'DELETE') {
       return json({ error: 'Method not allowed.' }, 405);

@@ -11,6 +11,7 @@
     ['timetable.html','Timetable','Study, revise + rest','T'],
     ['tasks.html','Tasks','Plan the next action','-'],
     ['analytics.html','Analytics','See your learning signals','A']
+    ,['ai-connect.html','AI Connect','Connect ChatGPT or Claude','AI']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
@@ -85,7 +86,7 @@
     };
   }
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=16').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=17').then(function(registration){
       registration.update();
       if(registration.waiting)showUpdate(registration);
       registration.addEventListener('updatefound',function(){
