@@ -1,6 +1,10 @@
 # Focus Bro MCP
 
-`mcp-server/src/index.js` is a dependency-free MCP server for the authenticated Focus Bro account. The root `mcp-server.js` remains a compatibility launcher. It uses the Supabase access token supplied at launch, so it can only read or write that user’s row protected by Supabase RLS.
+`mcp-server/src/worker.ts` is the independently deployable Cloudflare Worker
+MCP server. `mcp-server/src/index.js` remains a local stdio compatibility
+server. Phase 3 uses a caller-supplied Supabase access token for RLS-bound
+development only. Do not expose the Worker to ChatGPT or Claude until the
+Phase 4 OAuth 2.1 + PKCE flow is implemented.
 
 ## Configure
 

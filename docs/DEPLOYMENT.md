@@ -15,3 +15,11 @@ For a release:
    when a waiting worker exists.
 
 The update button activates the waiting worker and reloads the current page.
+
+## MCP Worker
+
+The MCP Worker is independently deployed from `mcp-server/` with its own
+`wrangler.toml`. Configure the Supabase project URL and publishable key as
+Worker variables. Never put a Supabase service-role key in the Worker bundle.
+Phase 3's bearer-token passthrough is for development verification only;
+production external AI connections require the Phase 4 OAuth implementation.

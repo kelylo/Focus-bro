@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 2 design — not implemented**
+Status: **Phase 3 implementation in progress — OAuth remains Phase 4**
 
 ## Goals and boundaries
 

@@ -1,0 +1,8 @@
+name = "focus-bro-mcp"
+main = "src/worker.ts"
+compatibility_date = "2026-11-10"
+
+[vars]
+# Set these as non-secret Worker variables for the Supabase project.
+SUPABASE_URL = "https://your-project.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "your-publishable-key"
