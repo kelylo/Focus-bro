@@ -74,12 +74,17 @@
       button.disabled=true;
       button.textContent='Updating…';
       updateRequested=true;
-      if(registration.waiting)registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
-      else window.location.reload();
+      if(registration.waiting){
+        registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
+      } else {
+        update.remove();
+        window.location.reload();
+      }
     };
   }
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('focus-bro-sw.js?v=15').then(function(registration){
+    navigator.serviceWorker.register('focus-bro-sw.js?v=16').then(function(registration){
+      registration.update();
       if(registration.waiting)showUpdate(registration);
       registration.addEventListener('updatefound',function(){
         var worker=registration.installing;
@@ -89,7 +94,11 @@
         });
       });
       navigator.serviceWorker.addEventListener('controllerchange',function(){
-        if(updateRequested)window.location.reload();
+        if(updateRequested){
+          var prompt=document.getElementById('focus-update');
+          if(prompt)prompt.remove();
+          window.location.reload();
+        }
       });
     }).catch(function(){});
   }
