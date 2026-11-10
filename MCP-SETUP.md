@@ -1,6 +1,6 @@
 # Focus Bro MCP
 
-`mcp-server.js` is a dependency-free MCP server for the authenticated Focus Bro account. It uses the Supabase access token supplied at launch, so it can only read or write that user’s row protected by Supabase RLS.
+`mcp-server/src/index.js` is a dependency-free MCP server for the authenticated Focus Bro account. The root `mcp-server.js` remains a compatibility launcher. It uses the Supabase access token supplied at launch, so it can only read or write that user’s row protected by Supabase RLS.
 
 ## Configure
 
@@ -23,7 +23,7 @@ Add a server entry to Claude Desktop’s MCP configuration:
   "mcpServers": {
     "focus-bro": {
       "command": "node",
-      "args": ["D:\\PY\\mcp-server.js"],
+      "args": ["D:\\PY\\mcp-server\\src\\index.js"],
       "env": {
         "FOCUS_BRO_SUPABASE_URL": "https://your-project.supabase.co",
         "FOCUS_BRO_SUPABASE_PUBLISHABLE_KEY": "your-publishable-key",

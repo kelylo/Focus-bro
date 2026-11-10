@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "node -e \"console.log('Static site: no build step required')\"",
-    "mcp": "node mcp-server.js"
+    "mcp": "node mcp-server.js",
+    "mcp:start": "npm --prefix mcp-server start"
   }
 }
