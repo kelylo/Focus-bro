@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { registerStateTools } from './tools/state-tools';
+import { registerReadTools } from './tools/read-tools';
 import { bearerToken, type SupabaseEnv } from './services/supabase';
 
 interface Env extends SupabaseEnv {}
@@ -15,6 +16,7 @@ function json(data: unknown, status = 200): Response {
 function server(env: Env, token: string): McpServer {
   const mcp = new McpServer({ name: 'focus-bro', version: '0.1.0' });
   registerStateTools(mcp, env, token);
+  registerReadTools(mcp, env, token);
   return mcp;
 }
 

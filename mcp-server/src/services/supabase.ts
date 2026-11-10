@@ -48,6 +48,16 @@ export function getState(env: SupabaseEnv, token: string, userId: string): Promi
   return requestSupabase(env, token, `/rest/v1/focus_bro_state?select=state,updated_at&user_id=eq.${encodeURIComponent(userId)}`);
 }
 
+export async function getUserState(env: SupabaseEnv, token: string): Promise<{ state: Record<string, unknown>; updated_at: string | null }> {
+  const user = await currentUser(env, token);
+  const rows = await getState(env, token, user.id);
+  const row = rows[0];
+  return {
+    state: row && row.state && typeof row.state === 'object' ? row.state as Record<string, unknown> : {},
+    updated_at: row?.updated_at || null
+  };
+}
+
 export function saveState(env: SupabaseEnv, token: string, userId: string, state: object): Promise<unknown> {
   return requestSupabase(env, token, '/rest/v1/focus_bro_state?on_conflict=user_id', {
     method: 'POST',

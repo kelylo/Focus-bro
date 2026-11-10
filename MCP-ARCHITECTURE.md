@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 4 foundation — OAuth token issuance remains gated**
+Status: **Phase 5 read tools — OAuth token issuance remains gated**
 
 ## Goals and boundaries
 

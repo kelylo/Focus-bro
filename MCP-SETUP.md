@@ -69,7 +69,10 @@ server (with OAuth or an organization-managed static credential), then add its
 HTTPS `/mcp` URL under Settings > Connectors. Do not put a Supabase
 service-role key in that deployment.
 
-The available tools are `get_focus_bro_state` and `save_focus_bro_state`. The
+The available tools include read-only overview, task, timetable, subject,
+progress, note, video, saved-resource, deadline, weekly-report, and
+neglected-subject tools, plus the original `get_focus_bro_state` and
+`save_focus_bro_state`. The
 Worker now publishes MCP OAuth discovery metadata, but `/oauth/*` intentionally
 returns a safe `501` until grant storage, consent, PKCE verification, and
 token rotation are deployed. Do not connect a provider to this development

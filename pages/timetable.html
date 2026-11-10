@@ -301,7 +301,7 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     };
 
     const timetableKey = 'focusbro.unified.timetable.v2';
-    const legacytimetable.htmlKey = 'focusbro.timetable.v1';
+    const legacyTimetableKey = 'focusbro.timetable.v1';
     const taskKey = 'focusbro.timetable.tasks.v1';
 
     let appData = null;
@@ -412,7 +412,7 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     function loadData() {
         try {
             const current = Store.getItem(timetableKey);
-            const legacy = Store.getItem(legacytimetable.htmlKey);
+            const legacy = Store.getItem(legacyTimetableKey);
             appData = JSON.parse(current || legacy || 'null');
             if (!current && legacy && appData) {
                 Store.setItem(timetableKey, JSON.stringify(appData));
