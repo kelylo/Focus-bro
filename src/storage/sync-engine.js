@@ -1,9 +1,9 @@
 /*
  * Storage contract for the static pages.
  *
- * The implementation remains in focus-bro-auth.js while the pages are migrated
- * incrementally. Keeping this contract documented here prevents new modules
- * from writing directly to localStorage and bypassing account sync.
+ * The implementation remains in src/auth/auth.js. Keeping this contract
+ * documented here prevents new modules from writing directly to localStorage
+ * and bypassing account sync.
  */
 const SYNC_STORAGE_KEYS = Object.freeze([
   'lockin.v1',

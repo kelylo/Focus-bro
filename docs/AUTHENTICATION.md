@@ -1,7 +1,7 @@
 # Authentication and sync
 
 The browser signs in through Supabase and receives a user-scoped access token.
-`focus-bro-auth.js` restores cached state immediately, then replaces it with
+`src/auth/auth.js` restores cached state immediately, then replaces it with
 the account row from Supabase. Writes are debounced and flushed when the page
 is hidden or unloaded.
 

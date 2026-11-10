@@ -1,19 +1,19 @@
 const CACHE = "focus-bro-shell-v16";
 const ASSETS = [
-  "Focus-Bro",
-  "Study-Techniques",
-  "Feyman-techniques",
-  "Self-Tought-room",
-  "Timetable",
-  "Profile",
-  "focus-bro-manifest.json",
-  "focus-bro.css",
-  "focus-bro-nav.js",
-  "supabase-config.js",
-  "focus-bro-auth.js",
-  "supabase-auth-ui.js",
-  "auth-ui.css",
-  "Focus%20bro.png"
+  "../pages/dashboard.html",
+  "../pages/learning-room.html",
+  "../pages/knowledge-lab.html",
+  "../pages/focus-room.html",
+  "../pages/timetable.html",
+  "../pages/profile.html",
+  "../public/manifest.json",
+  "../assets/css/global.css",
+  "../assets/js/navigation.js",
+  "../src/config/supabase.js",
+  "../src/auth/auth.js",
+  "../src/auth/auth-ui.js",
+  "../assets/css/auth-ui.css",
+  "../assets/images/Focus%20bro.png"
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

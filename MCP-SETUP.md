@@ -34,8 +34,35 @@ Add a server entry to Claude Desktop’s MCP configuration:
 }
 ```
 
+Restart Claude Desktop after saving the configuration. Open the connector/tool
+list and confirm `get_focus_bro_state` is available. The configured token is
+for one Focus Bro account; use a refreshed token when it expires.
+
 ## ChatGPT
 
-The local stdio server can be used with the OpenAI Responses API through OpenAI’s Secure MCP Tunnel. A public HTTPS deployment must use an authenticated remote MCP endpoint; do not expose this local server or put a service-role key in the browser or repository.
+ChatGPT web custom connectors require a publicly reachable HTTPS MCP endpoint.
+This local stdio server can be used with the OpenAI Responses API through
+OpenAI's Secure MCP Tunnel. It is not safe to expose the local process directly
+to the internet.
+
+For the OpenAI API, configure the MCP tool with the remote tunnel URL:
+
+```javascript
+const response = await client.responses.create({
+  model: "gpt-5",
+  tools: [{
+    type: "mcp",
+    server_label: "focus-bro",
+    server_url: "https://your-secure-mcp-endpoint.example/mcp",
+    require_approval: { always: {} }
+  }],
+  input: "Summarize my Focus Bro progress."
+});
+```
+
+For ChatGPT's connector UI, deploy an authenticated HTTP version of this
+server (with OAuth or an organization-managed static credential), then add its
+HTTPS `/mcp` URL under Settings > Connectors. Do not put a Supabase
+service-role key in that deployment.
 
 The available tools are `get_focus_bro_state` and `save_focus_bro_state`. The web app itself already syncs the same account state through `focus_bro_state`, so changes made through MCP become available to every signed-in browser after its next sync.

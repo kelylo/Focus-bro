@@ -4,7 +4,7 @@ Focus Bro is a static PWA. Supabase is the source of truth for authenticated lea
 
 ## Supabase setup
 
-1. Open the SQL editor for the project configured in `supabase-config.js`.
+1. Open the SQL editor for the project configured in `src/config/supabase.js`.
 2. Run `supabase-schema.sql`.
 3. Before enabling private registration, add the owner's lower-case email to the allowlist:
 

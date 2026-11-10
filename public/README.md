@@ -1,7 +1,5 @@
 # Public deployment assets
 
-The current deployment keeps `focus-bro-manifest.json` and
-`focus-bro-sw.js` at the repository root for URL compatibility. They are
-tracked here as the future home for public assets during the incremental
-migration; do not duplicate the service worker until all registrations use the
-new path.
+The canonical manifest and service worker live in this directory. The root
+`service-worker.js` is only a compatibility loader so the worker can retain
+root scope while its implementation stays under `public/`.

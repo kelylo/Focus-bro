@@ -2,18 +2,20 @@
   var savedTheme=sessionStorage.getItem('focusbro.theme');
   if(savedTheme==='dark'||savedTheme==='light')document.documentElement.setAttribute('data-theme',savedTheme);
   document.body.classList.add('has-site-nav');
-  var page=location.pathname.split(/[\\/]/).pop()||'index.html';
+  var page=location.pathname.split(/[\\/]/).pop()||'dashboard.html';
   var links=[
-    ['Focus-Bro','Focus room','Video, notes + progress','O'],
-    ['Study-Techniques','Study techniques','Active recall + memory','>'],
-    ['Feyman-techniques','Feynman method','Explain to learn','*'],
-    ['Self-Tought-room','Self-taught room','Goals + atomic habits','+'],
-    ['Timetable','Timetable','Study, revise + rest','T']
+    ['dashboard.html','Focus room','Video, notes + progress','O'],
+    ['learning-room.html','Study techniques','Active recall + memory','>'],
+    ['knowledge-lab.html','Feynman method','Explain to learn','*'],
+    ['focus-room.html','Self-taught room','Goals + atomic habits','+'],
+    ['timetable.html','Timetable','Study, revise + rest','T'],
+    ['tasks.html','Tasks','Plan the next action','-'],
+    ['analytics.html','Analytics','See your learning signals','A']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
   nav.setAttribute('aria-label','Focus Bro learning menu');
-  nav.innerHTML='<a class="site-brand" href="Focus-Bro"><img src="Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="game-status" id="game-status"><div class="game-status-top"><strong>Level 1</strong><span>0 XP</span></div><div class="game-bar"><i></i></div><small>Sign in to keep your streak and XP</small></div><div class="site-section">Your learning system</div>'+
+  nav.innerHTML='<a class="site-brand" href="dashboard.html"><img src="../assets/images/Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="game-status" id="game-status"><div class="game-status-top"><strong>Level 1</strong><span>0 XP</span></div><div class="game-bar"><i></i></div><small>Sign in to keep your streak and XP</small></div><div class="site-section">Your learning system</div>'+
     links.map(function(item){
       var active=decodeURIComponent(page).toLowerCase()===decodeURIComponent(item[0]).toLowerCase();
       return '<a class="site-link'+(active?' active':'')+'" href="'+item[0]+'"><span>'+item[3]+'</span><div>'+item[1]+'<small style="display:block;color:var(--focus-muted);font-size:11px;font-weight:400">'+item[2]+'</small></div></a>';
@@ -38,7 +40,7 @@
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
   var profile=document.createElement('a');
   profile.className='site-profile-link';
-  profile.href='Profile';
+  profile.href='profile.html';
   profile.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
   profile.setAttribute('aria-label','Open account profile');
   profile.title='Account profile';
@@ -56,8 +58,8 @@
   if(theme) theme.insertAdjacentElement('afterend',profile);
   else {profile.classList.add('site-profile-link-floating');document.body.appendChild(profile)}
   function loadAuthUi(){
-    var css=document.createElement('link');css.rel='stylesheet';css.href='auth-ui.css';document.head.appendChild(css);
-    var auth=document.createElement('script');auth.src='supabase-auth-ui.js';document.body.appendChild(auth);
+    var css=document.createElement('link');css.rel='stylesheet';css.href='../assets/css/auth-ui.css';document.head.appendChild(css);
+    var auth=document.createElement('script');auth.src='../src/auth/auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
   var updateRequested=false;
@@ -83,7 +85,7 @@
     };
   }
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('focus-bro-sw.js?v=16').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=16').then(function(registration){
       registration.update();
       if(registration.waiting)showUpdate(registration);
       registration.addEventListener('updatefound',function(){
