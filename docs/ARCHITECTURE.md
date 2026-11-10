@@ -1,12 +1,11 @@
 # Focus Bro architecture
 
-Focus Bro uses the new directory layout while preserving the original root
-HTML URLs as compatibility redirects, so bookmarks and deployed Cloudflare
-Pages paths do not break.
+Focus Bro uses the new directory layout. Application pages are kept only under
+`pages/`; there are no duplicate page files at the repository root.
 
 ## Target boundaries
 
-- `pages/`: canonical page entrypoints.
+- `pages/`: the only page entrypoints.
 - `assets/`: shared CSS, browser navigation, components, and images.
 - `src/auth/`: authentication and session behavior.
 - `src/services/`: feature data access.

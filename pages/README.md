@@ -1,4 +1,5 @@
-# Page migration area
+# Page entrypoints
 
-New page entrypoints belong here. Existing root HTML files remain compatible
-entrypoints until each page is migrated and its links are updated.
+All application page entrypoints belong here. Do not add page copies to the
+repository root. Browser-rendered pages use HTML for their document structure
+and JavaScript modules for behavior and shared application logic.

@@ -11,12 +11,12 @@ service workers and some browser APIs require an origin:
 npx serve .
 ```
 
-Open `pages/dashboard.html`. The old root URLs such as `Focus-Bro` remain
-redirects for bookmarks.
+Open `pages/dashboard.html`. There are no duplicate page files at the
+repository root; all application pages live in `pages/`.
 
 ## Architecture
 
-- `pages/`: canonical application pages.
+- `pages/`: the only application page entrypoints.
 - `assets/`: shared CSS, navigation, and images.
 - `src/auth/` and `src/config/`: Supabase authentication/configuration.
 - `src/storage/`: account-sync storage contract.
