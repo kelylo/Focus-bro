@@ -1,8 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
-import { currentUser, getState, saveState, type SupabaseEnv } from '../services/supabase';
-
-const stateSchema = z.record(z.string(), z.unknown());
+import { currentUser, getState, type SupabaseEnv } from '../services/supabase';
 
 export function registerStateTools(server: McpServer, env: SupabaseEnv, token: string): void {
   server.tool(
@@ -17,13 +14,17 @@ export function registerStateTools(server: McpServer, env: SupabaseEnv, token: s
   );
   server.tool(
     'save_focus_bro_state',
-    'Replace the authenticated Focus Bro account state. This is a consequential write.',
-    { state: stateSchema },
-    async (args) => {
-      const state = stateSchema.parse(args.state);
-      const user = await currentUser(env, token);
-      await saveState(env, token, user.id, state);
-      return { content: [{ type: 'text', text: JSON.stringify({ saved: true }) }] };
-    }
+    'Legacy whole-state replacement is disabled. Use the narrowly scoped write tools instead.',
+    {},
+    async () => ({
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          saved: false,
+          error: 'whole_state_write_disabled',
+          message: 'Use create_task, update_task, create_note, update_note, create_flashcard, save_study_session, or update_goal.'
+        })
+      }]
+    })
   );
 }

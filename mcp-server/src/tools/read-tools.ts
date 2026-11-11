@@ -90,8 +90,10 @@ export function registerReadTools(server: McpServer, env: SupabaseEnv, token: st
     const game = record(state['focusbro.game.v1']);
     const feynman = record(state['focusbro.feynman.game.v3']);
     const techniques = record(state['focusbro.techniques.v1']);
+    const sessions = array(state['focusbro.study.sessions.v1']).map(item => record(item));
+    const minutes = sessions.reduce((total, item) => total + (typeof item.durationMinutes === 'number' ? item.durationMinutes : 0), 0);
     const completedTechniques = Object.values(techniques).filter(Boolean).length;
-    return output({ xp: typeof game.xp === 'number' ? game.xp : null, awards: Object.keys(record(game.awards)).length, feynmanLevel: feynman.currentLevel || null, completedTechniques });
+    return output({ xp: typeof game.xp === 'number' ? game.xp : null, awards: Object.keys(record(game.awards)).length, feynmanLevel: feynman.currentLevel || null, completedTechniques, recordedStudySessions: sessions.length, recordedStudyMinutes: minutes });
   });
   server.tool('get_today_overview', 'Read today’s timetable entries and saved tasks.', {}, async () => {
     const state = await read();
@@ -107,7 +109,13 @@ export function registerReadTools(server: McpServer, env: SupabaseEnv, token: st
     const lessonCount = array(videos(state).vids).length;
     const taskCount = tasks(state).length;
     const noteCount = array(videos(state).vids).reduce((total, item) => total + array(record(item).notes).length, 0);
-    return output({ available: { savedLessons: lessonCount, savedTasks: taskCount, savedNotes: noteCount }, limitation: 'The current schema does not record dated study sessions, so weekly activity totals are unavailable.' });
+    const weekStart = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const sessions = array(state['focusbro.study.sessions.v1']).map(item => record(item)).filter(item => {
+      const timestamp = Date.parse(text(item.startedAt));
+      return Number.isFinite(timestamp) && timestamp >= weekStart;
+    });
+    const minutes = sessions.reduce((total, item) => total + (typeof item.durationMinutes === 'number' ? item.durationMinutes : 0), 0);
+    return output({ available: { savedLessons: lessonCount, savedTasks: taskCount, savedNotes: noteCount, studySessionsLast7Days: sessions.length, studyMinutesLast7Days: minutes }, limitation: 'Only explicitly recorded study sessions are included; unrecorded activity is not estimated.' });
   });
   server.tool('identify_neglected_subjects', 'Identify timetable subjects with no saved lesson title or note match; this is a heuristic, not a performance judgment.', {}, async () => {
     const state = await read();

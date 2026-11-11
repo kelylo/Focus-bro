@@ -71,8 +71,11 @@ service-role key in that deployment.
 
 The available tools include read-only overview, task, timetable, subject,
 progress, note, video, saved-resource, deadline, weekly-report, and
-neglected-subject tools, plus the original `get_focus_bro_state` and
-`save_focus_bro_state`. The
+neglected-subject tools, plus `get_focus_bro_state`. The legacy
+`save_focus_bro_state` tool is retained as a disabled compatibility response.
+Narrow write tools are present but fail closed
+unless the Worker environment has `MCP_ENABLE_WRITE_TOOLS=true` after OAuth
+grant scope enforcement is deployed. The
 Worker now publishes MCP OAuth discovery metadata, but `/oauth/*` intentionally
 returns a safe `501` until grant storage, consent, PKCE verification, and
 token rotation are deployed. Do not connect a provider to this development

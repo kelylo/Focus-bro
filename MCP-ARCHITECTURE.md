@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 5 read tools — OAuth token issuance remains gated**
+Status: **Phase 6 write tools — OAuth token issuance and write scope enforcement remain gated**
 
 ## Goals and boundaries
 
@@ -139,6 +139,11 @@ Tool-to-scope mapping:
 | `analytics.read` | study progress, weekly report, neglected subjects |
 | `academic.write` | create/update task or note, flashcard, study session, goal |
 | `academic.write` + `analytics.read` | generated revision/study plans |
+
+Phase 6 adds `create_task`, `update_task`, `create_note`, `update_note`,
+`create_flashcard`, `save_study_session`, and `update_goal`. Each mutation
+requires an idempotency key where duplicates are possible and a second call
+with `confirmed=true`. The legacy whole-state replacement tool is disabled.
 
 Generated plans are proposals returned to the client. They do not write
 records unless a separate write-tool call is approved.

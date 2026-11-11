@@ -65,3 +65,17 @@ export function saveState(env: SupabaseEnv, token: string, userId: string, state
     body: JSON.stringify({ user_id: userId, state, updated_at: new Date().toISOString() })
   });
 }
+
+export async function updateUserState(
+  env: SupabaseEnv,
+  token: string,
+  update: (state: Record<string, unknown>) => Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const user = await currentUser(env, token);
+  const rows = await getState(env, token, user.id);
+  const current = rows[0]?.state;
+  const state = current && typeof current === 'object' ? current as Record<string, unknown> : {};
+  const next = update(state);
+  await saveState(env, token, user.id, next);
+  return next;
+}

@@ -16,6 +16,11 @@ progress, saved-resource search, upcoming dated tasks, and heuristic
 neglected-subject detection. They read only the existing JSON state; missing
 dated study-session data is reported as unavailable.
 
+Phase 6 also registers narrowly scoped write tools. They require
+`MCP_ENABLE_WRITE_TOOLS=true`, `academic.write`, an idempotency key where
+applicable, and explicit `confirmed=true` after the tool returns a preview.
+Keep the flag unset until OAuth grant scope enforcement is deployed.
+
 The MCP entrypoint is [`src/index.js`](./src/index.js). It uses the authenticated
 user's Supabase access token and exposes only that user's row through the
 existing RLS policies.

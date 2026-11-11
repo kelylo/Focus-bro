@@ -2,9 +2,12 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { registerStateTools } from './tools/state-tools';
 import { registerReadTools } from './tools/read-tools';
+import { registerWriteTools } from './tools/write-tools';
 import { bearerToken, type SupabaseEnv } from './services/supabase';
 
-interface Env extends SupabaseEnv {}
+interface Env extends SupabaseEnv {
+  MCP_ENABLE_WRITE_TOOLS?: string;
+}
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
@@ -17,6 +20,7 @@ function server(env: Env, token: string): McpServer {
   const mcp = new McpServer({ name: 'focus-bro', version: '0.1.0' });
   registerStateTools(mcp, env, token);
   registerReadTools(mcp, env, token);
+  registerWriteTools(mcp, env, token);
   return mcp;
 }
 
