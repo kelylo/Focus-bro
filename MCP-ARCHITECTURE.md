@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 8 connection diagnostics — OAuth token issuance and write scope enforcement remain gated**
+Status: **Phase 9 operational documentation — OAuth token issuance and write scope enforcement remain gated**
 
 ## Goals and boundaries
 
@@ -153,6 +153,12 @@ Phase 8 adds endpoint configuration and live diagnostics for Worker health,
 protected-resource metadata, and authorization-server metadata. It does not
 claim a provider connection while the authorization and token endpoints are
 disabled.
+
+Phase 9 adds beginner-facing provider guides, troubleshooting guidance, clean
+URL/PWA recovery instructions, and an explicit production readiness checklist.
+Documentation does not change the deployment status: OAuth authorization and
+token routes still must be implemented and verified before external providers
+are enabled.
 
 Generated plans are proposals returned to the client. They do not write
 records unless a separate write-tool call is approved.

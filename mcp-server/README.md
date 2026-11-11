@@ -4,10 +4,10 @@ The Worker entrypoint is [`src/worker.ts`](./src/worker.ts). It exposes
 `/mcp` using the official MCP TypeScript SDK and Streamable HTTP. The existing
 [`src/index.js`](./src/index.js) remains a local stdio compatibility server.
 
-Phase 3/5 uses a caller-supplied Supabase bearer token so Supabase RLS binds
+Development uses a caller-supplied Supabase bearer token so Supabase RLS binds
 each request to its authenticated user. This is not the final public
 integration: OAuth 2.1, PKCE, token rotation, discovery metadata, and consent
-are Phase 4 requirements and must be completed before exposing the Worker to
+are required before exposing the Worker to
 ChatGPT or Claude.
 
 The read-only tools currently include today's overview, tasks, timetable,

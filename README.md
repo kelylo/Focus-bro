@@ -14,8 +14,9 @@ service workers and some browser APIs require an origin:
 npx serve .
 ```
 
-Open `pages/dashboard.html`. There are no duplicate page files at the
-repository root; all application pages live in `pages/`.
+Open `pages/dashboard`. Cloudflare Pages uses clean URLs; do not bookmark the
+old `.html` paths. There are no duplicate page files at the repository root;
+all application pages live in `pages/`.
 
 Build the TypeScript source with `npm run build`. The generated JavaScript is
 written to `dist/` and should not be edited by hand.
@@ -33,8 +34,11 @@ written to `dist/` and should not be edited by hand.
 
 ## MCP connections
 
-See [`MCP-SETUP.md`](./MCP-SETUP.md). Claude Desktop can launch the local
-stdio server directly. ChatGPT requires an authenticated HTTPS MCP endpoint or
-OpenAI's Secure MCP Tunnel; the local process must not be exposed directly.
+See [`MCP-SETUP.md`](./MCP-SETUP.md), [`CHATGPT-CONNECTION.md`](./CHATGPT-CONNECTION.md),
+[`CLAUDE-CONNECTION.md`](./CLAUDE-CONNECTION.md), and
+[`MCP-TROUBLESHOOTING.md`](./MCP-TROUBLESHOOTING.md). The remote Worker
+currently publishes diagnostics but its OAuth authorization/token endpoints
+remain disabled; do not advertise it as connected until those endpoints and
+the production verification gates are complete.
 
 Never commit Supabase access tokens or service-role keys.

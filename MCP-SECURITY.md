@@ -1,6 +1,6 @@
 # Focus Bro MCP security model
 
-Status: **Phase 2 design — not implemented**
+Status: **Phase 9 documentation — production OAuth controls remain not implemented**
 
 ## Security invariants
 

@@ -2,9 +2,9 @@
 
 `mcp-server/src/worker.ts` is the independently deployable Cloudflare Worker
 MCP server. `mcp-server/src/index.js` remains a local stdio compatibility
-server. Phase 3 uses a caller-supplied Supabase access token for RLS-bound
-development only. Do not expose the Worker to ChatGPT or Claude until the
-Phase 4 OAuth 2.1 + PKCE flow is implemented.
+server. The Worker currently supports authenticated development calls and discovery
+diagnostics only. Do not expose it to ChatGPT or Claude until the OAuth 2.1 +
+PKCE flow is implemented and the production verification gates pass.
 
 ## Configure
 

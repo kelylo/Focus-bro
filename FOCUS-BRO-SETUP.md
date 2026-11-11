@@ -52,7 +52,9 @@ select user_id, state, updated_at from public.focus_bro_state;
 
 The current release does not delete or reshape existing state. Older keys are retained and included in the shared sync allowlist.
 
-If Chrome has data while another browser does not, sign in to Chrome, open Profile, choose **Export backup**, apply the SQL migration, sign in to the same account in the target browser, and choose **Import backup** there. Import refuses to overwrite a non-empty cloud row. Repeat imports are therefore safe and do not create duplicate records because the state is keyed by the authenticated user's UUID.
+If one browser appears different, sign out and back in with the same account
+after confirming sync has completed. The Profile page no longer exposes local
+import/export controls; Supabase is the account-wide source of truth.
 
 ## Verification checklist
 
