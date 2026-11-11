@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 7 AI Connect dashboard — OAuth token issuance and write scope enforcement remain gated**
+Status: **Phase 8 connection diagnostics — OAuth token issuance and write scope enforcement remain gated**
 
 ## Goals and boundaries
 
@@ -148,6 +148,11 @@ with `confirmed=true`. The legacy whole-state replacement tool is disabled.
 Phase 7 adds the signed-in AI Connect dashboard: provider grant status,
 permission summaries, per-user grant revocation, and an explicit unavailable
 state for tool activity until server-side audit records are implemented.
+
+Phase 8 adds endpoint configuration and live diagnostics for Worker health,
+protected-resource metadata, and authorization-server metadata. It does not
+claim a provider connection while the authorization and token endpoints are
+disabled.
 
 Generated plans are proposals returned to the client. They do not write
 records unless a separate write-tool call is approved.

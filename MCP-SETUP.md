@@ -87,3 +87,8 @@ The AI Connect dashboard shows only grants belonging to the current signed-in
 user. Revoking a grant updates that user’s `mcp_grants` row through Supabase
 RLS. Tool activity remains unavailable until the Worker records redacted audit
 events.
+
+Phase 8 diagnostics use the separately deployed Worker URL. Save an HTTPS URL
+ending in `/mcp`, then test health and OAuth discovery from AI Connect. A
+successful discovery test is not a provider connection: `/oauth/authorize` and
+`/oauth/token` must be implemented before ChatGPT or Claude can authenticate.
