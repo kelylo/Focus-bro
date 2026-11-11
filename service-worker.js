@@ -1,2 +1,2 @@
-// Root compatibility entrypoint keeps the service-worker scope at the site root.
-importScripts('public/service-worker.js');
+// Root entrypoint for the installed PWA service worker.
+importScripts('public/service-worker.js?v=22');

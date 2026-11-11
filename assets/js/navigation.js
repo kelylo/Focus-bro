@@ -1,4 +1,9 @@
 (function(){
+  if(/\.html$/i.test(location.pathname)){
+    var cleanPath=location.pathname.replace(/\.html$/i,'');
+    window.location.replace(cleanPath+location.search+location.hash);
+    return;
+  }
   var savedTheme=sessionStorage.getItem('focusbro.theme');
   if(savedTheme==='dark'||savedTheme==='light')document.documentElement.setAttribute('data-theme',savedTheme);
   document.body.classList.add('has-site-nav');
@@ -63,21 +68,19 @@
   loadAuthUi();
   window.FocusBroUpdates={
     refresh:function(){
-      var target=location.pathname+'?refresh='+Date.now();
-      if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration){
-        navigator.serviceWorker.getRegistration().then(function(registration){
-          if(!registration){window.location.replace(target);return}
-          registration.update().then(function(){
-            var worker=registration.waiting||registration.installing;
-            if(worker)worker.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
-            window.location.replace(target);
-          }).catch(function(){window.location.replace(target)});
-        }).catch(function(){window.location.replace(target)});
-      }else window.location.replace(target);
+      var target='/pages/dashboard?refresh='+Date.now();
+      var clearCaches=window.caches&&caches.keys?caches.keys().then(function(keys){
+        return Promise.all(keys.map(function(key){return caches.delete(key)}));
+      }):Promise.resolve();
+      var registrations=navigator.serviceWorker&&navigator.serviceWorker.getRegistrations?
+        navigator.serviceWorker.getRegistrations().then(function(items){
+          return Promise.all(items.map(function(item){return item.unregister()}));
+        }):Promise.resolve();
+      Promise.all([clearCaches,registrations]).then(function(){window.location.replace(target)}).catch(function(){window.location.replace(target)});
     }
   };
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=21').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=22').then(function(registration){
       registration.update();
     }).catch(function(){});
   }

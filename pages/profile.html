@@ -33,7 +33,7 @@
   FocusBroAuth.onReady(updateStats);
   $('profileForm').onsubmit=function(e){e.preventDefault();var error=$('profileError'),file=$('avatarFile').files[0];error.textContent='';var imagePromise=file?resizeImage(file):Promise.resolve((FocusBroAuth.getState().user.user_metadata||{}).avatar_url||'');imagePromise.then(function(avatar_url){return FocusBroAuth.updateProfile({display_name:$('displayName').value.trim(),avatar_url:avatar_url})}).then(function(user){setAvatar(user.user_metadata&&user.user_metadata.avatar_url,user);$('profileState').textContent=user.email+' · profile saved';$('avatarFile').value=''}).catch(function(err){error.textContent=err.message})};
   $('signOut').onclick=function(){FocusBroAuth.signOut()};
-  $('appUpdate').onclick=function(){var status=$('updateStatus');status.textContent='Refreshing Focus Bro…';if(window.FocusBroUpdates)window.FocusBroUpdates.refresh();else window.location.replace(location.pathname+'?refresh='+Date.now())};
+  $('appUpdate').onclick=function(){var status=$('updateStatus');status.textContent='Repairing and refreshing Focus Bro…';if(window.FocusBroUpdates)window.FocusBroUpdates.refresh();else window.location.replace('/pages/dashboard?refresh='+Date.now())};
 })();
 </script>
 <script src="../assets/js/navigation.js"></script>
