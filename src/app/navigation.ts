@@ -20,13 +20,11 @@ declare global {
 }
 
 const links = [
-  ['dashboard.html', 'Focus room', 'Video, notes + progress', 'O'],
-  ['learning-room.html', 'Study techniques', 'Active recall + memory', '>'],
-  ['knowledge-lab.html', 'Feynman method', 'Explain to learn', '*'],
-  ['focus-room.html', 'Self-taught room', 'Goals + atomic habits', '+'],
-  ['timetable.html', 'Timetable', 'Study, revise + rest', 'T'],
-  ['tasks.html', 'Tasks', 'Plan the next action', '-'],
-  ['analytics.html', 'Analytics', 'See your learning signals', 'A']
+  ['dashboard', 'Focus room', 'Video, notes + progress', 'O'],
+  ['focus-room', 'Self-taught room', 'Goals + atomic habits', '+'],
+  ['timetable', 'Timetable', 'Study, revise + rest', 'T'],
+  ['tasks', 'Tasks', 'Plan the next action', '-'],
+  ['analytics', 'Analytics', 'See your learning signals', 'A']
 ] as const;
 
 function renderGame(): void {
@@ -49,7 +47,7 @@ function renderGame(): void {
 }
 
 function createNavigation(): void {
-  const page = location.pathname.split(/[\\/]/).pop() || 'dashboard.html';
+  const page = (location.pathname.split(/[\\/]/).pop() || 'dashboard').replace(/\.html$/i, '');
   const nav = document.createElement('aside');
   nav.className = 'site-sidebar';
   nav.setAttribute('aria-label', 'Focus Bro learning menu');
@@ -57,7 +55,7 @@ function createNavigation(): void {
     const active = page.toLowerCase() === href.toLowerCase();
     return `<a class="site-link${active ? ' active' : ''}" href="${href}"><span>${icon}</span><div>${title}<small>${description}</small></div></a>`;
   }).join('');
-  nav.innerHTML = `<a class="site-brand" href="dashboard.html"><img src="../assets/images/Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="game-status" id="game-status"><div class="game-status-top"><strong>Level 1</strong><span>0 XP</span></div><div class="game-bar"><i></i></div><small>Sign in to keep your streak and XP</small></div><div class="site-section">Your learning system</div>${items}<div class="site-quote">One lesson. One clear next action. Protect your attention and let consistency compound.</div>`;
+  nav.innerHTML = `<a class="site-brand" href="dashboard"><img src="../assets/images/Focus%20bro.png" alt="Focus Bro logo"><span><strong>Focus Bro</strong><small>In the pursuit of greatness</small></span></a><div id="focus-auth-slot"></div><div class="game-status" id="game-status"><div class="game-status-top"><strong>Level 1</strong><span>0 XP</span></div><div class="game-bar"><i></i></div><small>Sign in to keep your streak and XP</small></div><div class="site-section">Your learning system</div>${items}<div class="site-quote">One lesson. One clear next action. Protect your attention and let consistency compound.</div>`;
   const toggle = document.createElement('button');
   toggle.className = 'site-sidebar-toggle';
   toggle.type = 'button';

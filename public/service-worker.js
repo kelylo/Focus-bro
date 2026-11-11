@@ -1,12 +1,10 @@
-const CACHE = "focus-bro-shell-v18";
+const CACHE = "focus-bro-shell-v19";
 const ASSETS = [
-  "/pages/dashboard.html",
-  "/pages/learning-room.html",
-  "/pages/knowledge-lab.html",
-  "/pages/focus-room.html",
-  "/pages/timetable.html",
-  "/pages/profile.html",
-  "/pages/ai-connect.html",
+  "/pages/dashboard",
+  "/pages/focus-room",
+  "/pages/timetable",
+  "/pages/profile",
+  "/pages/ai-connect",
   "/public/manifest.json",
   "/assets/css/global.css",
   "/assets/js/navigation.js",
