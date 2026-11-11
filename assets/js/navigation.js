@@ -66,14 +66,18 @@
       var target=location.pathname+'?refresh='+Date.now();
       if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration){
         navigator.serviceWorker.getRegistration().then(function(registration){
-          if(registration&&registration.waiting)registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
-          window.location.replace(target);
+          if(!registration){window.location.replace(target);return}
+          registration.update().then(function(){
+            var worker=registration.waiting||registration.installing;
+            if(worker)worker.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
+            window.location.replace(target);
+          }).catch(function(){window.location.replace(target)});
         }).catch(function(){window.location.replace(target)});
       }else window.location.replace(target);
     }
   };
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=20').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=21').then(function(registration){
       registration.update();
     }).catch(function(){});
   }

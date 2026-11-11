@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v20";
+const CACHE = "focus-bro-shell-v21";
 const ASSETS = [
   "/pages/dashboard",
   "/pages/focus-room",
@@ -30,14 +30,11 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   if (event.request.mode === "navigate") {
-    event.respondWith(caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const copy = response.clone();
-        event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));
-        return response;
-      });
-    }));
+    event.respondWith(fetch(event.request).then(response => {
+      const copy = response.clone();
+      event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));
+      return response;
+    }).catch(() => caches.match(event.request).then(cached => cached || caches.match("/pages/dashboard"))));
     return;
   }
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
