@@ -61,7 +61,6 @@
     var auth=document.createElement('script');auth.src='../src/auth/auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
-  var updateRequested=false;
   window.FocusBroUpdates={
     refresh:function(){
       var target=location.pathname+'?refresh='+Date.now();
@@ -73,45 +72,9 @@
       }else window.location.replace(target);
     }
   };
-  function showUpdate(registration){
-    if(document.getElementById('focus-update'))return;
-    var update=document.createElement('div');
-    update.id='focus-update';
-    update.className='focus-update';
-    update.setAttribute('role','status');
-    update.innerHTML='<strong>Update available</strong><span>Refresh Focus Bro to use the latest version.</span><button type="button">Update now</button>';
-    document.body.appendChild(update);
-    update.querySelector('button').onclick=function(){
-      var button=this;
-      button.disabled=true;
-      button.textContent='Updating…';
-      updateRequested=true;
-      if(registration.waiting){
-        registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
-      } else {
-        update.remove();
-        window.location.reload();
-      }
-    };
-  }
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=19').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=20').then(function(registration){
       registration.update();
-      if(registration.waiting)showUpdate(registration);
-      registration.addEventListener('updatefound',function(){
-        var worker=registration.installing;
-        if(!worker)return;
-        worker.addEventListener('statechange',function(){
-          if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdate(registration);
-        });
-      });
-      navigator.serviceWorker.addEventListener('controllerchange',function(){
-        if(updateRequested){
-          var prompt=document.getElementById('focus-update');
-          if(prompt)prompt.remove();
-          window.location.reload();
-        }
-      });
     }).catch(function(){});
   }
 })();

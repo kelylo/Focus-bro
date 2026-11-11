@@ -1,4 +1,4 @@
-const CACHE = "focus-bro-shell-v19";
+const CACHE = "focus-bro-shell-v20";
 const ASSETS = [
   "/pages/dashboard",
   "/pages/focus-room",
@@ -15,7 +15,7 @@ const ASSETS = [
   "/assets/images/Focus%20bro.png"
 ];
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "FOCUS_BRO_ACTIVATE_UPDATE") self.skipWaiting();

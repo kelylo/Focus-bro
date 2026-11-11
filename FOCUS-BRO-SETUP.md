@@ -38,7 +38,9 @@ Writes are debounced briefly, cached per user, and flushed when the page is hidd
 
 ## App updates
 
-The service worker keeps the app available offline and checks for a newer release when a page opens. When an update is ready, an **Update available** prompt appears on desktop and mobile. Choose **Update now** to activate the new version and reload the current page; this avoids needing a browser-specific hard-refresh gesture.
+The service worker keeps the app available offline and checks for newer
+releases without showing an automatic popup. To apply an update manually, open
+Profile and click **Update app**.
 
 ## Backup and migration
 
