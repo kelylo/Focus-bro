@@ -14,12 +14,7 @@ export function bearerToken(request: Request): string {
   return match[1];
 }
 
-async function requestSupabase<T>(
-  env: SupabaseEnv,
-  token: string,
-  path: string,
-  init: RequestInit = {}
-): Promise<T> {
+async function requestSupabase<T>(env: SupabaseEnv, token: string, path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${env.SUPABASE_URL}${path}`, {
     ...init,
     headers: {
@@ -31,11 +26,7 @@ async function requestSupabase<T>(
   });
   const body = await response.text();
   let value: unknown = {};
-  try {
-    value = body ? JSON.parse(body) : {};
-  } catch {
-    value = { message: 'Supabase returned an invalid response.' };
-  }
+  try { value = body ? JSON.parse(body) : {}; } catch { value = { message: 'Supabase returned an invalid response.' }; }
   if (!response.ok) throw new Error('Supabase request failed.');
   return value as T;
 }
@@ -52,10 +43,7 @@ export async function getUserState(env: SupabaseEnv, token: string): Promise<{ s
   const user = await currentUser(env, token);
   const rows = await getState(env, token, user.id);
   const row = rows[0];
-  return {
-    state: row && row.state && typeof row.state === 'object' ? row.state as Record<string, unknown> : {},
-    updated_at: row?.updated_at || null
-  };
+  return { state: row && row.state && typeof row.state === 'object' ? row.state as Record<string, unknown> : {}, updated_at: row?.updated_at || null };
 }
 
 export function saveState(env: SupabaseEnv, token: string, userId: string, state: object): Promise<unknown> {
@@ -66,11 +54,7 @@ export function saveState(env: SupabaseEnv, token: string, userId: string, state
   });
 }
 
-export async function updateUserState(
-  env: SupabaseEnv,
-  token: string,
-  update: (state: Record<string, unknown>) => Record<string, unknown>
-): Promise<Record<string, unknown>> {
+export async function updateUserState(env: SupabaseEnv, token: string, update: (state: Record<string, unknown>) => Record<string, unknown>): Promise<Record<string, unknown>> {
   const user = await currentUser(env, token);
   const rows = await getState(env, token, user.id);
   const current = rows[0]?.state;

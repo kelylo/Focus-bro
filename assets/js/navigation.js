@@ -64,6 +64,17 @@
   }
   loadAuthUi();
   var updateRequested=false;
+  window.FocusBroUpdates={
+    refresh:function(){
+      var target=location.pathname+'?refresh='+Date.now();
+      if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration){
+        navigator.serviceWorker.getRegistration().then(function(registration){
+          if(registration&&registration.waiting)registration.waiting.postMessage({type:'FOCUS_BRO_ACTIVATE_UPDATE'});
+          window.location.replace(target);
+        }).catch(function(){window.location.replace(target)});
+      }else window.location.replace(target);
+    }
+  };
   function showUpdate(registration){
     if(document.getElementById('focus-update'))return;
     var update=document.createElement('div');
@@ -86,7 +97,7 @@
     };
   }
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=17').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=18').then(function(registration){
       registration.update();
       if(registration.waiting)showUpdate(registration);
       registration.addEventListener('updatefound',function(){

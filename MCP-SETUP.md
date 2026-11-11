@@ -82,3 +82,8 @@ token rotation are deployed. Do not connect a provider to this development
 endpoint yet. The web app itself already syncs the same account state through
 `focus_bro_state`, so changes made through MCP become available to every
 signed-in browser after its next sync.
+
+The AI Connect dashboard shows only grants belonging to the current signed-in
+user. Revoking a grant updates that user’s `mcp_grants` row through Supabase
+RLS. Tool activity remains unavailable until the Worker records redacted audit
+events.

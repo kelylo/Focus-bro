@@ -1,6 +1,6 @@
 # Focus Bro MCP architecture
 
-Status: **Phase 6 write tools — OAuth token issuance and write scope enforcement remain gated**
+Status: **Phase 7 AI Connect dashboard — OAuth token issuance and write scope enforcement remain gated**
 
 ## Goals and boundaries
 
@@ -144,6 +144,10 @@ Phase 6 adds `create_task`, `update_task`, `create_note`, `update_note`,
 `create_flashcard`, `save_study_session`, and `update_goal`. Each mutation
 requires an idempotency key where duplicates are possible and a second call
 with `confirmed=true`. The legacy whole-state replacement tool is disabled.
+
+Phase 7 adds the signed-in AI Connect dashboard: provider grant status,
+permission summaries, per-user grant revocation, and an explicit unavailable
+state for tool activity until server-side audit records are implemented.
 
 Generated plans are proposals returned to the client. They do not write
 records unless a separate write-tool call is approved.
