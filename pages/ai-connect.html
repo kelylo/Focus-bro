@@ -23,8 +23,7 @@
 <section class="setup-box" id="setup-box" aria-live="polite"><h2 id="setup-title">Ready to connect</h2><p id="setup-message">Choose ChatGPT or Claude above. Focus Bro will check everything and show you exactly what to do next.</p><ol id="setup-steps"></ol><div id="setup-actions"></div></section>
 <section class="unavailable"><h2>AI connections are not available yet</h2><p class="muted">Focus Bro will provide the secure connection automatically when its MCP service and authorization are deployed. You will not need to paste a link, enter an API key, or configure a server.</p></section>
 <div hidden><input id="mcp-endpoint"><button id="save-endpoint" type="button"></button><div id="diagnostics"></div></div>
-<div class="security-note"><strong>Important:</strong> The endpoint is not a secret. Your data is protected by OAuth consent and per-user permissions. Never paste passwords, Supabase service-role keys, or access tokens into chat.</div>
-<section class="checklist"><h2>Connection checklist</h2><label><input type="checkbox"> I am signed in to the same Focus Bro account I use in Focus Bro.</label><label><input type="checkbox"> I understand that the AI can only use the permissions I approve.</label><label><input type="checkbox"> I will review write actions before allowing them.</label><button type="button" id="test-connection" class="copy-endpoint">Test MCP endpoint</button><span id="test-result"></span></section>
+<div class="security-note"><strong>When it is ready:</strong> Focus Bro will show the official connection action here. You will approve access in ChatGPT or Claude, and Focus Bro will handle the secure link automatically.</div>
 </main>
 <script>
 (function(){var endpoint=localStorage.getItem('focusbro.mcp.endpoint')||'',cfg=window.FOCUS_BRO_SUPABASE;
