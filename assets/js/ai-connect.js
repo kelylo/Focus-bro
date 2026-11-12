@@ -102,8 +102,11 @@
 
   function copyEndpoint(button) {
     if (!endpoint) {
-      showDiagnostics([{ ok: false, label: 'Endpoint required', detail: 'Save your deployed HTTPS Worker URL ending in /mcp first.' }]);
-      document.getElementById('mcp-endpoint').focus();
+      showSetup('This connection is not available yet', [
+        'Focus Bro still needs its secure connection service to be configured.',
+        'This is an app setup task, not something you should solve with a Supabase URL or API key.',
+        'Please try again after the connection service has been enabled.'
+      ], 'No connection link is available yet.');
       return;
     }
     var done = function () {
@@ -119,6 +122,19 @@
   }
 
   document.getElementById('mcp-endpoint').value = endpoint;
+  function showSetup(title, steps, message) {
+    document.getElementById('setup-title').textContent = title;
+    document.getElementById('setup-steps').innerHTML = steps.map(function (step) {
+      return '<li>' + step + '</li>';
+    }).join('');
+    document.getElementById('setup-message').textContent = message || '';
+    document.getElementById('setup-actions').innerHTML = endpoint
+      ? '<button type="button" class="copy-endpoint" id="setup-copy">Copy connection link</button>'
+      : '';
+    var copy = document.getElementById('setup-copy');
+    if (copy) copy.onclick = function () { copyEndpoint(copy); };
+    document.getElementById('setup-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
   document.getElementById('save-endpoint').onclick = function () {
     var value = document.getElementById('mcp-endpoint').value.trim().replace(/\/+$/, '');
     if (!/^https:\/\//i.test(value) || !/\/mcp$/i.test(value)) {
@@ -136,16 +152,19 @@
     button.onclick = function () {
       var provider = button.dataset.provider;
       var pretty = provider === 'claude' ? 'Claude' : 'ChatGPT';
-      document.getElementById('setup-title').textContent = pretty + ' guided setup';
-      document.getElementById('setup-steps').innerHTML =
-        '<li>Save and test your HTTPS MCP Worker endpoint below.</li>' +
-        '<li>Click “Copy endpoint” on the ' + pretty + ' card.</li>' +
-        '<li>Open ' + pretty + ' connector settings.</li>' +
-        '<li>Add the copied <code>/mcp</code> URL and complete Focus Bro authorization.</li>';
-      document.getElementById('setup-message').textContent = 'OAuth authorization is not enabled on this deployment yet, so the final connection step is unavailable.';
-      document.getElementById('setup-box').hidden = false;
-      document.getElementById('setup-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      window.open(provider === 'claude' ? 'https://claude.ai/settings/connectors' : 'https://chatgpt.com/', '_blank', 'noopener');
+      if (!endpoint) {
+        showSetup(pretty + ' connection', [
+          'Focus Bro is checking whether its secure connection service is ready.',
+          'There is no connection link configured for this app yet.',
+          'You do not need to enter a password, API key, or Supabase URL.'
+        ], 'The app owner must enable the connection service before ' + pretty + ' can connect.');
+        return;
+      }
+      showSetup(pretty + ' connection', [
+        'Your Focus Bro connection link is ready.',
+        'Copy the link below and add it as a connector in ' + pretty + '.',
+        'Sign in to Focus Bro when the provider asks for permission.'
+      ], 'The provider connection authorization is not enabled on this deployment yet.');
     };
   });
   document.getElementById('test-connection').onclick = testEndpoint;
