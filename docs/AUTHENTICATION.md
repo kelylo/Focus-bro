@@ -11,5 +11,4 @@ To see the same data on another browser or platform:
 2. Ensure the Supabase schema has been applied.
 3. Wait for the sync status to report saved/synced.
 
-The local cache is an offline safety copy, not a separate account. MCP uses a
-user access token and the same RLS-protected row.
+The local cache is an offline safety copy, not a separate account.

@@ -8,4 +8,4 @@ one account without destructive migrations.
 Run [`supabase-schema.sql`](../supabase-schema.sql) in the configured Supabase
 project before enabling account sync. Row-level security permits a user to
 read and write only their own row. Never put a Supabase service-role key in
-the browser, MCP client configuration, or this repository.
+the browser or this repository.

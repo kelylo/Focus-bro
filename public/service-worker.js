@@ -4,7 +4,6 @@ const ASSETS = [
   "/pages/focus-room",
   "/pages/timetable",
   "/pages/profile",
-  "/pages/ai-connect",
   "/pages/tasks",
   "/pages/analytics",
   "/public/manifest.json",

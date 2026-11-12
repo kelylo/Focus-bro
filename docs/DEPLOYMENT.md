@@ -11,12 +11,3 @@ For a release, update the service-worker query version in
 `public/service-worker.js`. Commit and push. The app uses clean routes such as
 `/pages/dashboard`; the Profile **Update app** control clears stale workers
 and caches for recovery. There is no automatic update popup.
-
-## MCP Worker
-
-The MCP Worker is independently deployed from `mcp-server/` with its own
-`wrangler.toml`. Configure the Supabase project URL and publishable key as
-Worker variables. Never put a Supabase service-role key in the Worker bundle.
-The bearer-token passthrough is for development verification only; production
-external AI connections require the OAuth implementation and all security
-verification gates documented in [`MCP-SECURITY.md`](../MCP-SECURITY.md).

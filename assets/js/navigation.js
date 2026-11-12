@@ -14,7 +14,6 @@
     ['timetable','Timetable','Study, revise + rest','T'],
     ['tasks','Tasks','Plan the next action','-'],
     ['analytics','Analytics','See your learning signals','A']
-    ,['ai-connect','AI Connect','Connect ChatGPT or Claude','AI']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';

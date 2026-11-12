@@ -12,7 +12,6 @@ Focus Bro uses the new directory layout. Application pages are kept only under
 - `src/services/`: feature data access.
 - `src/storage/`: browser persistence and account synchronization contracts.
 - `public/`: deployment assets such as the manifest and service worker.
-- `mcp-server/`: the separate Claude/ChatGPT MCP process.
 - `supabase/`: database migrations and seed data.
 
 The canonical pages load shared auth from `src/auth/` and shared styles from
