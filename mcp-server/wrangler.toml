@@ -3,6 +3,8 @@ main = "src/worker.ts"
 compatibility_date = "2026-11-10"
 
 [vars]
-# Set these as non-secret Worker variables for the Supabase project.
+# Set these as non-secret Worker variables during deployment.
 SUPABASE_URL = "https://your-project.supabase.co"
 SUPABASE_PUBLISHABLE_KEY = "your-publishable-key"
+# Set this to the deployed Worker origin, without a trailing slash.
+MCP_PUBLIC_URL = "https://your-worker.workers.dev"

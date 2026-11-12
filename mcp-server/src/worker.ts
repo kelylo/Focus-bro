@@ -7,12 +7,27 @@ import { bearerToken, type SupabaseEnv } from './services/supabase';
 
 interface Env extends SupabaseEnv {
   MCP_ENABLE_WRITE_TOOLS?: string;
+  MCP_PUBLIC_URL?: string;
 }
 
-function json(data: unknown, status = 200): Response {
+function corsHeaders(): HeadersInit {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type, MCP-Protocol-Version, Last-Event-ID',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+    'Access-Control-Expose-Headers': 'Mcp-Session-Id, WWW-Authenticate'
+  };
+}
+
+function json(data: unknown, status = 200, headers: HeadersInit = {}): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+    headers: {
+      ...corsHeaders(),
+      ...headers,
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store'
+    }
   });
 }
 
@@ -24,8 +39,8 @@ function server(env: Env, token: string): McpServer {
   return mcp;
 }
 
-function metadata(url: URL): Response {
-  const resource = `${url.origin}/mcp`;
+function metadata(url: URL, env: Env): Response {
+  const resource = `${env.MCP_PUBLIC_URL || url.origin}/mcp`;
   return json({
     resource,
     authorization_servers: [url.origin],
@@ -34,12 +49,13 @@ function metadata(url: URL): Response {
   });
 }
 
-function authorizationMetadata(url: URL): Response {
+function authorizationMetadata(url: URL, env: Env): Response {
+  const issuer = env.MCP_PUBLIC_URL || url.origin;
   return json({
-    issuer: url.origin,
-    authorization_endpoint: `${url.origin}/oauth/authorize`,
-    token_endpoint: `${url.origin}/oauth/token`,
-    revocation_endpoint: `${url.origin}/oauth/revoke`,
+    issuer,
+    authorization_endpoint: `${issuer}/oauth/authorize`,
+    token_endpoint: `${issuer}/oauth/token`,
+    revocation_endpoint: `${issuer}/oauth/revoke`,
     response_types_supported: ['code'],
     grant_types_supported: ['authorization_code', 'refresh_token'],
     code_challenge_methods_supported: ['S256'],
@@ -50,9 +66,10 @@ function authorizationMetadata(url: URL): Response {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders() });
     if (url.pathname === '/health' && request.method === 'GET') return json({ ok: true, service: 'focus-bro-mcp' });
-    if (url.pathname === '/.well-known/oauth-protected-resource' && request.method === 'GET') return metadata(url);
-    if (url.pathname === '/.well-known/oauth-authorization-server' && request.method === 'GET') return authorizationMetadata(url);
+    if (url.pathname === '/.well-known/oauth-protected-resource' && request.method === 'GET') return metadata(url, env);
+    if (url.pathname === '/.well-known/oauth-authorization-server' && request.method === 'GET') return authorizationMetadata(url, env);
     if (url.pathname.startsWith('/oauth/')) {
       return json({ error: 'OAuth authorization is not enabled on this deployment yet. Deploy Phase 4 grant storage and consent routes before connecting an AI provider.' }, 501);
     }
@@ -66,7 +83,11 @@ export default {
     } catch {
       return new Response(JSON.stringify({ error: 'Authentication required.' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json', 'WWW-Authenticate': 'Bearer' }
+        headers: {
+          ...corsHeaders(),
+          'Content-Type': 'application/json',
+          'WWW-Authenticate': `Bearer resource_metadata="${url.origin}/.well-known/oauth-protected-resource"`
+        }
       });
     }
     try {
