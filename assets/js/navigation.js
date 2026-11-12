@@ -36,6 +36,17 @@
   document.body.prepend(backdrop);
   document.body.prepend(nav);
   document.body.prepend(toggle);
+  var prefetched={};
+  nav.querySelectorAll('a.site-link').forEach(function(link){
+    function prefetch(){
+      var url=link.href;
+      if(prefetched[url]||url===location.href)return;
+      prefetched[url]=true;
+      fetch(url,{credentials:'same-origin'}).catch(function(){delete prefetched[url]});
+    }
+    link.addEventListener('mouseenter',prefetch,{passive:true});
+    link.addEventListener('touchstart',prefetch,{passive:true});
+  });
   function renderGame(){var status=document.getElementById('game-status');if(!status||!window.FocusBroGame)return;var user=window.FocusBroAuth&&window.FocusBroAuth.getState().user,game=FocusBroGame.get(),floor=(game.level-1)*100,progress=Math.min(100,Math.round((game.xp-floor)/100*100));status.querySelector('strong').textContent='Level '+game.level;status.querySelector('span').textContent=game.xp+' XP';status.querySelector('i').style.width=progress+'%';status.querySelector('small').textContent=user?'Keep going: '+(game.nextLevel-game.xp)+' XP to level '+(game.level+1):'Sign in to keep your streak and XP'}
   document.addEventListener('focusbro:game-change',renderGame);document.addEventListener('focusbro:state-ready',renderGame);setTimeout(renderGame,0);
   function close(){nav.classList.remove('open');backdrop.classList.remove('open');document.body.classList.remove('nav-open');toggle.setAttribute('aria-expanded','false')}

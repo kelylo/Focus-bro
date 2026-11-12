@@ -5,6 +5,8 @@ const ASSETS = [
   "/pages/timetable",
   "/pages/profile",
   "/pages/ai-connect",
+  "/pages/tasks",
+  "/pages/analytics",
   "/public/manifest.json",
   "/assets/css/global.css",
   "/assets/js/navigation.js",

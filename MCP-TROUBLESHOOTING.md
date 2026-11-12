@@ -39,6 +39,12 @@ password, service-role key, or browser session into an AI chat. Wait for the
 OAuth phase, then reconnect from the provider’s connector settings using the
 Worker `/mcp` endpoint.
 
+On the AI Connect page, save and test the Worker endpoint first. **Start guided
+setup** opens the provider’s connector settings and displays the exact steps;
+**Copy endpoint** copies the saved URL (or shows a safe copy prompt when
+clipboard access is unavailable). These controls do not install a connector
+automatically.
+
 ## A grant is missing or revoked
 
 Sign in to the same Focus Bro account used by the PWA, then reopen AI Connect.
