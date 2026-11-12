@@ -1,11 +1,11 @@
 (function(){
   var cfg=window.FOCUS_BRO_SUPABASE;
   if(!cfg)return;
-  var state={session:null,user:null},listeners=[],readyListeners=[],memory={},syncing=false,hydrating=false,ready=false,cloudSaveTimer=0,lastCloudSave=0,cloudSaveQueued=false,stateCacheKey='focusbro.cloud.state',status='idle';
+  var state={session:null,user:null},listeners=[],readyListeners=[],memory={},keyTimestamps={},syncing=false,hydrating=false,ready=false,cloudSaveTimer=0,lastCloudSave=0,cloudSaveQueued=false,loadedCloudUpdatedAt=null,stateCacheKey='focusbro.cloud.state',status='idle';
   function emit(){listeners.slice().forEach(function(fn){try{fn(state)}catch(e){}})}
-  function sessionGet(key){try{return sessionStorage.getItem(key)}catch(e){return null}}
-  function sessionSet(key,value){try{sessionStorage.setItem(key,value)}catch(e){}}
-  function sessionRemove(key){try{sessionStorage.removeItem(key)}catch(e){}}
+  function sessionGet(key){try{var value=localStorage.getItem(key);if(value===null){value=sessionStorage.getItem(key);if(value!==null)localStorage.setItem(key,value)}return value}catch(e){return null}}
+  function sessionSet(key,value){try{localStorage.setItem(key,value)}catch(e){}}
+  function sessionRemove(key){try{localStorage.removeItem(key);sessionStorage.removeItem(key)}catch(e){}}
   function localGet(key){try{return localStorage.getItem(key)}catch(e){return null}}
   function localSet(key,value){try{localStorage.setItem(key,value)}catch(e){}}
   function cacheKey(){return state.user?'focusbro.cloud.state.'+state.user.id:stateCacheKey}
@@ -44,26 +44,66 @@
     if(!password||password.length<6)return Promise.reject(new Error('Use a password with at least 6 characters.'));
     return request('/auth/v1/user',{method:'PUT',token:state.session.access_token,body:JSON.stringify({password:password})});
   }
+  function fetchCloudRecord(){
+    if(!state.user)return Promise.resolve(null);
+    return request('/rest/v1/focus_bro_state?select=state,updated_at&user_id=eq.'+encodeURIComponent(state.user.id),{token:state.session.access_token}).then(function(rows){
+      return rows[0]||null;
+    });
+  }
   function cloudState(){
     if(!state.user)return Promise.resolve(null);
     setStatus('loading');
-    return request('/rest/v1/focus_bro_state?select=state&user_id=eq.'+encodeURIComponent(state.user.id),{token:state.session.access_token}).then(function(rows){return rows[0]?rows[0].state:null});
+    return fetchCloudRecord().then(function(row){
+      loadedCloudUpdatedAt=row&&row.updated_at||null;
+      return row&&row.state||null;
+    });
+  }
+  function timestamp(value){var parsed=Number(value);return Number.isFinite(parsed)?parsed:0}
+  function mergeStates(local,cloud){
+    var merged={},localState=local&&typeof local==='object'?local:{},cloudStateValue=cloud&&typeof cloud==='object'?cloud:{};
+    var keys={},stateKeys={};
+    Object.keys(cloudStateValue).forEach(function(key){if(key!=='_meta')stateKeys[key]=true});
+    Object.keys(localState).forEach(function(key){if(key!=='_meta')stateKeys[key]=true});
+    var localKeys=localState._meta&&localState._meta.keys||{},cloudKeys=cloudStateValue._meta&&cloudStateValue._meta.keys||{};
+    Object.keys(cloudKeys).forEach(function(key){keys[key]=cloudKeys[key]});
+    Object.keys(localKeys).forEach(function(key){stateKeys[key]=true});
+    Object.keys(stateKeys).forEach(function(key){
+      var localHas=Object.prototype.hasOwnProperty.call(localState,key),cloudHas=Object.prototype.hasOwnProperty.call(cloudStateValue,key);
+      if(timestamp(localKeys[key])>=timestamp(cloudKeys[key])){
+        if(localHas)merged[key]=localState[key];else if(cloudHas)merged[key]=cloudStateValue[key];
+        if(localHas)keys[key]=localKeys[key];
+      }else if(cloudHas){
+        merged[key]=cloudStateValue[key];
+      }else if(localHas){
+        merged[key]=localState[key];
+      }
+    });
+    merged._meta={keys:keys};
+    return merged;
   }
   function saveState(data,options){
     if(!state.user)return Promise.reject(new Error('Sign in to save your learning data.'));
-    options=options||{};cacheState(data);setStatus('saving');
-    return request('/rest/v1/focus_bro_state?on_conflict=user_id',{method:'POST',token:state.session.access_token,keepalive:!!options.keepalive,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:state.user.id,state:data,updated_at:new Date().toISOString()})}).then(function(){lastCloudSave=Date.now();setStatus('saved');return true},function(error){setStatus('error',error.message);throw error});
+    options=options||{};setStatus('saving');
+    return fetchCloudRecord().then(function(row){
+      var cloudUpdatedAt=row&&row.updated_at||null;
+      var merged=mergeStates(data,row&&row.state||{});
+      apply(merged);
+      cacheState(merged);
+      var updatedAt=new Date().toISOString();
+      loadedCloudUpdatedAt=cloudUpdatedAt;
+      return request('/rest/v1/focus_bro_state?on_conflict=user_id',{method:'POST',token:state.session.access_token,keepalive:!!options.keepalive,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:state.user.id,state:merged,updated_at:updatedAt})}).then(function(){lastCloudSave=Date.now();loadedCloudUpdatedAt=updatedAt;setStatus('saved');return true});
+    }).catch(function(error){setStatus('error',error.message);throw error});
   }
   var syncKeys=['lockin.v1','lockin.selftaught.v1','lockin.selftaught.v2','focusbro.feynman.v1','focusbro.feynman.v2','focusbro.feynman.game.v3','focusbro.game.v1','focusbro.mindmap.v1','focusbro.timetable.v1','focusbro.unified.timetable.v2','focusbro.timetable.tasks.v1','focusbro.techniques.v1'];
-  function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});return data}
-  function apply(data){if(!data)return;syncing=true;syncKeys.forEach(function(k){delete memory[k]});Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});syncing=false}
+  function collect(){var data={};syncKeys.forEach(function(k){if(memory[k]!==undefined)try{data[k]=JSON.parse(memory[k])}catch(e){data[k]=memory[k]}});data._meta={keys:Object.assign({},keyTimestamps)};return data}
+  function apply(data){if(!data)return;syncing=true;keyTimestamps={};syncKeys.forEach(function(k){delete memory[k]});Object.keys(data).forEach(function(k){if(syncKeys.indexOf(k)!==-1)memory[k]=typeof data[k]==='string'?data[k]:JSON.stringify(data[k])});var keys=data._meta&&data._meta.keys||{};Object.keys(keys).forEach(function(k){if(syncKeys.indexOf(k)!==-1)keyTimestamps[k]=timestamp(keys[k])});syncing=false}
   function syncAfterLogin(){
     if(hydrating)return;
     hydrating=true;
     var cached=cachedState();
     if(cached)apply(cached);
     cloudState().then(function(cloud){
-      if(cloud){apply(cloud);cacheState(cloud);setStatus('saved');return}
+      if(cloud){var merged=mergeStates(collect(),cloud);apply(merged);cacheState(merged);setStatus('saved');return}
       var current=collect();
       if(Object.keys(current).length)return saveState(current);
       setStatus('empty');
@@ -93,17 +133,19 @@
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')flushCloudSave()});
   window.FocusBroStore={
     getItem:function(k){return Object.prototype.hasOwnProperty.call(memory,k)?memory[k]:null},
-    setItem:function(k,v){memory[k]=String(v);if(syncKeys.indexOf(k)!==-1)queueCloudSave()},
-    removeItem:function(k){delete memory[k];if(syncKeys.indexOf(k)!==-1)queueCloudSave()}
+    setItem:function(k,v){memory[k]=String(v);if(syncKeys.indexOf(k)!==-1){keyTimestamps[k]=Date.now();queueCloudSave()}},
+    removeItem:function(k){delete memory[k];if(syncKeys.indexOf(k)!==-1){keyTimestamps[k]=Date.now();queueCloudSave()}}
   };
   window.FocusBroStore.exportData=function(){return {version:1,userId:state.user&&state.user.id||null,exportedAt:new Date().toISOString(),state:collect()}};
   window.FocusBroStore.importData=function(payload){
     if(!state.user)return Promise.reject(new Error('Sign in before importing a backup.'));
-    if(!payload||payload.version!==1||!payload.state||typeof payload.state!=='object')return Promise.reject(new Error('That backup file is not a Focus Bro export.'));
-    return cloudState().then(function(cloud){
-      if(cloud&&Object.keys(cloud).length)return Promise.reject(new Error('Cloud data already exists. Export it first; import will not overwrite it.'));
-      apply(payload.state);return saveState(collect());
-    });
+    if(!payload||payload.version!==1||!payload.state||typeof payload.state!=='object'||Array.isArray(payload.state))return Promise.reject(new Error('That backup file is not a Focus Bro export.'));
+    var imported=payload.state;
+    var importedKeys=imported._meta&&imported._meta.keys||{},now=Date.now();
+    syncKeys.forEach(function(key){if(Object.prototype.hasOwnProperty.call(imported,key)&&!timestamp(importedKeys[key]))importedKeys[key]=now});
+    imported._meta={keys:importedKeys};
+    apply(mergeStates(collect(),imported));
+    return saveState(collect());
   };
   var gameKey='focusbro.game.v1',defaultGame={xp:0,awards:{}};
   function gameData(){var game=defaultGame;try{game=Object.assign({},defaultGame,JSON.parse(window.FocusBroStore.getItem(gameKey)||'{}'));game.awards=game.awards||{}}catch(e){}return game}
@@ -115,6 +157,6 @@
   };
   function onChange(fn){listeners.push(fn);fn(state)}
   function onReady(fn){if(ready)fn(state);else readyListeners.push(fn)}
-  window.FocusBroAuth={onChange:onChange,onReady:onReady,isReady:function(){return ready},signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,updatePassword:updatePassword,getState:function(){return state},loadState:cloudState,saveState:saveState,getSyncStatus:function(){return status}};
+  window.FocusBroAuth={onChange:onChange,onReady:onReady,isReady:function(){return ready},signIn:function(e,p){return auth('signin',e,p)},signUp:function(e,p){return auth('signup',e,p)},resetPassword:resetPassword,signOut:signOut,updateProfile:updateProfile,updatePassword:updatePassword,getState:function(){return state},loadState:cloudState,saveState:saveState,retrySync:function(){return saveState(collect())},getSyncStatus:function(){return status}};
   restore();
 })();

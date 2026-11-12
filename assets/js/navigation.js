@@ -9,11 +9,11 @@
   document.body.classList.add('has-site-nav');
   var page=(location.pathname.split(/[\\/]/).pop()||'dashboard').replace(/\.html$/i,'');
   var links=[
-    ['dashboard','Focus room','Video, notes + progress','O'],
-    ['focus-room','Self-taught room','Goals + atomic habits','+'],
-    ['timetable','Timetable','Study, revise + rest','T'],
-    ['tasks','Tasks','Plan the next action','-'],
-    ['analytics','Analytics','See your learning signals','A']
+    ['dashboard','Dashboard','Video, notes + progress','⌂'],
+    ['focus-room','Focus Room','Goals + atomic habits','○'],
+    ['timetable','Timetable','Study, revise + rest','▦'],
+    ['tasks','Tasks','Plan the next action','✓'],
+    ['analytics','Analytics','See your learning signals','◔']
   ];
   var nav=document.createElement('aside');
   nav.className='site-sidebar';
@@ -55,10 +55,16 @@
   var profile=document.createElement('a');
   profile.className='site-profile-link';
   profile.href='profile';
-  profile.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
+  profile.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg><span class="sync-dot" aria-label="Sync status"></span>';
   profile.setAttribute('aria-label','Open account profile');
   profile.title='Account profile';
   profile.addEventListener('click',function(event){
+    if(event.target.classList.contains('sync-dot')){
+      event.preventDefault();
+      event.stopPropagation();
+      if(window.FocusBroAuth&&window.FocusBroAuth.getSyncStatus()==='error')window.FocusBroAuth.retrySync();
+      return;
+    }
     if(!window.FocusBroAuth||!window.FocusBroAuth.getState().user){
       event.preventDefault();
       document.dispatchEvent(new CustomEvent('focusbro:open-auth'));
@@ -66,7 +72,13 @@
   });
   document.addEventListener('focusbro:user-change',function(event){
     var image=event.detail&&event.detail.avatar_url;
-    profile.innerHTML=image?'<img src="'+image+'" alt="">':'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>';
+    profile.innerHTML=(image?'<img src="'+image+'" alt="">':'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"></path></svg>')+'<span class="sync-dot" aria-label="Sync status"></span>';
+  });
+  document.addEventListener('focusbro:sync-status',function(event){
+    var detail=event.detail||{},dot=profile.querySelector('.sync-dot'),status=detail.status||'idle';
+    if(!dot)return;
+    dot.className='sync-dot sync-'+(status==='error'?'failed':status==='saved'?'synced':status==='saving'||status==='pending'?'saving':'idle');
+    dot.title=status==='error'?'Sync failed. Tap to retry.':status==='saved'?'Synced':status==='saving'||status==='pending'?'Saving…':'Sync status';
   });
   var theme=document.getElementById('themeBtn');
   if(theme) theme.insertAdjacentElement('afterend',profile);
@@ -76,6 +88,17 @@
     var auth=document.createElement('script');auth.src='../src/auth/auth-ui.js';document.body.appendChild(auth);
   }
   loadAuthUi();
+  var exitFocus=document.createElement('button');
+  exitFocus.type='button';
+  exitFocus.className='exit-focus';
+  exitFocus.textContent='Exit focus';
+  exitFocus.onclick=function(){document.body.classList.remove('focus-active');document.querySelectorAll('video').forEach(function(video){video.pause()});document.dispatchEvent(new CustomEvent('focusbro:focus-stop'))};
+  document.body.appendChild(exitFocus);
+  function setFocus(active){document.body.classList.toggle('focus-active',active)}
+  ['focus-start','timer-start','video-start'].forEach(function(name){document.addEventListener('focusbro:'+name,function(){setFocus(true)})});
+  ['focus-stop','timer-stop','video-stop'].forEach(function(name){document.addEventListener('focusbro:'+name,function(){setFocus(false)})});
+  document.addEventListener('play',function(event){if(event.target&&event.target.tagName==='VIDEO')setFocus(true)},true);
+  document.addEventListener('pause',function(event){if(event.target&&event.target.tagName==='VIDEO')setFocus(false)},true);
   window.FocusBroUpdates={
     refresh:function(){
       var target='/pages/dashboard?refresh='+Date.now();
@@ -90,7 +113,7 @@
     }
   };
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=23').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js').then(function(registration){
       registration.update();
     }).catch(function(){});
   }
