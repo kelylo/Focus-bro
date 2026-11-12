@@ -247,7 +247,7 @@ $('themeBtn').onclick=function(){
 function hydrateRoom(){loadStore();cur=S.cur&&find(S.cur)||S.vids[0]||null;if(cur){pos=cur.pos||0;dur=cur.dur||0}renderAll();if(cur)mount()}
 if(FocusBroAuth.isReady())hydrateRoom();else{$('lib').innerHTML='<div class="hint">Loading your cloud library…</div>';$('main').innerHTML='<div class="empty"><h1>Loading your room.</h1><p class="hint" style="font-size:15px">Checking your account and restoring your learning data.</p></div>'}
 window.addEventListener('focusbro:state-ready',hydrateRoom);
-if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('../service-worker.js?v=17').then(function(){},function(){})}
+if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('../service-worker.js?v=23').then(function(){},function(){})}
 })();
 </script>
 <script src="../assets/js/navigation.js"></script>

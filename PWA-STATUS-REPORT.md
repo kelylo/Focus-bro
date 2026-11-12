@@ -223,3 +223,125 @@ The repository currently has no current application page or navigation entry
 for abandoned integrations; the app surface described above is the maintained
 PWA.
 
+## 12. Reconstruction handoff
+
+This report is a reconstruction specification, but it is not a replacement for
+the source repository. A developer cannot produce the exact same PWA from the
+previous high-level summary alone. To reproduce the current app, they need the
+repository checkout, the committed assets, the Supabase project configuration,
+and the database schema below.
+
+### Required source files
+
+The following files are runtime-critical:
+
+| Area | Files |
+| --- | --- |
+| Page shells | `index.html`, `pages/dashboard.html`, `pages/focus-room.html`, `pages/timetable.html`, `pages/tasks.html`, `pages/analytics.html`, `pages/profile.html` |
+| Shared UI | `assets/css/global.css`, `assets/css/auth-ui.css`, `assets/js/navigation.js`, `assets/images/Focus bro.png` |
+| Auth and persistence | `src/config/supabase.js`, `src/auth/auth.js`, `src/auth/auth-ui.js` |
+| PWA | `public/manifest.json`, `public/service-worker.js`, root `service-worker.js` |
+| Deployment | `wrangler.toml` |
+| Database | `supabase-schema.sql` |
+
+Do not rebuild the page behavior from this document while omitting those
+files. Several page-specific interactions are implemented inline inside the
+HTML page shells, including video playback/checkpoint logic, notes, self-taught
+habits, timetable views, task editing, analytics calculations, and profile
+snapshot rendering.
+
+### Exact page dependency contract
+
+Every page that uses account data must load these scripts in this order before
+its feature code:
+
+1. `../src/config/supabase.js`
+2. `../src/auth/auth.js`
+3. page-specific inline behavior
+4. `../assets/js/navigation.js`
+5. `../src/auth/auth-ui.js` where the page includes the shared auth slot
+
+The shared navigation expects `window.FocusBroAuth` and `window.FocusBroGame`.
+Feature code writes synchronized values through `window.FocusBroStore`; it must
+not write synchronized records directly to `localStorage`.
+
+### Feature implementation contract
+
+| Feature | Primary implementation | Required state key |
+| --- | --- | --- |
+| Video lessons, YouTube player, checkpoints, notes, focus minutes | `pages/dashboard.html` | `lockin.v1` |
+| Self-taught goal, milestone, reason, five daily habits | `pages/focus-room.html` | `lockin.selftaught.v2` |
+| Timetable card/roadmap views, trivia gate, timetable entries, study tasks | `pages/timetable.html` | `focusbro.mindmap.v1`, `focusbro.unified.timetable.v2`, `focusbro.timetable.tasks.v1` |
+| Task list editing and completion | `pages/tasks.html` | `focusbro.timetable.tasks.v1` |
+| Progress and learning signals | `pages/analytics.html` | reads synchronized feature records |
+| Account profile, avatar, password, sync status, update recovery | `pages/profile.html`, `src/auth/auth-ui.js` | Supabase Auth and all synchronized records |
+| XP, levels, idempotent rewards | `src/auth/auth.js` | `focusbro.game.v1` |
+
+### Required Supabase configuration
+
+The developer must configure a Supabase project and:
+
+1. Run [`supabase-schema.sql`](supabase-schema.sql).
+2. Add the owner's lower-case email to
+   `public.focus_bro_allowed_users`.
+3. Enable the required Auth email/password settings.
+4. Set the deployed site URL and password-recovery redirect URL.
+5. Put only the project URL and publishable key in
+   `src/config/supabase.js`.
+
+The schema creates `public.focus_bro_state`, enables RLS, and installs the
+private-registration trigger. No service-role key belongs in frontend code.
+
+### Local reproduction
+
+From the repository root:
+
+```powershell
+npm install
+npm run typecheck
+npm run build
+npx serve .
+```
+
+Open `http://localhost:3000/pages/dashboard` through the local HTTP server.
+Do not open `pages/dashboard.html` with `file:`. Clean extensionless routes are
+the canonical production paths.
+
+The TypeScript build uses [`tsconfig.json`](tsconfig.json), targets ES2022,
+emits to `dist/`, and compiles only `src/**/*.ts`. The existing HTML page
+features remain browser JavaScript and are not replaced by the TypeScript
+scaffold.
+
+### Deployment reproduction
+
+Cloudflare Pages must publish the repository root as the static asset directory
+using [`wrangler.toml`](wrangler.toml). Before publishing a release that
+changes cached files:
+
+1. Change the version query in root `service-worker.js`.
+2. Change the version query in `src/app/updates.ts`.
+3. Change `CACHE` and, when needed, the `ASSETS` list in
+   `public/service-worker.js`.
+4. Run `git diff --check`.
+5. Publish the commit through the configured Cloudflare Pages project.
+6. Verify all six clean routes over HTTPS.
+7. Test Profile → **Update app**, offline navigation, sign-in, save, refresh,
+   and the same account in a second browser.
+
+### Acceptance checklist
+
+A reconstruction is equivalent only if it passes all of these checks:
+
+- All six clean routes render and share the same sidebar.
+- Signed-out users can open the account dialog but cannot save account data.
+- Sign-up, sign-in, sign-out, recovery, and password update use Supabase Auth.
+- A signed-in edit changes sync status from pending/saving to synced.
+- Refreshing preserves the edit from Supabase.
+- The same account in another browser receives the same state.
+- RLS prevents access to another user's `focus_bro_state` row.
+- Video position and timestamped notes survive navigation.
+- Timetable entries and tasks survive refresh.
+- XP awards are not duplicated for the same reward ID.
+- Offline navigation opens cached pages.
+- Profile's manual update action installs the newest service-worker shell.
+

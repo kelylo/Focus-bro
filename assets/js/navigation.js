@@ -90,7 +90,7 @@
     }
   };
   if('serviceWorker' in navigator && location.protocol!=='file:'){
-    navigator.serviceWorker.register('../service-worker.js?v=22').then(function(registration){
+    navigator.serviceWorker.register('../service-worker.js?v=23').then(function(registration){
       registration.update();
     }).catch(function(){});
   }
